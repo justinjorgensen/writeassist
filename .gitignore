@@ -1,0 +1,7 @@
+# Revision worktrees created by /auto-revise-chapter
+.worktrees/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
