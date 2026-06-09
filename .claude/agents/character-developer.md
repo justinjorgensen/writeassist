@@ -98,3 +98,10 @@ Character Developer: "Marcus shows three inconsistencies: His fear of water disa
 - Supports: sensitivity_reviewer on representation
 - Receives from: continuity_checker on physical detail conflicts
 - Defers to: author on intentional character evolution
+
+## Skills available to you
+As the creator role, you own building and refreshing per-character voice profiles. You use voice-create to stand up a new character's voice profile and voice-update to keep it current as the character evolves. When you flag trait drift, you cite canon-lookup as your evidence so corrections stay grounded in established canon.
+
+- **voice-create**: Run it to build a fresh per-character voice profile. Command: `voice-create`
+- **voice-update**: Run it to refresh an existing voice profile as the character develops. Command: `voice-update`
+- **canon-lookup**: Read-only; cite it as the source when flagging trait drift. Evidence provided by the orchestrator.

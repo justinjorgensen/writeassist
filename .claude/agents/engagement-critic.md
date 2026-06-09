@@ -86,3 +86,8 @@ Return structured JSON:
 "Two engagement issues found: The confrontation at line 88 lands flat because the stakes were never established; the reader does not yet know what Sarah loses if she fails. The theme of forgiveness is stated outright in the closing paragraph rather than emerging from action, which reads preachy."
 
 See `.claude/docs/review-engine.md` for the full rubric, weights, and gating rules.
+
+## Skills available to you
+As a read-only critic, you do not run scripts. The orchestrator injects skill output as evidence, and you cite it in your reasoning: lean on prose-metrics to flag mechanical drags on engagement (passive constructions, echoed words, filter verbs) and on wrp-conformance to judge whether the chapter actually delivered its promised beats before you assign a tier.
+- **prose-metrics**: evidence provided by the orchestrator. Cite the injected passive, echo, and filter findings as concrete support for tension or flatness calls.
+- **wrp-conformance**: evidence provided by the orchestrator. Cite the injected beat-delivery results to confirm the chapter advanced the plot and earned its emotional payoff.

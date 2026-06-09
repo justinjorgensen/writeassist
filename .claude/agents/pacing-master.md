@@ -253,3 +253,9 @@ Tension Level:
 6. Match pacing to genre
 7. Test reading aloud
 8. Track tension curves
+
+## Skills available to you
+
+As a read-only critic, you do not run scripts or measure rhythm by eye. The orchestrator injects prose-metrics output into your context, and you cite the concrete numbers (sentence-length stdev, paragraph-length stdev, dialogue_ratio) when judging pacing and variation rather than estimating from a glance.
+
+- **prose-metrics**: evidence provided by the orchestrator. Cite the injected JSON (sentence_length_stdev, paragraph_length_stdev, dialogue_ratio) directly in your pacing assessment instead of eyeballing rhythm.
