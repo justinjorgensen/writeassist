@@ -5,3 +5,7 @@
 .DS_Store
 Thumbs.db
 *.swp
+
+# Active project MCP config with real credentials (opt-in).
+# The committed template is .mcp.json.example; the live file stays local.
+.mcp.json

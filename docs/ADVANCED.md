@@ -65,7 +65,7 @@ All nine are real, resolvable slash commands; they are kept off the newcomer sur
 
 ## The improv-story-form skill (optional)
 
-The `improv-story-form` skill is parked under `integrations/improv-story-form/`. It is a structured premise-builder for short stories, RPG one-shots, and writing-prompt warm-ups: it walks you through a handful of inputs (arc, genres, setting, characters, spark, wildcards, output preference) and produces a logline, premise, or opening scene. It is not wired into `/setup-story` and is not part of the core flow; use it when you want a premise from prompted constraints rather than a blank page. If you are already deep in a manuscript, use the `writeassist-workflow` skill instead.
+The `improv-story-form` skill lives under `.claude/skills/improv-story-form/`. It is a structured premise-builder for short stories, RPG one-shots, and writing-prompt warm-ups: it walks you through a handful of inputs (arc, genres, setting, characters, spark, wildcards, output preference) and produces a logline, premise, or opening scene. It is not wired into `/setup-story` and is not part of the core flow; use it when you want a premise from prompted constraints rather than a blank page. If you are already deep in a manuscript, use the `writeassist-workflow` skill instead.
 
 ---
 

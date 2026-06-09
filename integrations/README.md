@@ -21,8 +21,42 @@ implementations, not as part of the first-run experience.
 | `send-query-letter.md` | Drafts a personalized query letter and sends it, with a plan-mode approval gate. | Google **Gmail** MCP server |
 | `schedule-writing-time.md` | Blocks writing time on your calendar with an attached word-count goal. | Google **Calendar** MCP server |
 
-The `improv-story-form/` skill is also parked here as an optional premise builder.
-It is mentioned once in `docs/ADVANCED.md` and is not wired into the core flow.
+### A note on `improv-story-form`
+
+The `improv-story-form` skill used to live in this directory. It has **moved** to
+`.claude/skills/improv-story-form/`, because it is a skill and that is where
+skills belong. It is a self-contained, no-auth premise builder (it needs no MCP
+server at all), so keeping it under `integrations/` was misleading. It stays
+optional and is not wired into the core flow; it is just resolved as a normal
+skill now. See `docs/ADVANCED.md` for what it does.
+
+---
+
+## The opt-in project MCP path (`.mcp.json`)
+
+The parked Drive / Gmail / Calendar commands above need MCP servers. The repo
+ships a documented, **inert** template for wiring those up at the project level:
+`.mcp.json.example` in the repo root.
+
+Claude Code only loads a file named exactly `.mcp.json`. The committed file is
+`.mcp.json.example`, so nothing is active on a fresh clone and clone-and-go still
+works with zero external accounts. To opt in:
+
+1. `cp .mcp.json.example .mcp.json`
+2. Delete the server blocks you do not want, fill in the real command / args /
+   credentials for the ones you keep, and remove the `_comment` / `_disabled`
+   keys from those blocks.
+3. Restart Claude Code so it picks up the project MCP config.
+
+The active `.mcp.json` holds real tokens, so it is git-ignored; only the
+`.example` template is committed. Never put live credentials in the template.
+
+The template also documents a **local filesystem** server entry, which is the
+non-Drive way to export outside this directory. You usually do not need even
+that: the bundled, zero-dependency `manuscript-compile` skill
+(`.claude/skills/manuscript-compile/`) concatenates `02-Manuscript/*.md` into a
+single manuscript file with no MCP server at all. Reach for `.mcp.json` only when
+you specifically want Drive sync or cross-directory file access.
 
 ---
 
@@ -62,5 +96,10 @@ and nothing in the core pipeline breaks by their absence.
   `/auto-revise-chapter`.
 - The em-dash PostToolUse hook, the statusline, and the Stop-hook tracker.
 - Every core and advanced agent and command that ships in `.claude/`.
+- The `manuscript-compile` skill: a zero-dependency, no-auth export that
+  concatenates `02-Manuscript/*.md` into one manuscript file. This is the local
+  alternative to the parked Drive sync.
+- The `improv-story-form` skill (now under `.claude/skills/`): a no-auth premise
+  builder.
 
 The parked integrations add reach. They are never a prerequisite.

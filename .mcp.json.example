@@ -1,0 +1,60 @@
+{
+  "_README": [
+    "OPT-IN PROJECT MCP CONFIG TEMPLATE. This file is INERT.",
+    "Claude Code only reads a file literally named '.mcp.json'. While this file",
+    "is named '.mcp.json.example', NOTHING here is loaded and clone-and-go still",
+    "works with zero external accounts.",
+    "",
+    "To enable project MCP servers (publishing / Drive sync / local file export):",
+    "  1. Copy this file:  cp .mcp.json.example .mcp.json",
+    "  2. Delete the server blocks you do NOT want.",
+    "  3. Fill in the real command, args, and credentials for the ones you keep.",
+    "  4. Remove every '_comment' and '_disabled' key from the blocks you keep.",
+    "  5. Restart Claude Code so it picks up the new project MCP config.",
+    "",
+    "SECURITY: '.mcp.json' (the active file, no '.example' suffix) is listed in",
+    ".gitignore so your real tokens never get committed. Keep it that way.",
+    "Never paste live credentials into THIS template file."
+  ],
+
+  "mcpServers": {
+
+    "_disabled_filesystem": {
+      "_comment": [
+        "LOCAL filesystem MCP server. No auth, no network. Lets Claude Code read",
+        "and write files outside this project directory (for example, to drop a",
+        "compiled manuscript into an export folder elsewhere on your machine).",
+        "You do NOT need this for the bundled, zero-dependency export path:",
+        "the 'manuscript-compile' skill (.claude/skills/manuscript-compile/)",
+        "already concatenates 02-Manuscript/*.md with no MCP server at all.",
+        "Rename the key from '_disabled_filesystem' to 'filesystem' and set the",
+        "allowed directory in 'args' to activate."
+      ],
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/ABSOLUTE/PATH/TO/your/export/folder"
+      ]
+    },
+
+    "_disabled_drive": {
+      "_comment": [
+        "Google Drive style remote server, for pushing the manuscript to Drive so",
+        "beta readers and editors can comment. This one needs credentials and an",
+        "OAuth flow. See integrations/sync-to-drive.md for the matching command",
+        "and the exact authenticate / complete_authentication calls it expects.",
+        "Replace 'command', 'args', and the placeholder env values below with the",
+        "real Drive MCP server you have installed, then rename the key to 'drive'."
+      ],
+      "command": "REPLACE_WITH_YOUR_DRIVE_MCP_COMMAND",
+      "args": [],
+      "env": {
+        "GOOGLE_DRIVE_CLIENT_ID": "REPLACE_WITH_YOUR_CLIENT_ID",
+        "GOOGLE_DRIVE_CLIENT_SECRET": "REPLACE_WITH_YOUR_CLIENT_SECRET",
+        "GOOGLE_DRIVE_REFRESH_TOKEN": "REPLACE_WITH_YOUR_REFRESH_TOKEN"
+      }
+    }
+
+  }
+}
