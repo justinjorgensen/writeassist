@@ -93,6 +93,7 @@ A chapter is "done" when the four-tier review panel returns PASS: at least 5 of 
 ### Planning & Setup
 - `/outline-book` - Generate a comprehensive book outline (plan-mode gate)
 - `/setup-story` - Set up the story compendium and characters
+- `/import-book` - Reverse-engineer the scaffolding from an existing draft, reconciling conflicts with the author (see "Bringing an existing draft")
 
 ### Writing
 - `/generate-wrp [chapter]` - Create a chapter blueprint (plan-mode gate)
@@ -149,6 +150,9 @@ The strict, deterministic counterparts to the light commands above, executed by 
 /review-chapter Chapter-01.md
 /auto-revise-chapter Chapter-01.md   (if the panel returns REVISE)
 ```
+
+### Bringing an existing draft
+If you already have a book in progress, you do not start from a blank outline. Run `/import-book` and point it at your existing draft. Import scouts the manuscript and reverse-engineers the scaffolding the framework normally builds up front: it reconstructs the story compendium, characters, timeline, and the working rules implied by the prose. Where the draft disagrees with itself or with settings you already have, import surfaces the conflict and reconciles it with you rather than guessing, recording every open question in a conflict ledger. Once the scaffolding is in place and the ledger is resolved, the standard pipeline takes over so you can review, revise, and polish.
 
 ## Important Implementation Notes
 

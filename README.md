@@ -43,6 +43,12 @@ WriteAssist works for any book-length narrative: fiction, memoir, autobiography,
 
 ---
 
+## Bringing an existing draft
+
+Already have a book in progress? You do not start from a blank outline. Run `/import-book` and point it at your existing draft. Import scouts the manuscript and reverse-engineers the scaffolding the framework normally builds up front: it reconstructs the story compendium, characters, timeline, and the working rules implied by your prose. Where the draft disagrees with itself, or with settings you already have, import surfaces the conflict and reconciles it with you instead of guessing, recording every open question in a conflict ledger. Once the scaffolding is in place and the ledger is resolved, the standard pipeline takes over so you can review, revise, and polish.
+
+---
+
 ## Requirements
 
 The core pipeline (slash commands, hooks, statusline, agents) runs on any current Claude Code with
