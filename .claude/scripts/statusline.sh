@@ -41,8 +41,23 @@ total_words=$(find "$MANUSCRIPT" -name '*.md' -exec cat {} + 2>/dev/null | wc -w
 latest_ch="$(find "$MANUSCRIPT" -name '*.md' -printf '%T@ %f\n' 2>/dev/null | sort -nr | head -1 | awk '{print $2}')"
 latest_ch="${latest_ch:-...}"
 
-# Em-dash count across manuscript (should be 0)
-emdash_count=$(grep -rhoP '—|(?<!-)--(?!-)' "$MANUSCRIPT" 2>/dev/null | wc -l | tr -d ' ')
+# Em-dash count across manuscript (codepoint-safe, portable; should be 0)
+emdash_count=$(MANUSCRIPT="$MANUSCRIPT" python3 - <<'PYEOF'
+import re, os, glob
+m = os.environ["MANUSCRIPT"]
+EM = re.compile(r'\u2014'); DOUBLE = re.compile(r'(?<!-)--(?!-)'); FLAG = re.compile(r'(?:^|(?<=\s))--(?=[A-Za-z])')
+c = 0
+for f in glob.glob(os.path.join(m, '**', '*.md'), recursive=True):
+    try:
+        for line in open(f, encoding='utf-8', errors='replace'):
+            c += len(EM.findall(line))
+            flags = {x.start() for x in FLAG.finditer(line)}
+            c += sum(1 for x in DOUBLE.finditer(line) if x.start() not in flags)
+    except (IsADirectoryError, FileNotFoundError):
+        pass
+print(c)
+PYEOF
+)
 
 # Last review decision from the four-tier panel (PASS or REVISE), not a numeric score.
 review_dir="$PROJECT_ROOT/.claude/state/reviews"
