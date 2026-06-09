@@ -5,6 +5,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with the WriteAssist framework.
 
+## Requirements
+
+The core surface (slash commands, hooks, statusline, agents) runs on any current Claude Code; the only host dependencies are `jq` and `python3`. The **dynamic workflows** under `.claude/workflows/` (`review-chapter`, `auto-revise-chapter`, `batch-execute-wrp`, `compare-drafts`) are runnable JavaScript orchestrations that need Claude Code **2.1.154+** (tested on **2.1.168**), research-preview. When that runtime is unavailable, use the light slash-command paths in `.claude/commands/` instead: they cover the same tasks and remain as a hedge. See `.claude/workflows/README.md`.
+
 ## Project Type
 
 This is **WriteAssist**, a creative writing framework for producing high-quality long-form prose with AI assistance. It works for any book-length narrative: fiction (novels, short story collections), memoir, autobiography, biography, or narrative non-fiction. It is NOT a software development project (no build, test, or deployment commands).
@@ -47,7 +51,7 @@ The primary workflow for chapter creation:
 ### Zero Em Dash Policy
 **ABSOLUTE ZERO TOLERANCE** for em dashes. Use commas, colons, semicolons, or parentheses instead.
 
-This is enforced **mechanically by a PostToolUse hook** (`.claude/scripts/em-dash-guard.sh`): em dashes literally cannot be written to manuscript files (the hook exits 2 and blocks the write). Review critics remain a secondary check. See `author-rules.md` and `.claude/settings.json`.
+This is enforced **mechanically by a PreToolUse hook** (`.claude/scripts/em-dash-guard.sh`): a `Write`, `Edit`, or `MultiEdit` that would introduce an em dash to a manuscript file is denied before it executes (the hook exits 2), so the token never reaches disk through those tools. Because that matcher cannot see shell writes, a **final scanner** (`.claude/scripts/em-dash-scan.sh`, on `Bash` and `Stop`) enforces a clean final state across every other path. Review critics remain a secondary check. See `author-rules.md` and `.claude/settings.json`.
 
 ### Parallel Critic Execution
 When running `/review-chapter` (directly or auto-fired by `/execute-wrp`):
@@ -68,8 +72,9 @@ If a critic reports "cannot write file" during a review, that is correct behavio
 `/auto-revise-chapter` runs each revision pass in its own git worktree (`.worktrees/chapter-XX-pass-N`). This is plain `git worktree add` plus `cd` plus `commit`, not a special harness flag. The author can `git diff` between passes, and a bad revision never corrupts the working copy. See the command file for the loop protocol.
 
 ### Hooks
-`.claude/settings.json` registers three hooks:
-- **PostToolUse / em-dash-guard** - blocks any Write/Edit that would introduce em dashes to manuscript files (exit 2).
+`.claude/settings.json` registers four hooks:
+- **PreToolUse / em-dash-guard** - denies any Write/Edit/MultiEdit that would introduce em dashes to manuscript files, before execution (exit 2). Matches the em dash by codepoint escape, not a literal byte.
+- **PostToolUse(Bash) and Stop / em-dash-scan** - final scanner; flags any banned token that reached disk via a non-Write/Edit path (shell, external tools) (exit 2).
 - **PostToolUse / post-chapter-review** - opt-in via `WRITEASSIST_AUTO_REVIEW=1`; drops a breadcrumb when a chapter is saved.
 - **Stop / update-tracker** - appends a session-end word-count line to `04-Project-Management/writing-tracker.md`.
 
@@ -111,6 +116,13 @@ A chapter is "done" when the four-tier review panel returns PASS: at least 5 of 
 - `/update-rules` - Modify author-rules.md
 - `/update-timeline` - Maintain the story timeline (advanced)
 - `/workshop-ingestion` - Import workshop transcripts into the project (advanced)
+
+### Dynamic Workflows (`.claude/workflows/`)
+The strict, deterministic counterparts to the light commands above, executed by the runtime as real control flow. Require Claude Code 2.1.154+ (tested 2.1.168), research-preview; the light commands are the hedge when that runtime is unavailable. Indexed in `.claude/workflows/README.md`.
+- `review-chapter.js` - Reproducible four-tier dual-gate review; evidence collected once, selective adversarial verification (strict counterpart to `/review-chapter`)
+- `auto-revise-chapter.js` - Full review-revise loop to PASS or a cap, each pass on its own worktree/branch (strict counterpart to `/auto-revise-chapter`)
+- `batch-execute-wrp.js` - Capped, pipelined mass production: write then review each WRP, mandatory `--limit` guard (strict counterpart to `/batch-execute-wrp`)
+- `compare-drafts.js` - Round-robin pairwise tournament with deterministic Copeland ranking (strict counterpart to `/compare-drafts`)
 
 ## Key Files to Check Before Creative Work
 

@@ -37,6 +37,26 @@ Then check `04-Project-Management/writing-tracker.md` to see what's in progress.
 | Mass-produce a batch | `/batch-execute-wrp` (advanced; requires `--limit N`) |
 | Sanity-check the whole MS | `/curate-chapters all` |
 
+## Strict workflows vs light slash commands
+
+The commands above are the **light path**: prose prompts the model interprets. For the
+high-stakes review and production tasks there is also a **strict path**: runnable dynamic
+workflows that the runtime executes as real control flow (deterministic fan-out, pipelines,
+gates, plain-JS aggregation, no randomness). These live in `.claude/workflows/` and are indexed
+in `.claude/workflows/README.md`.
+
+| Strict workflow (`.claude/workflows/`) | Use it instead of the light command when… |
+|---|---|
+| `review-chapter.js` | You want the reproducible four-tier dual-gate with evidence collected once and reused, and selective adversarial verification. The `/review-chapter` slash command is the quick path for a single ad-hoc score. |
+| `auto-revise-chapter.js` | You want the full review-revise loop driven to PASS or a cap, each pass on its own worktree/branch, fixes applied by the fixed confidence ladder. The `/auto-revise-chapter` command is the lighter, hands-on version. |
+| `batch-execute-wrp.js` | You are mass-producing chapters and want the mandatory `--limit` guard, the hard ceiling, and the write-then-review pipeline with queue accounting. |
+| `compare-drafts.js` | You are ranking two or more drafts of the same chapter and want a deterministic Copeland-style ranking from position-bias-cancelled pairwise judgments, not a single freeform ranker. |
+
+Prefer the strict workflow when the result needs to be reproducible, auditable, or cost-capped.
+Use the light slash command for a fast, one-off pass or when the harness predates the workflow
+requirement (Claude Code 2.1.154+, tested 2.1.168, research-preview); the light path is the hedge
+when dynamic workflows are unavailable. The light commands are not deprecated.
+
 ## The quality gate
 
 A chapter is "done" when the four-tier review panel returns PASS:
@@ -50,7 +70,7 @@ Scores are qualitative model judgments used as a stopping heuristic, not ground 
 ## Key mechanics to know
 
 - Gating critics have YAML frontmatter with **strict tool isolation** (`Read, Grep, Glob`): they cannot write to the manuscript.
-- Hooks block em dashes mechanically. The rule is enforced at write time, not just as an agent instruction.
+- Hooks enforce the em-dash ban mechanically. A PreToolUse hook denies any Write/Edit/MultiEdit that would introduce one, before it executes, and a final scanner catches any that arrive by other paths (shell, external tools). The rule is enforced by the harness, not just as an agent instruction.
 - `/auto-revise-chapter` iterates in **git worktrees** (plain `git worktree add` plus `cd` plus `commit`), so each pass is a diffable commit.
 - `/outline-book` and `/generate-wrp` enter plan mode before writing artifacts.
 - `/review-chapter` launches the seven gating critics as named, parallel Task calls. Advisory critics (sensitivity-reviewer, thematic-guide, grammar-clarity) inform but never gate, and are pruned on `--fast` or when `author-rules.md` declares no sensitivity constraint.

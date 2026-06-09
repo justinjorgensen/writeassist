@@ -40,9 +40,9 @@ Two of these stages, `/outline-book` and `/generate-wrp`, enter **plan mode** be
 
 ## 3. Why a hook instead of a prompt
 
-The headline rule, zero em dashes, is enforced by a **PostToolUse hook** (`.claude/scripts/em-dash-guard.sh`), not by an instruction in `CLAUDE.md`.
+The headline rule, zero em dashes, is enforced by a **PreToolUse hook** (`.claude/scripts/em-dash-guard.sh`) plus a **final scanner** (`.claude/scripts/em-dash-scan.sh`), not by an instruction in `CLAUDE.md`.
 
-A prompt instruction is a request. The model usually honors it, but "usually" is not a guarantee, and a single em dash slipping into a published chapter undermines a framework whose entire pitch is rule enforcement. A hook is a control. When a `Write` or `Edit` would introduce an em dash to a manuscript file, the hook exits 2 and the harness blocks the write. The token is not discouraged; it is unwritable.
+A prompt instruction is a request. The model usually honors it, but "usually" is not a guarantee, and a single em dash slipping into a published chapter undermines a framework whose entire pitch is rule enforcement. A hook is a control. When a `Write`, `Edit`, or `MultiEdit` would introduce an em dash to a manuscript file, the PreToolUse hook exits 2 and the harness denies the tool call before it runs, so the token never reaches disk through those tools. A `Write|Edit|MultiEdit` matcher cannot see shell writes, so the claim is scoped honestly: through the Write/Edit/MultiEdit path the token is unwritable, and a final scanner (on `Bash` and `Stop`) enforces a clean final state for every other path.
 
 Design details that make this honest rather than fragile:
 

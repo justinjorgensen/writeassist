@@ -8,7 +8,7 @@ Clone it, open it in Claude Code, and every core feature works with **zero exter
 
 ## The four pillars
 
-1. **Harness-level enforcement, not vibes.** A PostToolUse hook (`.claude/scripts/em-dash-guard.sh`) blocks the banned em-dash token at write time: when a Claude Code `Write` or `Edit` would introduce one to a manuscript file, the hook exits 2 and the harness blocks the write. The rule is enforced by the harness, not requested in a prompt the model might ignore. The matcher is scoped to manuscript directories and spares the literal `---` rule.
+1. **Harness-level enforcement, not vibes.** A PreToolUse hook (`.claude/scripts/em-dash-guard.sh`) denies any `Write`, `Edit`, or `MultiEdit` that would introduce the banned em-dash token to a manuscript file: the hook exits 2 and the harness blocks the tool call before it executes, so the token never reaches disk through those tools. A `Write|Edit|MultiEdit` matcher cannot see shell writes, so a final scanner (`.claude/scripts/em-dash-scan.sh`, on `Bash` and `Stop`) enforces a clean final state across every other path. The rule is enforced by the harness, not requested in a prompt the model might ignore. The matcher is scoped to manuscript directories, spares the literal `---` rule, and matches the em dash by codepoint escape so it cannot silently no-op.
 
 2. **Least-privilege, tool-isolated reviewers.** Every reviewer agent carries YAML frontmatter declaring its tools. The seven gating critics are locked to `Read, Grep, Glob`, so they physically cannot edit the manuscript they score. Only creator agents hold `Write, Edit`.
 
@@ -26,7 +26,7 @@ WriteAssist works for any book-length narrative: fiction, memoir, autobiography,
 
 1. **Clone and open.** `git clone` the repo and open it in Claude Code. The hooks and statusline auto-load from `.claude/settings.json`. The only host dependencies are `jq` and `python3` (used by the portable em-dash matcher).
 
-2. **The aha moment.** Ask Claude Code to write a sentence containing an em dash to any file under `02-Manuscript/`. The PostToolUse hook blocks the `Write`/`Edit` (exit 2) and tells you why. Through the normal edit path, a banned token cannot reach a chapter file.
+2. **The aha moment.** Ask Claude Code to write a sentence containing an em dash to any file under `02-Manuscript/`. The PreToolUse hook denies the `Write`/`Edit`/`MultiEdit` before it executes (exit 2) and tells you why, so the file is never created or modified. Through the Write/Edit path a banned token cannot reach a chapter file; if one arrives by another route (a shell command, an external tool), the final scanner flags it on the next `Bash` or session `Stop`.
 
 3. **Fill the two template files.** Edit `project-config.md` (genre, voice, tone, themes) and `author-rules.md` (your hard and soft constraints). The em-dash ban already lives in `author-rules.md` as a configurable example.
 
@@ -40,6 +40,19 @@ WriteAssist works for any book-length narrative: fiction, memoir, autobiography,
    `/execute-wrp` writes the chapter and then auto-fires the four-tier review panel. If the panel returns Revise, run `/auto-revise-chapter` and inspect each pass with `git log` and `git diff`.
 
 5. **Don't want to run anything yet?** `example/` holds a hand-authored synthetic walkthrough: a filled config, one WRP, and the chapter that follows from it (guaranteed zero em dashes).
+
+---
+
+## Requirements
+
+The core pipeline (slash commands, hooks, statusline, agents) runs on any current Claude Code with
+no external accounts. The only host dependencies are `jq` and `python3`.
+
+The **dynamic workflows** in `.claude/workflows/` (`review-chapter`, `auto-revise-chapter`,
+`batch-execute-wrp`, `compare-drafts`) are runnable JavaScript orchestrations and need Claude Code
+**2.1.154+** (tested on **2.1.168**), research-preview. If your harness predates that, use the
+light slash-command paths in `.claude/commands/` instead; they cover the same tasks and remain as a
+hedge. See `.claude/workflows/README.md`.
 
 ---
 
