@@ -165,7 +165,7 @@ Minimum introduction includes:
 IF character introduced via photo/memory/reference:
   - Name + context REQUIRED in that moment
   - Don't wait for live appearance
-EXAMPLE: "Emma—seven, gap-toothed, fearless—grinned from the beach photo"
+EXAMPLE: "Emma (seven, gap-toothed, fearless) grinned from the beach photo"
 ```
 
 **Rule 4: Dialogue Priority**
@@ -215,7 +215,7 @@ TEXT: "Elena and the kids at the beach, smiling"
 FLAG: Generic reference "the kids" - compendium has Emma (7) and Marcus (10)
 TIER: Fail
 CONFIDENCE: 0.98
-FIX: "Elena and the kids—seven-year-old Emma, ten-year-old Marcus—smiled from the beach photo"
+FIX: "Elena and the kids, seven-year-old Emma and ten-year-old Marcus, smiled from the beach photo"
 ```
 
 **DETECTED - Divine Replica Ch2:5**

@@ -55,7 +55,7 @@
   Constraint: do NOT introduce literal em dash glyphs while fixing (rule 8 above); use "em dash (U+2014)" prose or `\x{2014}` in regexes.
   Verify: each listed site reads sensibly; `grep -rP '\x{2014}' .` over the repo returns only intentional regex escapes, no literal glyphs.
 
-- [ ] **R-03: Defuse the continuity-checker revision deadlock.**
+- [x] **R-03: Defuse the continuity-checker revision deadlock.**
   Evidence: `.claude/agents/continuity-checker.md:168,218` contains literal em dash glyphs AND prescribes em-dash-formatted manuscript fixes; the em-dash-guard hook rejects such edits, so auto-revision burns its 5 iterations in a blocked loop.
   Do: rewrite both examples using commas/parentheses; ensure no instruction anywhere in the file suggests em-dash punctuation.
   Verify: `grep -nP '\x{2014}' .claude/agents/continuity-checker.md` returns nothing.
@@ -161,3 +161,4 @@
 - 2026-07-03: R-00 done. git init, .gitignore (.claude/state/, .worktrees/, *-backup-*.md, archive/), initial commit. No deviations.
 - 2026-07-03: R-01 done. review-engine.md line 557 OR changed to AND (D2); canonical source-of-truth header added (D3); pruned-panel example at old line 721 relabeled so 4/5 passes is explained against the 70% rule. No deviations.
 - 2026-07-03: R-02 done. Fixed CLAUDE.md:49 (banned char now "U+2014 or --"), MIGRATION.md:77 grep first alternative to \x{2014}, auto-revise-chapter.md:123 comma check to a — escape, auto-revise BEFORE/AFTER examples rewritten with an <EM DASH> placeholder, improv SKILL.md:50, cron-setup.md:33 restored to [CRITICAL]. Deviations: (a) the broken few-shot was in story-architect.md:63 not :165 (fixed with colon/semicolon); (b) character-developer.md:63 example already reads grammatically, left unchanged; (c) additionally converted the functional regex glyphs in em-dash-guard.sh and statusline.sh to \x{2014} escapes (verified they still match) and de-glyphed help.html. Remaining literal glyphs are only in files owned by later tasks: continuity-checker.md (R-03), parallel-review-implementation.md (R-24 archive), smoke-tests.md (R-40).
+- 2026-07-03: R-03 done. continuity-checker.md:168 example rewritten with parentheses, :218 FIX rewritten with commas; grep -nP for U+2014 on the file returns nothing; no em-dash-style punctuation prescribed anywhere in the file. Note: the Divine Replica / Elena / Emma residue in these same examples is deliberately left for R-23.
