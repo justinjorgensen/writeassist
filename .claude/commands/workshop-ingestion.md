@@ -174,8 +174,7 @@ KEY DIRECTIVES:
 - Subtext in all dialogue
 
 QUALITY GATES:
-- Minimum score: 8.0 for all chapters
-- Critical chapters (1, 10, 20): 8.5 minimum
+- All chapters: gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations)
 - WRP must include: 3+ scenes, clear conflict, emotional arc
 - Auto-reject if: POV break, em dash found, <3,500 words
 
@@ -329,7 +328,7 @@ Ready for execution with minor adjustments
 ### Option 3: Full Batch Execution
 "Execute all 20 chapters with auto-quality pipeline"
 - Complete first draft in ~2 hours
-- All chapters to 8.0+ standard
+- All chapters pass the review-engine gates
 - Zero em dashes guaranteed
 
 ### Option 4: Progressive Execution
@@ -398,7 +397,7 @@ Based on frequency of mention:
 4. Creates all WRPs
 5. Reviews WRPs
 6. Executes all chapters
-7. Delivers manuscript at 8.0+
+7. Delivers manuscript with all chapters passing the review gates
 
 ### Workshop to Beta Pipeline
 ```bash
@@ -441,7 +440,7 @@ Workshop ingestion succeeds when:
 - ✓ Core files populated completely
 - ✓ No contradictions remain
 - ✓ WRPs generated successfully
-- ✓ Agent review passed (8.0+)
+- ✓ Critic panel review passed (per review-engine.md)
 - ✓ Project ready for execution
 
 ---

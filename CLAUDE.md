@@ -40,8 +40,8 @@ AI agents MUST check `author-rules.md` FIRST before any creative work. Flag viol
 The primary workflow for chapter creation:
 1. Generate WRP (`/generate-wrp [chapter-number]`) - Creates detailed chapter blueprint
 2. Execute WRP (`/execute-wrp [wrp-file]`) - Writes chapter from blueprint with automated quality pipeline
-3. Automatic Review - 10 parallel agents score chapter on quality metrics
-4. Auto-revision loop - Continues until all scores ≥ 8.0/10 (max 5 iterations)
+3. Automatic Review - a parallel critic panel evaluates the chapter using the four-tier rubric
+4. Auto-revision loop - Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations)
 
 ## Critical Rules
 
@@ -83,9 +83,9 @@ Two skills ship under `.claude/skills/`:
 - `improv-story-form`, premise builder ported from `improv_story_form.html`.
 
 ### Quality Standards
-- All chapters must achieve 8.0+ scores across 10 quality dimensions
-- Auto-revision pipeline runs until standards met (max 5 iterations)
-- Quality dimensions: prose, pacing, character, dialogue, continuity, emotional engineering, themes, plot, sensory immersion, rule compliance
+- Chapters are evaluated by a parallel critic panel using the four-tier rubric (Strong Pass / Pass / Needs Work / Fail)
+- Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations)
+- Auto-revision pipeline runs until the gates pass or the iteration cap is reached
 
 ## Available Slash Commands
 
@@ -102,8 +102,8 @@ Two skills ship under `.claude/skills/`:
 - `/write-scene` - Write individual scenes
 
 ### Quality Control
-- `/review-chapter [chapter]` - 10 parallel agents score chapter (auto-triggered by execute-wrp)
-- `/smart-review [chapter]` - Content-aware review using only relevant agents (78% token reduction)
+- `/review-chapter [chapter]` - Parallel critic panel evaluates the chapter (auto-triggered by execute-wrp)
+- `/smart-review [chapter]` - Content-aware review using only relevant agents
 - `/auto-revise-chapter [chapter]` - Apply fixes from review scores
 - `/curate-chapters [range]` - Deep consistency analysis across chapters
 - `/dialogue-specialist [chapter]` - Focused dialogue review
@@ -169,7 +169,7 @@ Two skills ship under `.claude/skills/`:
 - Parallel review: ~30 seconds (vs ~5 minutes sequential)
 - Smart review: 78% token reduction, 29% faster than full review
 - Batch operations: 10x speed improvement with parallel execution
-- Quality pipeline: Automatic iteration until 8.0+ standards met
+- Quality pipeline: automatic iteration until the review-engine gates pass (see `.claude/docs/review-engine.md`)
 
 ## Important Implementation Notes
 

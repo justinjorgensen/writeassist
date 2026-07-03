@@ -9,16 +9,16 @@
 ```
 generate-wrp (plan-mode gate)
   → execute-wrp
-    → review-chapter (10 local agents, parallel)
+    → review-chapter (local critic panel, parallel)
       → auto-revise-chapter (worktree iterations)
-        → review-chapter passes 8.0+
+        → review-chapter gates pass
           → /smart-review (cheap re-check)
             → ★ /ultrareview ★   ← final cloud gate, author-triggered
               → publish / submit
 ```
 
 Local `review-chapter` is fast and ~free. `/ultrareview` is slower and billed. So the contract is:
-**Only run /ultrareview on chapters that have already passed the local 8.0/10 gate.**
+**Only run /ultrareview on chapters that have already passed the local review-engine gates (see `.claude/docs/review-engine.md`).**
 
 ## When to run it
 
@@ -27,7 +27,7 @@ Local `review-chapter` is fast and ~free. `/ultrareview` is slower and billed. S
 | Chapter just passed `review-chapter` panel for the first time | **Yes**, catch what the local panel missed |
 | Final chapter of a book, ready for beta readers | **Yes** |
 | Manuscript branch ready to merge to `main` | **Yes**, `/ultrareview` (no args) reviews the whole branch |
-| Mid-revision, scores still below 8.0 | No, local agents first |
+| Mid-revision, chapter still failing the review gates | No, local agents first |
 | Minor edit on an already-cleared chapter | No |
 | Query letter / synopsis going to an agent | **Yes** |
 
@@ -53,7 +53,7 @@ Branch mode bundles your local diff and runs the multi-agent panel against it in
 
 ## Author checklist before invoking
 
-- [ ] Local `review-chapter` shows all dimensions ≥ 8.0
+- [ ] Local `review-chapter` decision is PASS
 - [ ] `em-dash:0` in statusline
 - [ ] `story-compendium.md` is up to date with anything new from the chapter
 - [ ] Git working tree is clean (or you're OK reviewing uncommitted changes)

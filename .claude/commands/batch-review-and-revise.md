@@ -5,7 +5,7 @@
 ---
 
 ## Purpose
-Review and automatically fix multiple existing chapters to ensure all meet 8.0+ quality standards. Perfect for upgrading draft manuscripts, implementing new style rules, or preparing for submission.
+Review and automatically fix multiple existing chapters until each passes the review gates. Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations). Perfect for upgrading draft manuscripts, implementing new style rules, or preparing for submission.
 
 ---
 
@@ -14,7 +14,7 @@ Review and automatically fix multiple existing chapters to ensure all meet 8.0+ 
 ### 1. **Full Manuscript Scan**
 ```markdown
 "Review and fix all chapters in Book One"
-"Review entire manuscript and fix to 8.0+"
+"Review entire manuscript and fix until the review gates pass"
 ```
 
 ### 2. **Selective Review**
@@ -40,7 +40,7 @@ Review and automatically fix multiple existing chapters to ensure all meet 8.0+ 
 ## Scanning Manuscript
 Found: 25 chapters
 Total Words: 98,456
-Average Score: Unknown
+Review Status: not yet reviewed
 Em Dashes Detected: 147 (WILL BE ELIMINATED)
 
 Chapters to Process:
@@ -52,28 +52,28 @@ Chapters to Process:
 ### Phase 2: Parallel Review
 ```markdown
 ## Deploying Review Agents - Parallel Execution
-Each chapter gets 10 simultaneous agents with separate contexts.
+Each chapter gets the full critic panel running simultaneously with separate contexts.
 
 **Implementation Note**: Invoke multiple Task agents in a single response for each chapter. Do not simulate multiple agents within one task.
 
-Chapter 1: Running 10 agents...
-├─ Style Review ✓
-├─ Pacing Analysis ✓
-├─ Character Review ✓
-└─ [7 more agents] ✓
-Overall: 8.3/10 ✓
+Chapter 1: Running the critic panel...
+├─ Prose (style-editor) ✓
+├─ Pacing (pacing-master) ✓
+├─ Character (beta-reader-sim) ✓
+└─ [4 more critics] ✓
+Decision: PASS ✓
 
-Chapter 2: Running 10 agents...
-├─ Style Review [████████░░] 80%
-├─ Pacing Analysis [██████████] 100% ✓
-├─ Character Review [███████░░░] 70%
-└─ [7 more agents running...]
+Chapter 2: Running the critic panel...
+├─ Prose (style-editor) [████████░░] 80%
+├─ Pacing (pacing-master) [██████████] 100% ✓
+├─ Character (beta-reader-sim) [███████░░░] 70%
+└─ [4 more critics running...]
 
 Chapter 3: Queued
 Chapter 4: Queued
 Chapter 5: Queued
 
-Each chapter's 10 agents run simultaneously with separate context windows for optimal speed and accuracy
+Each chapter's critics run simultaneously with separate context windows for optimal speed and accuracy
 ```
 
 ### Phase 3: Fix Application
@@ -102,17 +102,15 @@ Chapter 3: 203 fixes applied
 ═══════════════════════════════════════════
 
 ## Overall Manuscript Health
-Average Score: 7.4 → 8.3 ↑
-Chapters Below 8.0: 8 → 0 ✓
+Chapters failing the review gates: 8 → 0 ✓
 Total Fixes Applied: 2,847
 
-## Category Breakdown
-                Before  After   Change
-Prose Quality:  7.2     8.4     +1.2 ↑
-Pacing:        7.8     8.3     +0.5 ↑
-Dialogue:      6.9     8.2     +1.3 ↑
-Character:     7.5     8.3     +0.8 ↑
-Continuity:    8.1     8.4     +0.3 ↑
+## Dimension Breakdown (tier before → after)
+Prose:       Needs Work → Pass
+Pacing:      Pass → Pass
+Dialogue:    Fail → Pass
+Character:   Needs Work → Pass
+Continuity:  Pass → Strong Pass
 
 ## Critical Issues Fixed
 ✓ All em dashes removed (147)
@@ -211,7 +209,7 @@ Chapters Processed: 25/25
 Time Elapsed: 47 minutes
 
 ## Executive Summary
-✓ All chapters now meet 8.0+ standard
+✓ All chapters now pass the review-engine gates
 ✓ Zero em dashes in entire manuscript
 ✓ All author rules enforced
 ✓ Continuity verified across book
@@ -219,8 +217,7 @@ Time Elapsed: 47 minutes
 ## Before/After Comparison
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
-| Average Score | 7.4 | 8.3 | +0.9 |
-| Chapters <8.0 | 8 | 0 | -8 |
+| Chapters failing gates | 8 | 0 | -8 |
 | Em Dashes | 147 | 0 | -147 |
 | Filter Words | 423 | 87 | -336 |
 | Passive Voice | 234 | 12 | -222 |
@@ -250,16 +247,16 @@ Watching: 02-Manuscript/
 
 [NEW] Chapter 26 detected
 → Running automatic review
-→ Score: 7.6/10
+→ Decision: REVISE
 → Applying fixes...
-→ New score: 8.2/10
+→ Decision: PASS
 ✓ Chapter 26 ready
 
 [EDIT] Chapter 12 modified
 → Re-reviewing changed sections
 → Em dash detected! (REMOVING)
 → Fixes applied
-✓ Chapter 12 maintained at 8.3/10
+✓ Chapter 12 still passes the review gates
 ```
 
 ---
@@ -326,8 +323,8 @@ Resume? [Y/N]
 
 ### Quality Assurance Fallback
 ```markdown
-Chapter 8 won't reach 8.0 after 5 iterations:
-→ Saving at 7.9/10
+Chapter 8 still fails the review gates after 5 iterations:
+→ Saving current version
 → Flagging for manual review
 → Detailed issue report generated
 → Continuing with remaining chapters
@@ -347,7 +344,7 @@ Chapter 8 won't reach 8.0 after 5 iterations:
 
 ### Maintenance Mode
 ```bash
-Weekly: "Review and fix any chapters below 8.0"
+Weekly: "Review and fix any chapters failing the review gates"
 After edits: "Re-review modified chapters"
 Before submission: "Final review and fix all"
 ```
@@ -358,7 +355,7 @@ Before submission: "Final review and fix all"
 
 Batch review succeeds when:
 - ✓ All chapters analyzed
-- ✓ All scores ≥ 8.0 (or flagged)
+- ✓ All chapters pass the review-engine gates (or are flagged)
 - ✓ Zero em dashes remain
 - ✓ All fixes applied successfully
 - ✓ Reports generated

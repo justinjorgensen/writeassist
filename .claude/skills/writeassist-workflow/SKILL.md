@@ -31,8 +31,8 @@ Then check `04-Project-Management/writing-tracker.md` to see what's in progress.
 | Plan the next chapter | `/generate-wrp <chapter-number>` (plan-mode gate) |
 | Actually write the chapter | `/execute-wrp 05-wrp/chapter_XX_WRP.md` (auto-fires review) |
 | Direct write without a WRP | `/write-chapter <chapter-number>` |
-| Score an existing chapter | `/review-chapter <file>` (10-agent parallel panel) |
-| Cheap re-check of a near-final chapter | `/smart-review <file>` (78% cheaper) |
+| Score an existing chapter | `/review-chapter <file>` (parallel critic panel) |
+| Cheap re-check of a near-final chapter | `/smart-review <file>` |
 | Apply review fixes | `/auto-revise-chapter <file>` (uses worktrees in v2) |
 | Mass-produce a batch | `/batch-generate-wrp` → `/batch-execute-wrp` |
 | Sanity-check the whole MS | `/curate-chapters all` |
@@ -43,7 +43,7 @@ Then check `04-Project-Management/writing-tracker.md` to see what's in progress.
 ## The quality gate (v2)
 
 A chapter is "done" when:
-1. `review-chapter` shows every dimension ≥ 8.0 (auto-enforced by the revision loop).
+1. `review-chapter` reports PASS. Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations).
 2. The em-dash count in the statusline is `em-dash:0` (enforced by hook, em dashes can't even be written to disk).
 3. Continuity-checker reports no contradictions vs `story-compendium.md`.
 4. Author has accepted any pending `[AR-XXX]` markers from auto-revise.

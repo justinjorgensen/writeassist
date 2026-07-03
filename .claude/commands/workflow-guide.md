@@ -73,7 +73,7 @@ This guide explains how to use the AI commands to write your book efficiently fr
 ### Quality Control Commands
 
 #### 6. `review-chapter`
-**Purpose**: Comprehensive quality analysis with 10 parallel agents  
+**Purpose**: Comprehensive quality analysis with the parallel critic panel  
 **When to Use**: Automatically after each chapter via execute-wrp  
 **Analyzes**:
 - Prose quality and style
@@ -88,15 +88,14 @@ This guide explains how to use the AI commands to write your book efficiently fr
 - Rule compliance
 
 **Assessment**: Four-tier rubric (Strong Pass, Pass, Needs Work, Fail)
-**Gating**: Panel gate (5/7 Pass+) + Critical fail overrides
+**Gating**: Defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations)
 **Usage**: `"Review Chapter [X]"` (usually automatic)
 
 #### 7. `smart-review`
 **Purpose**: Content-aware review using only relevant agents  
 **When to Use**: For focused review of specific aspects  
 **Benefits**:
-- 78% token reduction vs full review
-- 29% faster processing
+- Runs only the critics relevant to the chapter's content
 - Targeted feedback
 
 **Usage**: `"Smart review Chapter [X]"`
@@ -167,11 +166,11 @@ This guide explains how to use the AI commands to write your book efficiently fr
 When you use `execute-wrp`, an automated quality pipeline runs:
 
 1. **Chapter Written** from WRP
-2. **Automatic Review** via `review-chapter` (7 parallel critics, four-tier rubric)
-3. **Panel Gate Check**: Need 5/7 Pass or Better, OR check critical fails
+2. **Automatic Review** via `review-chapter` (parallel critic panel, four-tier rubric)
+3. **Gate Check**: per `.claude/docs/review-engine.md` (panel AND weighted gates, no critical fails)
 4. **Auto-Revise**: If REVISE, `auto-revise-chapter` applies fixes using confidence ladder
-5. **Re-Review**: Re-runs same 7 critics
-6. **Loop**: Continues until panel passes OR critical fails resolved (max 5 iterations)
+5. **Re-Review**: Re-runs the same critic panel
+6. **Loop**: Continues until the review-engine gates pass (max 5 iterations)
 7. **Delivery**: Quality-gated chapter
 
 ### What This Means

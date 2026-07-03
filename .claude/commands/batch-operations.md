@@ -13,7 +13,7 @@ Orchestrate all batch commands for complete manuscript automation. From outline 
 ```
 Executes in sequence:
 1. **batch-generate-wrp**: Creates all WRPs from outline
-2. **batch-execute-wrp**: Writes all chapters to 8.0+ standard
+2. **batch-execute-wrp**: Writes all chapters until the review gates pass
 3. **batch-review-and-revise**: Final polish and verification
 4. **Result**: Publication-ready manuscript
 
@@ -35,7 +35,7 @@ Executes in sequence:
 ```bash
 "Review and revise entire manuscript" → batch-review-and-revise
 "Remove all em dashes from book" → batch-review-and-revise
-"Upgrade all chapters to 8.0+" → batch-review-and-revise
+"Upgrade all chapters until the review gates pass" → batch-review-and-revise
 "Revise all dialogue issues" → batch-review-and-revise
 ```
 
@@ -52,8 +52,8 @@ Executes in sequence:
 "Run all quality checks on Book One"
 ```
 Now automatically:
-- Reviews with 10 parallel agents per chapter
-- Applies fixes for anything below 8.0
+- Reviews each chapter with the parallel critic panel
+- Applies fixes for any chapter failing the review gates
 - Removes ALL em dashes (zero tolerance)
 - Iterates until quality threshold met
 - Generates comprehensive reports
@@ -67,11 +67,11 @@ Now automatically:
 Fully Automated Pipeline:
 1. **batch-generate-wrp**: Generate all chapter WRPs
 2. **batch-execute-wrp**: Write all chapters with auto-quality
-3. **batch-review-and-revise**: Final polish to 8.0+
+3. **batch-review-and-revise**: Final polish until the review gates pass
 4. Export publication-ready manuscript
 
 Time: ~3-4 hours for 25 chapters
-Result: Complete book at 8.0+ quality
+Result: Complete book passing the review-engine gates
 
 ### Complete Book Preparation
 ```bash
@@ -114,7 +114,7 @@ Executes:
 
 ### Conditional Batches
 ```bash
-"Fix all chapters with pacing score < 8.0"
+"Fix all chapters where Pacing landed at Needs Work or Fail"
 "Remove em dashes from entire manuscript"
 "Update all scenes with [old character name]"
 "Revise all dialogue-heavy chapters (>60%)"
@@ -176,7 +176,7 @@ Now runs 10 specialized agents simultaneously:
 - Sensory specialist
 - Rule enforcer
 
-All scores must reach 8.0+ or auto-fix triggers
+Auto-fix triggers for any chapter failing the review gates. Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations).
 
 ### Pipeline Operations (AUTOMATED)
 ```bash
@@ -185,8 +185,8 @@ All scores must reach 8.0+ or auto-fix triggers
 NEW Automated execution:
 1. Generate WRP
 2. Write chapter
-3. Review with 10 agents
-4. Auto-fix until 8.0+
+3. Review with the critic panel
+4. Auto-fix until the review gates pass
 5. Update story compendium
 6. Version control
 
@@ -293,7 +293,7 @@ Estimated time: 15 minutes
 
 ### Daily Writing
 ```bash
-"Write today's 3 chapters to 8.0+ standard"
+"Write today's 3 chapters until the review gates pass"
 ```
 → Full pipeline from WRP to polished chapters
 
@@ -301,7 +301,7 @@ Estimated time: 15 minutes
 ```bash
 "Review and fix all existing chapters"
 ```
-→ Brings entire manuscript to 8.0+ standard
+→ Brings the entire manuscript through the review gates
 
 ### Em Dash Elimination
 ```bash
@@ -311,7 +311,7 @@ Estimated time: 15 minutes
 
 ### Pre-Submission
 ```bash
-"Final review and polish to 8.5+ standard"
+"Final review and polish for submission"
 ```
 → Premium quality for agents/publishers
 

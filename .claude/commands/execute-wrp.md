@@ -309,25 +309,21 @@ After draft completion, execute-wrp automatically triggers:
 Phase 1: Writing from WRP ✓ Complete
 
 Phase 2: PARALLEL Review & Analysis → Starting...
-🤖 Running 10 agents SIMULTANEOUSLY...
-├─ Style Review [████████░░] 80%
-├─ Pacing Analysis [██████████] 100% ✓
-├─ Character Review [███████░░░] 70%
-├─ Dialogue Analysis [██████████] 100% ✓
-├─ Continuity Check [████████░░] 80%
-├─ Emotion Engineering [██████░░░░] 60%
-├─ Theme Analysis [██████████] 100% ✓
-├─ Plot Development [████████░░] 80%
-├─ Sensory Immersion [██████████] 100% ✓
-└─ Rules Enforcement [█████░░░░░] 50%
+🤖 Running the critic panel in parallel (see review-chapter)...
+├─ Prose (style-editor)
+├─ Pacing (pacing-master)
+├─ Character (beta-reader-sim)
+├─ Dialogue (dialogue-coach)
+├─ Continuity (continuity-checker)
+├─ Engagement (critic-sim)
+└─ Rules (rule-enforcer)
 
-NOTE: All 10 agents run in PARALLEL with separate contexts
-      10x faster than sequential review
-      Each agent focuses purely on their specialty
+NOTE: All critics run in PARALLEL with separate contexts
+      Each critic focuses purely on their specialty
 
 Phase 3: Auto-Fix if needed
 Phase 4: Verification Loop
-Target: All scores ≥ 8.0/10
+Target: review-engine gates pass. Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations).
 ```
 
 ### Execution Flow:
@@ -335,10 +331,10 @@ Target: All scores ≥ 8.0/10
 ```python
 1. WRITE chapter from WRP
 2. AUTOMATICALLY run review-chapter
-3. IF any_score < 8.0:
+3. IF decision == "REVISE" (per review-engine.md gating):
       → run auto-revise-chapter
       → run review-chapter again
-      → REPEAT until all_scores >= 8.0
+      → REPEAT until decision == "PASS" or iteration cap reached
 4. DELIVER publication-ready chapter
 ```
 
@@ -348,28 +344,27 @@ Target: All scores ≥ 8.0/10
 ## Iteration 1
 - Initial Draft Complete
 - Running review-chapter...
-- Scores: Prose 7.2, Dialogue 6.8, Pacing 7.5
+- Panel: 3/7 Pass+ (Prose: Needs Work, Dialogue: Fail, Pacing: Needs Work)
 - Triggering auto-revise-chapter...
 - Applied 156 fixes
 
-## Iteration 2 
+## Iteration 2
 - Running review-chapter...
-- Scores: Prose 8.3, Dialogue 8.1, Pacing 7.8
+- Panel: 5/7 Pass+, but Pacing still Needs Work and weighted gate short
 - Triggering auto-revise for Pacing...
 - Applied 23 fixes
 
 ## Iteration 3
 - Running review-chapter...
-- Scores: Prose 8.3, Dialogue 8.1, Pacing 8.2
-✓ ALL SCORES MEET THRESHOLD
+- Panel and weighted gates pass, no critical fails
+✓ REVIEW-ENGINE GATES PASS
 
 ## Final Report
 Chapter: [Title]
 Status: PUBLICATION READY
 Iterations: 3
 Total Fixes: 179
-Time Elapsed: 12 minutes
-Final Score: 8.2/10
+Decision: PASS (per .claude/docs/review-engine.md)
 ```
 
 ### Safety Mechanisms
@@ -389,17 +384,17 @@ ELSE:
 
 The entire pipeline runs autonomously:
 - ✓ Writes chapter from WRP
-- ✓ Reviews with 10 parallel agents
+- ✓ Reviews with the parallel critic panel
 - ✓ Applies fixes automatically
 - ✓ Re-reviews after each fix cycle
-- ✓ Iterates until quality threshold met
+- ✓ Iterates until the review-engine gates pass
 - ✓ Delivers polished, publication-ready chapter
 
 ### Success Criteria
 
 Chapter is complete when:
-- ✓ All 10 review categories score ≥ 8.0/10
-- ✓ No critical issues remain
+- ✓ The review-engine gates pass (see `.claude/docs/review-engine.md`)
+- ✓ No critical fails remain
 - ✓ Character voices consistent
 - ✓ Pacing optimized
 - ✓ Grammar and style polished
@@ -412,19 +407,18 @@ Chapter is complete when:
 
 ## Executive Summary
 ✅ Chapter successfully completed and polished
-📊 Final Overall Score: 8.X/10
+📊 Final Decision: PASS (per .claude/docs/review-engine.md)
 🔄 Iterations Required: X
-⏱️ Total Time: XX minutes
 📝 Word Count: X,XXX
 
 ## Quality Metrics
-| Category | Initial | Final | Improvement |
-|----------|---------|-------|-------------|
-| Prose & Style | 7.2 | 8.5 | +1.3 |
-| Pacing | 7.5 | 8.2 | +0.7 |
-| Dialogue | 6.8 | 8.3 | +1.5 |
-| Character | 7.9 | 8.4 | +0.5 |
-| [etc...] | X.X | X.X | +X.X |
+| Dimension | Initial Tier | Final Tier |
+|-----------|--------------|------------|
+| Prose | Needs Work | Pass |
+| Pacing | Needs Work | Pass |
+| Dialogue | Fail | Pass |
+| Character | Pass | Strong Pass |
+| [etc...] | ... | ... |
 
 ## Automated Improvements
 - Grammar fixes: XX

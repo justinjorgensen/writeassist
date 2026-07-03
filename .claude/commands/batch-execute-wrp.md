@@ -5,7 +5,7 @@
 ---
 
 ## Purpose
-Execute multiple WRPs simultaneously to produce publication-ready chapters at scale. Includes automatic review and fix pipeline for every chapter, ensuring all output meets 8.0+ quality threshold.
+Execute multiple WRPs simultaneously to produce publication-ready chapters at scale. Includes automatic review and fix pipeline for every chapter. Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations).
 
 ---
 
@@ -16,8 +16,8 @@ Execute multiple WRPs simultaneously to produce publication-ready chapters at sc
 "Execute all Chapter WRPs with auto-quality"
 Each chapter goes through:
 1. Write from WRP
-2. Review with 10 agents
-3. Auto-fix until 8.0+
+2. Review with the parallel critic panel
+3. Auto-fix until the review-engine gates pass
 4. Save final version
 ```
 
@@ -58,23 +58,23 @@ Each chapter goes through:
 ```markdown
 ## Processing Chapter 1
 Stage 1: Writing from WRP... ✓ (4,234 words)
-Stage 2: PARALLEL Review (10 agents running simultaneously)... ✓
-  🤖 All agents ran in parallel:
-  ├─ Style Review: 7.2/10
-  ├─ Pacing Analysis: 7.8/10
-  ├─ Character Review: 7.5/10
-  ├─ Dialogue Analysis: 6.9/10
-  └─ [6 more agents]: Avg 7.4/10
+Stage 2: PARALLEL Review (critic panel running simultaneously)... ✓
+  🤖 All critics ran in parallel:
+  ├─ Prose: Needs Work
+  ├─ Pacing: Pass
+  ├─ Character: Needs Work
+  ├─ Dialogue: Fail
+  └─ [3 more critics]: mixed
 Stage 3: Auto-fixing... ✓ (187 fixes applied)
-Stage 4: PARALLEL Re-review (10 agents again)... ✓
-  🤖 All scores now above 8.0:
-  ├─ Style Review: 8.3/10 ✓
-  ├─ Pacing Analysis: 8.2/10 ✓
-  ├─ Character Review: 8.4/10 ✓
-  ├─ Dialogue Analysis: 8.1/10 ✓
-  └─ [6 more agents]: Avg 8.3/10 ✓
+Stage 4: PARALLEL Re-review (critic panel again)... ✓
+  🤖 Review-engine gates now pass:
+  ├─ Prose: Pass ✓
+  ├─ Pacing: Pass ✓
+  ├─ Character: Strong Pass ✓
+  ├─ Dialogue: Pass ✓
+  └─ [3 more critics]: Pass+ ✓
 Stage 5: Saving final... ✓
-Result: PUBLICATION READY (8.2/10 average)
+Result: PUBLICATION READY (gates passed)
 
 ## Processing Chapter 2
 Stage 1: Writing from WRP... ⏳ (52% complete)
@@ -82,7 +82,7 @@ Stage 1: Writing from WRP... ⏳ (52% complete)
 
 Queue: Chapter 3, 4, 5, 6, 7, 8, 9, 10
 
-NOTE: Each review uses 10 SIMULTANEOUS agents
+NOTE: Each review runs the critic panel SIMULTANEOUSLY
       Not sequential simulation - REAL parallel execution
 ```
 
@@ -94,15 +94,15 @@ NOTE: Each review uses 10 SIMULTANEOUS agents
 ```python
 FOR each chapter:
   1. WRITE from WRP
-  2. REVIEW with all agents
-  3. WHILE any_score < 8.0 AND iterations < 5:
+  2. REVIEW with the critic panel
+  3. WHILE decision == "REVISE" (per review-engine.md) AND iterations < 5:
        - Run auto-fix-chapter
        - Re-review
        - Log improvements
-  4. IF still < 8.0:
+  4. IF still failing the gates:
        - Flag for manual review
        - Continue with next chapter
-  5. SAVE final version with scores
+  5. SAVE final version with the panel verdict
 ```
 
 ### Parallel Processing Options
@@ -132,16 +132,16 @@ Running simultaneously:
 
 ### Score Tracking
 ```markdown
-# Chapter Score Report
+# Chapter Review Report
 Chapter: 01 - The Awakening
-Final Score: 8.3/10
+Final Decision: PASS (per .claude/docs/review-engine.md)
 
-| Category | Initial | Final | Improvement |
-|----------|---------|-------|-------------|
-| Prose | 7.2 | 8.3 | +1.1 |
-| Pacing | 7.8 | 8.2 | +0.4 |
-| Dialogue | 6.9 | 8.1 | +1.2 |
-| Character | 7.5 | 8.4 | +0.9 |
+| Dimension | Initial Tier | Final Tier |
+|-----------|--------------|------------|
+| Prose | Needs Work | Pass |
+| Pacing | Pass | Pass |
+| Dialogue | Fail | Pass |
+| Character | Needs Work | Strong Pass |
 
 Total Fixes Applied: 187
 Iterations Required: 2
@@ -179,17 +179,15 @@ Continuity Check Between Chapters:
 Date: [Timestamp]
 Chapters Processed: 10/10
 Total Words: 42,847
-Average Score: 8.4/10
-Total Time: 1 hour 23 minutes
 
 ## Chapter Results
-| Chapter | Title | Words | Score | Status |
-|---------|-------|-------|-------|---------|
-| 1 | The Awakening | 4,234 | 8.3 | ✓ Ready |
-| 2 | Discovery | 3,987 | 8.5 | ✓ Ready |
-| 3 | First Contact | 4,456 | 8.1 | ✓ Ready |
-| 4 | Resistance | 4,102 | 7.9 | ⚠ Manual Review |
-| 5 | Alliance | 4,678 | 8.4 | ✓ Ready |
+| Chapter | Title | Words | Decision | Status |
+|---------|-------|-------|----------|---------|
+| 1 | The Awakening | 4,234 | PASS | ✓ Ready |
+| 2 | Discovery | 3,987 | PASS | ✓ Ready |
+| 3 | First Contact | 4,456 | PASS | ✓ Ready |
+| 4 | Resistance | 4,102 | REVISE | ⚠ Manual Review |
+| 5 | Alliance | 4,678 | PASS | ✓ Ready |
 
 ## Automated Fixes Summary
 - Total fixes applied: 1,847
@@ -206,7 +204,7 @@ Total Time: 1 hour 23 minutes
 ⚠ 2 minor continuity notes for review
 
 ## Next Steps
-1. Review Chapter 4 (didn't reach 8.0)
+1. Review Chapter 4 (failed the review-engine gates)
 2. Read through for artistic preferences
 3. Run final proofread
 4. Export for beta readers
@@ -290,7 +288,7 @@ All chapters backed up before fixes:
 
 ### Full Book Pipeline
 ```bash
-"Generate and execute all Book One chapters to 8.0+"
+"Generate and execute all Book One chapters until the review gates pass"
 ```
 1. Runs batch-generate-wrp
 2. Runs batch-execute-wrp
@@ -317,7 +315,7 @@ All chapters backed up before fixes:
 ## Success Metrics
 
 Batch execution succeeds when:
-- ✓ All chapters reach 8.0+ scores
+- ✓ All chapters pass the review-engine gates (see .claude/docs/review-engine.md)
 - ✓ Word count targets met (±10%)
 - ✓ Continuity verified across batch
 - ✓ No critical errors

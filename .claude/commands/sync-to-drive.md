@@ -16,7 +16,7 @@ The Google Drive MCP must be authenticated. If not:
 Sync the entire `02-Manuscript/` directory to `Drive: WriteAssist/<project-name>/`. Creates the folder if missing. Each `.md` file is converted to a Google Doc with the same name.
 
 ### Single chapter argument (e.g., `Chapter-03.md`)
-Sync just that file. Use this for incremental updates after a chapter passes the 8.0 gate.
+Sync just that file. Use this for incremental updates after a chapter passes the review-engine gates.
 
 ### `--beta` flag
 Adds a public-comment permission link and prints the share URL. Use only for beta-reader rounds.

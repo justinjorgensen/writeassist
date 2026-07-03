@@ -330,10 +330,10 @@ For suggestions (confidence 0.85-0.90), add HTML comments:
 
 ## Panel Re-Evaluation Prediction
 Based on fixes applied, expected tier improvements:
-- Prose: Needs Work (6.0) → Pass (8.0)
-- Rules: Fail (4.0) → Pass (8.0) [Em dashes removed]
-- Dialogue: Needs Work (6.0) → Pass (8.0)
-- Character: Pass (8.0) → Pass (8.0) [maintained]
+- Prose: Needs Work → Pass
+- Rules: Fail → Pass [Em dashes removed]
+- Dialogue: Needs Work → Pass
+- Character: Pass → Pass [maintained]
 
 **Predicted Panel Result:** 6/7 Pass or Better → ✓ SHOULD PASS
 

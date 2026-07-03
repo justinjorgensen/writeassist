@@ -44,7 +44,7 @@ Panel Gate: 6/7 Pass or Better → ✓ CHAPTER PASSES
 
 **Review System:** Four-tier rubric with dual-gate system (Panel Gate + Weighted Gate). See `.claude/docs/review-engine.md` for complete specifications including:
 - Detailed anchor rubric for each critic
-- Critic weights (Continuity 20%, Rules 15%, Voice 15%, Characters 15%, Pacing 12.5%, Dialogue 12.5%, Engagement 10%)
+- Critic weights (defined only there)
 - Secondary critics (M-Dash Detection, Themes, Plot, Immersion) - advisory only
 
 ### Critic 1: Prose & Voice
@@ -152,25 +152,7 @@ pass_count >= 5
 At least **5 of 7 core critics** must return Pass or Strong Pass.
 
 ### Gate 2: Weighted Gate (Quality Threshold)
-A chapter **passes the weighted gate** if:
-```
-weighted_score = sum(tier_value × weight for each core critic)
-weighted_score >= 7.0
-
-Where tier values: Strong Pass=10, Pass=8, Needs Work=6, Fail=4
-And weights: Continuity=20%, Rules=15%, Voice=15%, Characters=15%,
-             Pacing=12.5%, Dialogue=12.5%, Engagement=10%
-```
-
-**Example:**
-- Continuity: Pass (8) × 0.20 = 1.60
-- Rules: Pass (8) × 0.15 = 1.20
-- Voice: Strong Pass (10) × 0.15 = 1.50
-- Characters: Pass (8) × 0.15 = 1.20
-- Pacing: Needs Work (6) × 0.125 = 0.75
-- Dialogue: Pass (8) × 0.125 = 1.00
-- Engagement: Pass (8) × 0.10 = 0.80
-**Total:** 8.05 ≥ 7.0 → **PASSES**
+A chapter **passes the weighted gate** if the weighted score meets the threshold defined in `.claude/docs/review-engine.md`. The tier values, dimension weights, and a worked example live ONLY in that document; compute the gate exactly as specified there.
 
 ### Chapter Approval Requires BOTH Gates
 ```
@@ -236,19 +218,10 @@ def evaluate_chapter(critic_results):
 
 ## Numeric Mapping (Dashboard Display Only)
 
-For visualization and progress tracking, tiers map to numbers:
-
-| Tier | Dashboard Value |
-|------|----------------|
-| Fail | 4.0 |
-| Needs Work | 6.0 |
-| Pass | 8.0 |
-| Strong Pass | 10.0 |
-
-**IMPORTANT:** These tier-to-number mappings are used for BOTH:
-1. **Weighted Gate Calculation:** tier_value × weight (must total ≥7.0) - CONTROLS GATING
-2. **Panel Gate:** Simple tier counting (need 5/7 Pass+) - CONTROLS GATING
-3. **Dashboard Display:** Progress tracking and visualization
+For visualization and the weighted gate, tiers map to numbers. The mapping is defined ONLY in `.claude/docs/review-engine.md`; use it for:
+1. **Weighted Gate Calculation** (CONTROLS GATING)
+2. **Panel Gate** tier counting (CONTROLS GATING)
+3. **Dashboard Display:** progress tracking and visualization
 
 Both panel gate AND weighted gate must pass for chapter approval (unless critical fail overrides).
 
@@ -362,16 +335,16 @@ Run `/auto-revise-chapter` to apply fixes automatically.
 
 ### Dashboard Display (Optional):
 ```markdown
-## Numeric Scores (Display Only)
-- Prose: 8.0 (Pass)
-- Pacing: 10.0 (Strong Pass)
-- Character: 8.0 (Pass)
-- Dialogue: 6.0 (Needs Work)
-- Continuity: 8.0 (Pass)
-- Engagement: 8.0 (Pass)
-- Rules: 8.0 (Pass)
+## Tier Summary
+- Prose: Pass
+- Pacing: Strong Pass
+- Character: Pass
+- Dialogue: Needs Work
+- Continuity: Pass
+- Engagement: Pass
+- Rules: Pass
 
-**Weighted Average:** 8.1/10 (for dashboard tracking only)
+**Weighted Average:** X.X/10 (computed per review-engine.md; shown for dashboard tracking)
 ```
 
 ---
