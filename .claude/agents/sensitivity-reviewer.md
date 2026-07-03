@@ -61,8 +61,8 @@ I review for:
 
 ## Integration Points
 - **curate-chapters.md**: Triggered by request or flags
-- Supports: character_developer on authentic voices
-- Informs: dialogue_coach on cultural speech patterns
+- Supports: character-developer on authentic voices
+- Informs: dialogue-coach on cultural speech patterns
 
 ## Example Interaction
 ```
@@ -72,8 +72,8 @@ Sensitivity Reviewer: "The mental health representation avoids stereotypes and s
 
 ## Collaboration
 - Activated by: author request or content flags
-- Works with: dialogue_coach on dialect
-- Supports: world_builder on cultural systems
+- Works with: dialogue-coach on dialect
+- Supports: world-builder on cultural systems
 
 ## Output Schema
 

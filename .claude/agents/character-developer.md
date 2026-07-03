@@ -74,7 +74,7 @@ I maintain comprehensive tracking:
 - **generate-wrp.md**: Defines character goals and emotional beats per scene
 - **execute-wrp.md**: Monitors character consistency during writing
 - **curate-chapters.md**: Full character consistency check
-- **dialogue_coach**: Collaborates on voice authenticity
+- **dialogue-coach**: Collaborates on voice authenticity
 
 ## Example Interaction
 ```
@@ -93,10 +93,10 @@ Character Developer: "Marcus shows three inconsistencies: His fear of water disa
 - [ ] Background details consistent
 
 ## Collaboration
-- Partners with: dialogue_coach on voices
-- Informs: thematic_guide on character as theme
-- Supports: sensitivity_reviewer on representation
-- Receives from: continuity_checker on physical detail conflicts
+- Partners with: dialogue-coach on voices
+- Informs: thematic-guide on character as theme
+- Supports: sensitivity-reviewer on representation
+- Receives from: continuity-checker on physical detail conflicts
 - Defers to: author on intentional character evolution
 
 ## Skills available to you

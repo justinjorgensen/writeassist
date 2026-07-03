@@ -17,14 +17,14 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 ## Agent Integration
 
 ### Phase 1: Consistency Check
-[continuity_checker | curate-chapters]
+[continuity-checker | curate-chapters]
 - First pass for factual consistency
 - Tracks all details mentioned
 - Identifies contradictions
 - Flags plot holes
 - Outputs: Error log, quick fixes
 
-[timeline_keeper | curate-chapters]  
+[timeline-keeper | curate-chapters]  
 - Triggered by continuity issues
 - Verifies all dates and durations
 - Checks age progressions
@@ -39,14 +39,14 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 - Genre appropriateness
 - Outputs: Style report, suggested revisions
 
-[grammar_clarity | curate-chapters]
+[grammar-clarity | curate-chapters]
 - Grammar and punctuation
 - Sentence clarity
 - Readability optimization
 - Word choice precision
 - Outputs: Grammar fixes, clarity improvements
 
-[dialogue_coach | curate-chapters]
+[dialogue-coach | curate-chapters]
 - Character voice distinction
 - Natural speech patterns
 - Subtext effectiveness
@@ -54,14 +54,14 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 - Outputs: Dialogue revisions, voice notes
 
 ### Phase 3: Content Review
-[sensitivity_reviewer | curate-chapters]
+[sensitivity-reviewer | curate-chapters]
 - Triggered by flags or request
 - Cultural representation check
 - Harmful stereotype scan
 - Content warning identification
 - Outputs: Sensitivity report, alternatives
 
-[thematic_guide | curate-chapters]
+[thematic-guide | curate-chapters]
 - Theme emergence check
 - Symbol consistency
 - Meaning layer coherence
@@ -118,11 +118,11 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 
 ## Agent Findings
 
-### Continuity Issues (continuity_checker)
+### Continuity Issues (continuity-checker)
 - Issue 1: [Description]
 - Issue 2: [Description]
 
-### Timeline Verification (timeline_keeper)
+### Timeline Verification (timeline-keeper)
 - All dates verified: [Yes/No]
 - Issues found: [List]
 
@@ -130,19 +130,19 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 - Voice maintained: [Yes/No]
 - Style notes: [Findings]
 
-### Grammar & Clarity (grammar_clarity)
+### Grammar & Clarity (grammar-clarity)
 - Grammar issues: [Count]
 - Clarity improvements: [Count]
 
-### Dialogue Review (dialogue_coach)
+### Dialogue Review (dialogue-coach)
 - Voices distinct: [Yes/No]
 - Natural flow: [Yes/No]
 
-### Sensitivity Check (sensitivity_reviewer)
+### Sensitivity Check (sensitivity-reviewer)
 - Flags raised: [List or None]
 - Recommendations: [If any]
 
-### Theme Tracking (thematic_guide)
+### Theme Tracking (thematic-guide)
 - Themes present: [List]
 - Effectiveness: [Assessment]
 
@@ -184,12 +184,12 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 
 ## Agent Collaboration Flow
 
-1. **continuity_checker** runs first, creates master list
-2. **timeline_keeper** triggered for any date issues
-3. **style_editor** and **grammar_clarity** run in parallel
-4. **dialogue_coach** focuses on conversation scenes
-5. **sensitivity_reviewer** activated by flags or request
-6. **thematic_guide** tracks theme development
+1. **continuity-checker** runs first, creates master list
+2. **timeline-keeper** triggered for any date issues
+3. **style_editor** and **grammar-clarity** run in parallel
+4. **dialogue-coach** focuses on conversation scenes
+5. **sensitivity-reviewer** activated by flags or request
+6. **thematic-guide** tracks theme development
 7. **reader_analyst** predicts audience response
 
 ## Integration with Workflow

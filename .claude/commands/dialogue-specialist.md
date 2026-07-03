@@ -227,10 +227,10 @@ For each dialogue scene:
 ## Agent Integration
 
 Works with:
-- **character_developer** - Voice consistency
-- **continuity_checker** - Speech pattern tracking
+- **character-developer** - Voice consistency
+- **continuity-checker** - Speech pattern tracking
 - **style_editor** - Dialogue formatting
-- **sensitivity_reviewer** - Cultural authenticity
+- **sensitivity-reviewer** - Cultural authenticity
 
 ## Examples
 

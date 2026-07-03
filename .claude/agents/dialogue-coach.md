@@ -70,9 +70,9 @@ Dialogue Coach: "Your characters are saying exactly what they mean. Real people 
 ```
 
 ## Collaboration
-- Works with: character_developer on voice consistency
+- Works with: character-developer on voice consistency
 - Supports: style_editor on prose rhythm
-- Informs: sensitivity_reviewer on dialect authenticity
+- Informs: sensitivity-reviewer on dialect authenticity
 
 ## Skills available to you
 As a read-only critic, I do not run scripts. I work from evidence the orchestrator injects, citing the `dialogue_ratio` provided to me, and I recommend voice tooling for per-character voice work rather than executing it myself.

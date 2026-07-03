@@ -46,20 +46,20 @@ After outlining, these documents should be created/maintained:
 
 This command activates specialized agents in sequence:
 
-1. **story_architect** (leads)
+1. **story-architect** (leads)
    - Designs overall structure
    - Plans chapter progression
    - Manages pacing
    
-2. **world_builder**
+2. **world-builder**
    - Establishes settings
    - Creates consistent world rules
    
-3. **character_developer**
+3. **character-developer**
    - Maps character journeys
    - Plans relationship dynamics
    
-4. **thematic_guide**
+4. **thematic-guide**
    - Weaves themes throughout
    - Ensures meaningful resonance
 

@@ -71,7 +71,7 @@ Grammar & Clarity: "Four dependent clauses will lose readers. Break into two sen
 
 ## Collaboration
 - Partners: style_editor on prose level
-- Respects: dialogue_coach for dialect
+- Respects: dialogue-coach for dialect
 - Defers: author voice over rules
 
 ## Output Schema

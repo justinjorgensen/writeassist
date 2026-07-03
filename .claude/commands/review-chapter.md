@@ -20,7 +20,7 @@ The seven gating critics are real agents in `.claude/agents/`, each locked to `R
 
 ## Implementation Requirement (read this first)
 
-This command MUST launch the seven gating critics as **separate, named Task calls in a single response** so they run in parallel. Each Task sets `subagent_type` to the agent's exact name. Do NOT use `subagent_type: general-purpose`, and do NOT inline the rubric into a prompt: the rubric already lives in each agent file.
+This command MUST launch the seven gating critics as **separate, named Task calls in a single response** so they run in parallel. Each Task sets `subagent_type` to the agent's exact name. Do NOT spawn a generic agent type for a critic, and do NOT inline the rubric into a prompt: the rubric already lives in each agent file.
 
 The seven gating critics and their `subagent_type` values:
 
@@ -82,7 +82,7 @@ Invoke all selected critics in ONE message. Each Task names its agent:
 
 ```xml
 <invoke name="Task">
-  <parameter name="subagent_type">general-purpose</parameter>
+  <!-- WRONG: a generic subagent_type with an inline rubric prompt -->
   <parameter name="prompt">Simulate seven critics...</parameter>
 </invoke>
 ```

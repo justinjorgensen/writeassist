@@ -70,9 +70,9 @@ Thematic Guide: "Three speeches about freedom in one chapter is telling not show
 ```
 
 ## Collaboration
-- Works with: story_architect to serve plot
-- Partners: character_developer for embodiment
-- Supports: world_builder with symbolic settings
+- Works with: story-architect to serve plot
+- Partners: character-developer for embodiment
+- Supports: world-builder with symbolic settings
 
 ## Output Schema
 
