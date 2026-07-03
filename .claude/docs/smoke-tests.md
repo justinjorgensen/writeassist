@@ -3,6 +3,8 @@
 **System:** Four-tier rubric with dual gate (panel gate plus weighted gate)
 **Purpose:** Validate review engine behavior with known test cases
 
+**Fixtures:** `03-Resources/smoke-fixtures/` (see each file's header for its planted defect; names in fixtures are fixture-local, not canon).
+
 ---
 
 ## Test Suite Overview
@@ -238,13 +240,16 @@ Run on a clean clone:
 ## Running the Tests
 
 ```bash
-/review-chapter test-continuity-fail.md      # REVISE (Critical fail: Continuity)
-/review-chapter test-clean-chapter.md        # PASS (both gates)
-/review-chapter test-em-dash-fail.md         # REVISE (Critical fail: Rules)
-/auto-revise-chapter test-em-dash-fail.md    # all em dashes removed, confidence 1.0
-/review-chapter test-marginal.md             # REVISE (panel gate 3/7)
-/review-chapter test-dialogue-heavy.md --fast  # gating only, advisory pruned
-/review-chapter test-voice-fail.md           # REVISE (Critical fail: Voice)
+/review-chapter 03-Resources/smoke-fixtures/test-continuity-fail.md      # REVISE (Critical fail: Continuity)
+/review-chapter 03-Resources/smoke-fixtures/test-clean-chapter.md        # PASS (both gates)
+# The em-dash fixture is stored as a TEMPLATE (the repo stays glyph-free);
+# materialize it outside the repo, then review/revise the live copy:
+sed 's/<EM-DASH>/\xe2\x80\x94/g' 03-Resources/smoke-fixtures/test-em-dash-template.md > /tmp/em-dash-live.md
+/review-chapter /tmp/em-dash-live.md          # REVISE (Critical fail: Rules)
+/auto-revise-chapter /tmp/em-dash-live.md     # all em dashes removed, confidence 1.0
+/review-chapter 03-Resources/smoke-fixtures/test-marginal.md             # REVISE (panel gate 3/7)
+/review-chapter 03-Resources/smoke-fixtures/test-dialogue-heavy.md --fast  # gating only, advisory pruned
+/review-chapter 03-Resources/smoke-fixtures/test-voice-fail.md           # REVISE (Critical fail: Voice)
 /review-chapter any-chapter.md               # observe seven named parallel Tasks
 ```
 
