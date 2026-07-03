@@ -76,7 +76,7 @@ The command will prompt for:
 
 - `story-compendium.md` - Master reference
 - `01-Planning/initial-concept.md` - Original vision
-- `style-guide.md` - Writing style rules
+- `04-Project-Management/style-guide.md` - Writing style rules
 
 ## Next Steps
 

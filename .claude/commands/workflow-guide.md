@@ -62,7 +62,7 @@ This guide explains how to use the AI commands to write your book efficiently fr
 - Maintains consistency
 - Follows style guide
 
-**Usage**: `"Execute WRP chapter_[X]_WRP.md"`
+**Usage**: `"Execute WRP chapter-NN-wrp.md"`
 
 #### 5. `write-chapter`
 **Purpose**: Write chapter without WRP (direct method)  
@@ -237,7 +237,7 @@ When you use `execute-wrp`, an automated quality pipeline runs:
 ### Fast Draft Mode
 ```
 1. "Generate WRP for Chapter X"
-2. "Execute WRP chapter_X_WRP.md"
+2. "Execute WRP chapter-NN-wrp.md"
 3. Move to next chapter immediately
 4. Curate all at end of week
 ```
@@ -246,7 +246,7 @@ When you use `execute-wrp`, an automated quality pipeline runs:
 ```
 1. "Generate WRP for Chapter X"
 2. Review and refine WRP
-3. "Execute WRP chapter_X_WRP.md"
+3. "Execute WRP chapter-NN-wrp.md"
 4. "Curate Chapter X"
 5. Address issues before moving on
 ```

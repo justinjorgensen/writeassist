@@ -202,7 +202,7 @@ STYLE NOTES:
 ```markdown
 ## Auto-Generating Chapter Outline from Plot Framework
 
-Based on plot structure, creating outline.md:
+Based on plot structure, creating 01-Planning/outline.md:
 
 ACT 1 (25%)
 Chapter 1: The Anomaly - Sarah notices first discrepancy
@@ -307,7 +307,7 @@ Ready for execution with minor adjustments
 ✓ author-rules.md - 12 new constraints, 8 mandates added
 ✓ story-compendium.md - Fully populated with canon
 ✓ project-config.md - Project-specific configuration
-✓ outline.md - 20-chapter structure created
+✓ 01-Planning/outline.md - 20-chapter structure created
 
 ## WRPs Generated
 ✓ 20 chapter WRPs created in 05-wrp/

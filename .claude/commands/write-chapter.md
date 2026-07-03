@@ -8,11 +8,11 @@ argument-hint: "[chapter-number]"
 
 **No-argument behavior:** If no argument is given: list outline chapters and stop.
 
-Write a complete chapter based on the outline and parameters provided.
+Write a complete chapter based on the outline and the project's configured voice. This is the direct path (no WRP); for the blueprint-driven path use `generate-wrp` then `execute-wrp`.
 
 ## Project Structure
 - Planning documents: `01-Planning/`
-- Manuscript location: `02-Manuscript/Book-[Number]/`
+- Manuscript location: `02-Manuscript/Chapter-NN-Title.md` (flat, per `.claude/docs/artifact-contract.md`)
 - Reference the outline: `01-Planning/outline.md`
 - Follow style guide: `04-Project-Management/style-guide.md`
 - Check story compendium: `story-compendium.md` - PRIMARY CANON SOURCE
@@ -20,31 +20,19 @@ Write a complete chapter based on the outline and parameters provided.
 
 ## Writing Parameters
 
-### Core Voice
-- **POV**: [Define based on your story - first person, third limited, omniscient, etc.]
-- **Tone**: [Define your tone - literary, commercial, genre-specific]
-- **Language**: [Define language level and style]
-- **Pacing**: [Define pacing preferences]
+Do NOT invent voice or style. Load them, in this order, before writing a word:
 
-### Narrative Characteristics
+1. **author-rules.md** - hard constraints, soft constraints, mandates (MANDATORY first read)
+2. **project-config.md** - POV, tone, language level, pacing, genre, themes, dialogue style
+3. **04-Project-Management/style-guide.md** - voice patterns, phrasing, description density
+4. **story-compendium.md** - characters, timeline, world facts for this chapter
 
-**Voice Patterns**:
-- [List specific voice characteristics]
-- [Unique phrasings or patterns]
-- [Dialogue style notes]
-- [Internal monologue approach]
-
-**Stylistic Elements**:
-- [Metaphor preferences]
-- [Description density]
-- [Action vs introspection balance]
-- [Sensory detail priorities]
+If project-config.md or the style guide is still an unfilled template, STOP and tell the author to fill it in (or run `/initialize-story-compendium`) before writing chapters.
 
 ## Chapter Structure Requirements
 
 ### Length
-- **Target**: [Your target word count]
-- **Acceptable range**: [Minimum-Maximum words]
+Use the word-count target from project-config.md; if unset, ask the author once and suggest recording it there.
 
 ### Essential Elements
 1. **Opening Hook**: Engage reader immediately
@@ -57,42 +45,12 @@ Write a complete chapter based on the outline and parameters provided.
 
 ### Chapter Components
 ```
-Opening (10-15%)
-- Establish setting/situation
-- Hook reader
-- Set chapter tone
-
-Development (35-40%)
-- Build tension
-- Develop conflict
-- Reveal information
-
-Turning Point (10%)
-- Shift or revelation
-- Change direction
-- Raise stakes
-
-Escalation (30-35%)
-- Intensify conflict
-- Deepen consequences
-- Build to climax
-
-Resolution/Hook (10-15%)
-- Resolve immediate conflict (or not)
-- Set up next chapter
-- Leave compelling question
+Opening (10-15%)      - establish setting, hook, tone
+Development (35-40%)  - build tension, develop conflict, reveal
+Turning Point (10%)   - shift, revelation, raised stakes
+Escalation (30-35%)   - intensify toward climax
+Resolution/Hook (10-15%) - resolve or withhold, set up next chapter
 ```
-
-## Style Examples
-
-### Example Opening:
-*[Provide an example opening that matches your desired style]*
-
-### Example Character Voice:
-*[Provide dialogue or internal monologue examples]*
-
-### Example Description:
-*[Provide a descriptive passage example]*
 
 ## Quality Standards
 
@@ -105,65 +63,52 @@ Resolution/Hook (10-15%)
 - Scene transitions
 
 ### Must Avoid
+- Em dashes (ZERO TOLERANCE; the hook will block them)
 - Info dumps
 - Telling instead of showing
-- Passive constructions (excessive)
+- Excessive passive constructions
 - Repetitive phrases
 - Inconsistent voice
 - Plot contradictions
-
-## Genre-Specific Requirements
-
-### [Your Genre] Conventions
-- [List genre expectations]
-- [Required elements]
-- [Pacing requirements]
-- [Reader expectations]
 
 ## Workflow
 
 1. **Review Phase**
    - Check outline for chapter goals
-   - Review previous chapter ending
+   - Review previous chapter ending (last 300 words = your starting point)
    - Consult story compendium for consistency
    - Note required plot points
 
 2. **Writing Phase**
-   - Follow WRP if available
-   - Maintain voice consistency
+   - Maintain voice consistency per the loaded config
    - Hit word count target
    - Include all required elements
 
 3. **Verification Phase**
-   - **CRITICAL**: Run the /story-compendium-manager command to:
-     - Verify all facts against canon
-     - Check timeline consistency
-     - Maintain story compendium with any new information
-   - Run continuity check
-   - Verify voice consistency
+   - **CRITICAL**: Run the /story-compendium-manager command to verify facts, check timeline consistency, and record new canon
+   - Run `review-chapter` (the same quality pipeline execute-wrp uses; gating per `.claude/docs/review-engine.md`)
 
 4. **Polish Phase**
-   - Strengthen opening/closing
-   - Enhance sensory details
-   - Tighten dialogue
-   - Check transitions
+   - Apply review fixes via `auto-revise-chapter`
+   - Commit the chapter to git (versioning is git; no backup files)
 
 ## File Naming Convention
 ```
-Chapter_[##]_[Title].md
-Example: Chapter_01_The_Beginning.md
+02-Manuscript/Chapter-NN-Title.md
+Example: 02-Manuscript/Chapter-01-The-Beginning.md
 ```
 
 ## Integration with Other Commands
-- Use after `generate-wrp` for structured approach
-- Follow with `curate-chapters` for quality check
-- Update `writing-tracker.md` after completion
+- Prefer `generate-wrp` + `execute-wrp` for the structured approach
+- Follow with `review-chapter` (or `curate-chapters` across many chapters)
+- Update `04-Project-Management/writing-tracker.md` after completion
 - Add new canon to `story-compendium.md`
 
 ## Success Metrics
-- Advances plot ✓
-- Develops character ✓
-- Maintains voice ✓
-- Engages reader ✓
-- Meets word count ✓
-- No continuity errors ✓
+- Advances plot
+- Develops character
+- Maintains voice
+- Engages reader
+- Meets word count
+- No continuity errors
+- Passes the review-engine gates

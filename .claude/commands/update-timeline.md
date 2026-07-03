@@ -126,7 +126,7 @@ The system automatically:
 
 - `01-Planning/timeline.md` - Master timeline
 - `story-compendium.md` - Timeline section
-- `01-Planning/timeline-验证.md` - Validation report
+- `01-Planning/timeline-validation.md` - Validation report
 - Each chapter file - Time marker comments
 
 ## Advanced Features

@@ -21,8 +21,8 @@ argument-hint: "[wrp-file-or-name]"
 3. **Check writing-tracker.md**:
    - Update status to "In Progress"
    - Note start time
-4. **Prepare output**: `02-Manuscript/[Book]/Chapter-XX-[Title].md`
-   - If exists, create backup first
+4. **Prepare output**: `02-Manuscript/Chapter-NN-Title.md` (flat, per `.claude/docs/artifact-contract.md`)
+   - If it exists, ensure the current state is committed to git before overwriting
 
 ---
 
@@ -239,10 +239,8 @@ argument-hint: "[wrp-file-or-name]"
 - Plot developments
 - Timeline events
 
-#### Archive Version
-- Save draft version
-- Note revision history
-- Backup current state
+#### Commit
+- Commit the chapter to git (versioning is git; no backup sidecar files)
 
 ---
 
@@ -438,11 +436,9 @@ Chapter is complete when:
 ✓ Professional editing
 ✓ Publishing submission
 
-## Backup Versions
-- Draft v1: Chapter-XX-draft.md
-- Post-fix v1: Chapter-XX-iteration-1.md
-- Post-fix v2: Chapter-XX-iteration-2.md
-- Final: Chapter-XX-final.md
+## Version History
+- Versioning is git: each draft and revision pass is a commit (worktree passes per auto-revise-chapter)
+- Inspect with `git log -- 02-Manuscript/Chapter-NN-Title.md`
 ```
 
 ---

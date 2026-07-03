@@ -18,7 +18,7 @@ Flow:
 1. Read author-rules.md, story-compendium.md, project-config.md, and the outline entry for the target chapter.
 2. **Enter plan mode** with: chapter goals → POV/voice → key beats → required setups/payoffs → continuity hooks from previous chapter.
 3. Wait for `ExitPlanMode` approval.
-4. Write the finalized WRP to `05-wrp/chapter_XX_WRP.md`.
+4. Write the finalized WRP to `05-wrp/chapter-NN-wrp.md` (see `.claude/docs/artifact-contract.md`).
 
 Skip with `--no-plan` only when batch-generating from an already-approved outline.
 
@@ -51,7 +51,7 @@ Create a comprehensive Writing Requirements Plan that ensures:
    - Previous chapter status
    - Word count targets
    - Completion timeline
-4. **Determine output**: `05-wrp/chapter_XX_[title]_WRP.md`
+4. **Determine output**: `05-wrp/chapter-NN-wrp.md` per the artifact contract
 
 ---
 

@@ -60,7 +60,7 @@ Target Chapter: [Chapter-XX]
 Decision: REVISE
 Reason: [Panel rejected (4/7) / Critical: Continuity contradiction / etc.]
 Fixes Queued: [Total count]
-Backup Created: Chapter-XX-backup-[timestamp].md
+Safety: pass runs in its own git worktree (no backup sidecar files; versioning is git)
 ```
 
 ---
@@ -349,7 +349,7 @@ Based on fixes applied, expected tier improvements:
 4. If still fails: manual review required
 
 ## Backup & Rollback
-Original saved: `Chapter-XX-backup-[timestamp].md`
+Original recoverable via git (each pass is a commit on its worktree branch)
 Rollback: use git (`git checkout <commit> -- 02-Manuscript/Chapter-XX-*.md` or `git revert`); every pass is committed in its worktree
 ```
 
@@ -411,7 +411,7 @@ When triggered by execute-wrp:
 - No user prompts for confirmation
 - Automatic re-review after each revision
 - Continues until panel passes OR max iterations
-- Saves backup before each iteration
+- Each iteration is committed on its worktree branch (recoverable via git)
 - Provides consolidated report at end
 - Total process time: ~2-5 minutes for most chapters
 

@@ -149,7 +149,7 @@ Two skills ship under `.claude/skills/`:
 2. Check story-compendium.md for context
 3. /generate-wrp [chapter-number]
 4. Review WRP, adjust if needed
-5. /execute-wrp chapter_[X]_WRP.md
+5. /execute-wrp chapter-NN-wrp.md
    (Automatically triggers review and auto-revision pipeline)
 ```
 

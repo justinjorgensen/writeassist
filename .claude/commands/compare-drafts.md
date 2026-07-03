@@ -46,21 +46,14 @@ Visualize what changed between drafts, track revision progress, and maintain ver
 
 ## Version Management
 
-### Automatic Versioning
-- v1.0 - First complete draft
-- v1.1 - Minor revisions
-- v2.0 - Major structural changes
-- _backup - Auto-saved versions
-- _editor - External feedback versions
+**Versioning is git** (see `.claude/docs/artifact-contract.md`). There is one current file per chapter; historical versions are git commits and auto-revise worktree branches.
 
-### Version Storage
 ```
-02-Manuscript/
-├── Chapter-01-[Title].md (current)
-├── versions/
-│   ├── Chapter-01-v1.0.md
-│   ├── Chapter-01-v1.1.md
-│   └── Chapter-01-v2.0.md
+# Compare current vs an earlier commit
+git diff <commit> -- 02-Manuscript/Chapter-01-Title.md
+
+# Compare two revision passes
+git diff revise/chapter-01-pass-1 revise/chapter-01-pass-3 -- 02-Manuscript/Chapter-01-Title.md
 ```
 
 ## Comparison Output

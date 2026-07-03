@@ -29,7 +29,7 @@ Then check `04-Project-Management/writing-tracker.md` to see what's in progress.
 | Start a brand-new book | `/outline-book` (plan-mode gate, then writes `01-Planning/outline.md`) |
 | Set up character/world details | `/initialize-story-compendium` then `/create-character` |
 | Plan the next chapter | `/generate-wrp <chapter-number>` (plan-mode gate) |
-| Actually write the chapter | `/execute-wrp 05-wrp/chapter_XX_WRP.md` (auto-fires review) |
+| Actually write the chapter | `/execute-wrp chapter-NN-wrp.md` (auto-fires review) |
 | Direct write without a WRP | `/write-chapter <chapter-number>` |
 | Score an existing chapter | `/review-chapter <file>` (parallel critic panel) |
 | Cheap re-check of a near-final chapter | `/smart-review <file>` |
