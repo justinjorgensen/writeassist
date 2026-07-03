@@ -58,7 +58,7 @@ When using multi-agent commands (review-chapter, batch-review-and-fix):
 - See `.claude/docs/system-guides/PARALLEL-EXECUTION-GUIDE.md` for implementation details
 
 ### Tool Isolation per Agent (v2)
-All 29 agents in `.claude/agents/` now carry YAML frontmatter declaring which tools they can use. **Reviewer agents are locked to `Read, Grep, Glob`**, they physically cannot edit the manuscript. Only creator agents (story-architect, character-developer, world-builder, twist-engineer, research-assistant) hold `Write, Edit`. Orchestrators (meta-coordinator, series-coordinator) additionally hold `Task`.
+All 25 agents in `.claude/agents/` carry YAML frontmatter declaring which tools they can use (full list: `.claude/docs/agent-roster.md`). **Reviewer agents are locked to `Read, Grep, Glob`**, they physically cannot edit the manuscript. Only creator agents (story-architect, character-developer, world-builder, twist-engineer, research-assistant) hold `Write, Edit`. The orchestrator (series-coordinator) additionally holds `Task` but no Write/Edit.
 
 If an agent reports "cannot write file" during a review, that's correct behavior, the review pipeline is read-only by design. Edits flow through `/auto-revise-chapter`.
 

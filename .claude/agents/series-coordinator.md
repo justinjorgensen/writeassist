@@ -1,7 +1,7 @@
 ---
 name: series-coordinator
 description: Multi-book series continuity, arc tracking, and cross-book consistency. Use for series projects spanning multiple manuscripts.
-tools: Read, Write, Edit, Grep, Glob, Task
+tools: Read, Grep, Glob, Task
 model: opus
 ---
 

@@ -50,7 +50,7 @@ v2 takes the existing WriteAssist framework and layers on Claude Code features t
 ### Unchanged
 - `author-rules.md`, `project-config.md`, `story-compendium.md` (still blank templates, fill them in per project)
 - All HTML guides (`readme.html`, `technical-guide.html`, `improv_story_form.html`)
-- The 5 newer agents (`content-analyzer`, `context-filter`, `meta-coordinator`, `simple-content-analyzer`, `transition-validator`), they already had frontmatter
+- The newer agents (`content-analyzer`, `transition-validator`), they already had frontmatter. (Historical note: `context-filter`, `meta-coordinator`, and `simple-content-analyzer` also shipped with frontmatter but were deleted in the 2026-07-03 remediation as unreferenced or policy-violating.)
 - Directory layout (`01-Planning/`, `02-Manuscript/`, `03-Resources/`, `04-Project-Management/`, `05-wrp/`)
 
 ## Migrating an in-progress v1 manuscript
