@@ -1,5 +1,7 @@
 # WriteAssist Review Engine - Four-Tier Rubric
 
+> **CANONICAL SOURCE OF TRUTH.** This document is the ONLY place where review gate numbers, tier-to-number values, dimension weights, and iteration caps are defined. Every other file (commands, agents, skills, docs) must link here instead of restating these numbers. If another file appears to state a different value, this document wins.
+
 The review engine evaluates a chapter with seven named gating critics, each judged on a four-tier rubric. Results aggregate through a dual-gate system (panel gate plus weighted gate) with critical-fail overrides. Scores are qualitative model judgments used as a stopping heuristic, not ground truth.
 
 ---

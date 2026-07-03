@@ -29,8 +29,8 @@ The seven gating critics and their `subagent_type` values:
 | Continuity & Logic (20%, critical-fail) | `continuity-checker` |
 | Rules Compliance (15%, critical-fail) | `rule-enforcer` |
 | Voice & Prose (15%, critical-fail) | `voice-consistency` |
-| Pacing & Flow (12.5%) | `pacing-master` |
-| Dialogue & Subtext (12.5%) | `dialogue-coach` |
+| Pacing & Flow | `pacing-master` |
+| Dialogue & Subtext | `dialogue-coach` |
 | Characters & Arc (15%) | `character-critic` |
 | Engagement & Impact (10%) | `engagement-critic` |
 
@@ -116,8 +116,8 @@ The seven gating critics map to fixed weights:
 | Rules Compliance | 15% | Fail with confidence >= 0.90 (hard violation) forces Revise |
 | Voice & Prose | 15% | Fail with confidence >= 0.90 forces Revise |
 | Characters & Arc | 15% | none (voice path owned by Voice & Prose) |
-| Pacing & Flow | 12.5% | none |
-| Dialogue & Subtext | 12.5% | none |
+| Pacing & Flow | see review-engine.md | none |
+| Dialogue & Subtext | see review-engine.md | none |
 | Engagement & Impact | 10% | none |
 
 ### Gate 1: Panel Gate (simple count)
@@ -142,7 +142,7 @@ Example:
 - Pacing: Needs Work (6) x 0.125 = 0.75
 - Dialogue: Pass (8) x 0.125 = 1.00
 - Engagement: Pass (8) x 0.10 = 0.80
-- Total: 8.05 >= 7.0, passes the weighted gate
+- Total meets the weighted-gate threshold defined in review-engine.md (worked example lives there)
 
 ### Final Decision
 ```python
@@ -179,7 +179,7 @@ A chapter is approved only when **both gates pass and no critical fail fires**. 
 
 ## Numeric Mapping (dashboard only)
 
-For visualization, tiers map to numbers: Fail = 4.0, Needs Work = 6.0, Pass = 8.0, Strong Pass = 10.0. These values feed the weighted gate AND the dashboard display. The qualitative tier is the primary signal; the number is a convenience. Scores are model judgments used as a stopping heuristic, not ground truth.
+For visualization, tiers map to numbers; the mapping is defined ONLY in `.claude/docs/review-engine.md` and feeds the weighted gate AND the dashboard display. The qualitative tier is the primary signal; the number is a convenience. Scores are model judgments used as a stopping heuristic, not ground truth.
 
 ---
 
@@ -233,7 +233,7 @@ Em dash removal always applies at confidence 1.0 (zero tolerance), and the PostT
 - Pass or better: 6/7 (need 5) -> passes
 
 ## Weighted Gate
-- Weighted score: 8.05/10.0 (need 7.0) -> passes
+- Weighted score meets the review-engine.md threshold -> passes
 
 ## Critical Fail Check
 - Continuity: Pass | Rules: Pass | Voice: Pass -> no override

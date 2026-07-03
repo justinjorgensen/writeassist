@@ -204,7 +204,7 @@ Seven Task calls fire in a single response, each with `subagent_type` set to a g
 Run a review and inspect the numeric display.
 
 ### Expected
-Tiers are the primary signal. Numbers (Fail 4.0, Needs Work 6.0, Pass 8.0, Strong Pass 10.0) feed the weighted gate and the dashboard. The weighted score is shown as part of the gating decision, not as a separate threshold that replaces it.
+Tiers are the primary signal. The tier-to-number mapping (defined only in review-engine.md) feeds the weighted gate and the dashboard. The weighted score is shown as part of the gating decision, not as a separate threshold that replaces it.
 
 ```markdown
 ## Gating Tiers
