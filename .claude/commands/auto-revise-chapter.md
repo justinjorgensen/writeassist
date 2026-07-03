@@ -387,7 +387,7 @@ return "MAX_ITERATIONS_REACHED", new_results
 
 **Loop Prevention:**
 - Maximum 5 iterations
-- After 3 iterations, prompt user for continuation
+- After 3 iterations, prompt the user for continuation. EXCEPTION: this iteration-3 checkpoint is suppressed when auto-revise is invoked by execute-wrp or by any batch command; those pipelines run unattended and rely on the iteration cap alone.
 - If still failing after 5, escalate to manual review
 
 ---
