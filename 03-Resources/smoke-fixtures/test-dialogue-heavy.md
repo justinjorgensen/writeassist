@@ -1,10 +1,11 @@
 # Test Fixture: Dialogue-Heavy Chapter
 
 > No planted defects; content is dialogue-dominant. smart-review's content analysis should select the dialogue-relevant critic set; Continuity and Rules must still run.
+> Names in this fixture (Mara, Tom, Renn) are fixture-local and NOT story canon.
 
-"Listen," [Ally] said.
+"Listen," Tom said.
 
-"I'm listening," [Protagonist] replied.
+"I'm listening," Mara replied.
 
 "This isn't working."
 
@@ -12,7 +13,7 @@
 
 "Us. This. Everything."
 
-[Protagonist]'s hands trembled. "You don't mean that."
+Mara's hands trembled. "You don't mean that."
 
 "I do." His voice cracked. "I'm sorry."
 

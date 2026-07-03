@@ -41,7 +41,7 @@ v2 takes the existing WriteAssist framework and layers on Claude Code features t
 - `MIGRATION.md`, this file
 
 ### Modified
-- All 24 agents in `.claude/agents/*.md` that previously lacked frontmatter, now carry `name`, `description`, `tools`, `model` keys
+- The agents in `.claude/agents/*.md` that previously lacked frontmatter now carry `name`, `description`, `tools`, `model` keys (25 agents post-remediation; see `.claude/docs/agent-roster.md`)
 - `.claude/commands/outline-book.md`, plan-mode gate prepended
 - `.claude/commands/generate-wrp.md`, plan-mode gate prepended
 - `.claude/commands/auto-revise-chapter.md`, worktree-iteration section prepended
@@ -98,6 +98,18 @@ If anything in v2 misbehaves:
 ## What's intentionally NOT in v2
 
 - **No fork of `review-chapter` or `execute-wrp`.** They work as-is, they just now run against agents with tighter tool restrictions.
-- **No replacement of the 24 slash commands with skills.** Slash commands stay as the in-framework primitives. Skills are for cross-project reach.
+- **No replacement of the 27 slash commands with skills.** Slash commands stay as the in-framework primitives. Skills are for cross-project reach.
 - **No automatic /code-review ultra triggering.** It's an author-driven final gate per Claude Code's design (user-triggered + billed).
 - **No backwards-compat shims.** If you fork v1 and v2 diverges further, you'll merge by hand.
+
+## The 2026-07-03 remediation
+
+A full technical audit (2026-07-03) found the v2 harness architecturally sound but badly drifted. A 17-task remediation (REMEDIATION-PLAN.md, executed the same day) repaired it:
+
+- **One review engine.** `.claude/docs/review-engine.md` is the single source of truth for gates, tiers, weights, and iteration caps; the pass formula is `(panel AND weighted) AND no_critical_fails`. All v1 residue (10 agents, numeric 8.0 gates) was removed.
+- **Real isolation.** Review critics are spawned as named read-only agents (D6 mapping in review-chapter.md); a PreToolUse hook now blocks em dashes BEFORE they reach disk; series-coordinator lost Write/Edit.
+- **Namespace hygiene.** Three orphaned agents deleted, the roster demoted to a generated doc (`.claude/docs/agent-roster.md`), all cross-references kebab-case and resolvable, phantom agents/commands purged, `/ultrareview` renamed to `/code-review ultra`.
+- **Honest docs.** Every unmeasured performance number deleted; obsolete v1 guides archived under `.claude/docs/archive/`.
+- **Command contracts.** All 27 commands carry frontmatter and explicit no-argument behavior; batch commands are thin loops over the single-chapter commands; one artifact contract (`.claude/docs/artifact-contract.md`); versioning is git.
+- **Safety.** sync-to-drive gained a mandatory plan-mode gate and a marker check; auto-revise/write-scene strip their scaffolding before a chapter is done.
+- **Drift catchers.** Smoke fixtures in `03-Resources/smoke-fixtures/`, assertable tests in `.claude/docs/smoke-tests.md`, and `.claude/scripts/lint-framework.sh` (run it after any framework change).

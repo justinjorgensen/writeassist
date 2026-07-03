@@ -52,7 +52,7 @@ Only then is the chapter ready for `/sync-to-drive` → beta readers, or `/code-
 
 ## Key mechanics to know
 
-- 29 agents have YAML frontmatter with **strict tool isolation**: reviewers can't write to the manuscript.
+- 25 agents have YAML frontmatter with **strict tool isolation**: reviewers can't write to the manuscript.
 - Hooks block em dashes mechanically. The rule is enforced at write time, not just as agent instruction.
 - `/auto-revise-chapter` iterates in **git worktrees**, so each pass is diffable.
 - `/outline-book` and `/generate-wrp` enter plan mode before writing artifacts.

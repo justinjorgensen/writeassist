@@ -30,7 +30,7 @@ AI agents MUST check `author-rules.md` FIRST before any creative work. Flag viol
 05-wrp/               - Writing Requirements Plans (chapter blueprints)
 .claude/
   agents/             - Specialized review agent definitions
-  commands/           - 24 slash command implementations
+  commands/           - 27 slash command implementations
   docs/               - System guides including review-engine.md
 ```
 

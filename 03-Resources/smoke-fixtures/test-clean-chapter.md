@@ -1,8 +1,9 @@
 # Test Fixture: Clean Chapter
 
 > No planted defects. This fixture must pass the panel gate.
+> Names in this fixture (Mara, Tom, Renn) are fixture-local and NOT story canon.
 
-[Protagonist] walked into the coffee shop. Morning light filtered through dusty windows, catching steam rising from the espresso machine.
+Mara walked into the coffee shop. Morning light filtered through dusty windows, catching steam rising from the espresso machine.
 
 "The usual?" the barista asked.
 
