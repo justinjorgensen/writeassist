@@ -276,3 +276,18 @@ Review succeeds when:
 ---
 
 *This command uses the four-tier rubric with dual-gate gating. See `.claude/docs/review-engine.md` for the complete specification.*
+
+
+---
+
+## Report Persistence (MANDATORY)
+
+Every run writes its full report to `.claude/state/reviews/<chapter-slug>-<n>.md`, where `<n>` increments per review of that chapter (e.g. `chapter-05-2.md` for the second review of Chapter 5). Create the directory if missing.
+
+The report MUST contain a weighted-score line in exactly this shape so the statusline can read it:
+
+```
+**Weighted Score:** 8.1/10
+```
+
+(One decimal, slash, 10; computed per review-engine.md.) Also include the decision (PASS/REVISE), the per-critic tiers, and the fixes JSON. This is what keeps review results persistent and the statusline's `last:` segment real.
