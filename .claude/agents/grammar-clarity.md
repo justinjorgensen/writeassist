@@ -73,3 +73,24 @@ Grammar & Clarity: "Four dependent clauses will lose readers. Break into two sen
 - Partners: style_editor on prose level
 - Respects: dialogue_coach for dialect
 - Defers: author voice over rules
+
+## Output Contract
+
+When running as a review critic (spawned by review-chapter, smart-review, or any review panel), your FINAL output MUST be exactly one JSON object conforming to the shared critic schema defined in `.claude/docs/review-engine.md`:
+
+```json
+{
+  "critic": "Grammar",
+  "tier": "Strong Pass | Pass | Needs Work | Fail",
+  "confidence": 0.0,
+  "one_line_reason": "Brief justification, max 100 chars",
+  "fixes": [
+    {"id": "fix-001", "summary": "Actionable fix", "location": "line NNN", "confidence": 0.95}
+  ]
+}
+```
+
+Rules:
+- The four tiers above are the ONLY allowed verdicts. Never emit numeric scores (N/10), star ratings, percentages-as-verdicts, or any other scale.
+- Narrative analysis may precede the JSON, but the JSON object must be the last thing in your reply.
+- `fixes` may be empty for a Strong Pass.
