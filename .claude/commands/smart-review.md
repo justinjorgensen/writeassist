@@ -159,7 +159,7 @@ Combine critic verdicts per `.claude/docs/review-engine.md`:
 [Include the JSON verdict and fixes from each critic that ran]
 ```
 
-Write the final report to `.claude/state/reviews/` (same contract as review-chapter).
+Write the final report to `.claude/state/reviews/<chapter-slug>-<n>.md` (same contract as review-chapter, including the `**Weighted Score:** X.X/10` line the statusline reads).
 
 ## Fallback Behavior
 

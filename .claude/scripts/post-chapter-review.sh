@@ -4,7 +4,7 @@
 # user turn can pick up and run /review-chapter against.
 #
 # We deliberately do NOT call Claude here (no recursive invocations). Instead
-# we leave a breadcrumb in .claude/.pending-review that Claude can read.
+# we leave a breadcrumb in .claude/state/pending-review.txt that Claude can read.
 
 set -euo pipefail
 
