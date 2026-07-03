@@ -1,4 +1,13 @@
+---
+description: Deep consistency analysis across a chapter range
+argument-hint: "[range | all]"
+allowed-tools: Read, Grep, Glob, Task
+---
 # Curate Chapters
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: default to all chapters in `02-Manuscript/`.
 
 Comprehensive quality control and consistency check for book chapters using specialized agent expertise.
 

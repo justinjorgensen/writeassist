@@ -1,4 +1,12 @@
+---
+description: Modify author-rules.md constraints and mandates
+argument-hint: "[rule-change (optional)]"
+---
 # Update Rules
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: show current rules and ask what to change.
 
 **Purpose**: Evolve author-rules.md based on lessons learned, patterns detected, or new decisions
 

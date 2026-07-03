@@ -1,4 +1,10 @@
+---
+description: Execute several WRPs in sequence through the full write-review pipeline (requires --limit N)
+argument-hint: "[wrp-files...] --limit N"
+---
 # Batch Execute WRP (Mass Chapter Production)
+
+**No-argument behavior:** If no argument is given: list the WRPs in `05-wrp/` and stop (the --limit guard applies regardless).
 
 **Target WRPs:** $ARGUMENTS
 

@@ -1,4 +1,12 @@
+---
+description: Set up story documents for a configured project
+argument-hint: "[section (optional)]"
+---
 # setup-story
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: review all story documents for gaps.
 
 Set up, maintain, and grow your story's canonical reference. This single command covers three jobs: initialize the story compendium, manage and update it as canon evolves, and add character profiles.
 

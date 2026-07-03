@@ -1,4 +1,10 @@
+---
+description: Import a workshop transcript into project documents
+argument-hint: "[transcript-file]"
+---
 # Workshop Ingestion (Transcript to Project Pipeline)
+
+**No-argument behavior:** If no argument is given: list transcript candidates in `03-Resources/` and stop.
 
 **Input Transcript:** $ARGUMENTS
 

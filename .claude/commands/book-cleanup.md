@@ -1,4 +1,9 @@
+---
+description: Archive drafts and organize project files
+---
 # book-cleanup
+
+**No-argument behavior:** Takes no arguments; operates on the whole project.
 
 Performs deep cleaning of book project files, archiving redundant content while preserving quality data in STORY_COMPENDIUM.
 

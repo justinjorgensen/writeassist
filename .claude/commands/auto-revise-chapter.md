@@ -1,4 +1,10 @@
+---
+description: Apply review fixes to a chapter via the confidence ladder, one git worktree per pass
+argument-hint: "[chapter-file]"
+---
 # Auto-Revise Chapter (Intelligent Revision System)
+
+**No-argument behavior:** If no argument is given: use the most recent REVISE decision in `.claude/state/reviews/`; if none, list chapters in `02-Manuscript/` and stop.
 
 **Fix Queue:** $ARGUMENTS
 

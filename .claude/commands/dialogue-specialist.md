@@ -1,4 +1,13 @@
+---
+description: Focused dialogue review of a chapter
+argument-hint: "[chapter-file]"
+allowed-tools: Read, Grep, Glob, Task
+---
 # dialogue-specialist
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: list chapters in `02-Manuscript/` and stop.
 
 Ensure character dialogue remains distinct, authentic, and true to each character's voice, education, and development.
 

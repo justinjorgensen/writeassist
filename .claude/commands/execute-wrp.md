@@ -1,4 +1,10 @@
+---
+description: Write a chapter from its WRP with the automated review and revision pipeline
+argument-hint: "[wrp-file-or-name]"
+---
 # Execute WRP (Write Chapter from Plan)
+
+**No-argument behavior:** If no argument is given: list the WRPs in `05-wrp/` and stop.
 
 **WRP File:** $ARGUMENTS
 

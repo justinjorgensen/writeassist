@@ -1,4 +1,12 @@
+---
+description: Write an individual scene
+argument-hint: "[scene-description]"
+---
 # write-scene
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: ask which chapter and scene to write.
 
 Quickly write or revise individual scenes without requiring a full WRP structure.
 

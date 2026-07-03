@@ -1,4 +1,10 @@
+---
+description: Create a detailed chapter blueprint (WRP), gated by plan mode
+argument-hint: "[chapter-number]"
+---
 # Generate WRP (Writing Requirements Plan)
+
+**No-argument behavior:** If no argument is given: list outline chapters lacking WRPs and stop.
 
 **Chapter/Section:** $ARGUMENTS
 

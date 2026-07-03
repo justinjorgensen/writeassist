@@ -1,4 +1,11 @@
+---
+description: Run the parallel critic panel on a chapter and gate per review-engine.md
+argument-hint: "[chapter-file]"
+allowed-tools: Read, Grep, Glob, Task, Write
+---
 # Review Chapter - Parallel Multi-Critic Analysis
+
+**No-argument behavior:** If no argument is given: list chapters in `02-Manuscript/` and stop. (Write access is only for saving the report to `.claude/state/reviews/`.)
 
 **Target Chapter:** $ARGUMENTS
 
