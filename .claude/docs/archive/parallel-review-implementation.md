@@ -126,7 +126,7 @@ Task(
     prompt="""
     Review [Chapter X] for prose quality:
     
-    1. CRITICAL: Check for ANY em dashes (—). Even ONE is a violation.
+    1. CRITICAL: Check for ANY em dashes (U+2014). Even ONE is a violation.
     2. Evaluate prose rhythm and flow
     3. Check voice consistency with established style
     4. Identify filter words (felt, saw, heard)
