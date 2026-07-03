@@ -1,0 +1,5 @@
+# WriteAssist transient state
+.claude/state/
+.worktrees/
+*-backup-*.md
+archive/

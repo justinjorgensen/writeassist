@@ -1,0 +1,3801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WriteAssist | AI-Powered Writing Framework</title>
+    <link rel="icon" type="image/x-icon" href="00-Assets/writeAssist.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Primary Accent - Deep Blue/Navy (trust, intelligence, stability) */
+            --primary: #1e3a8a;
+            --primary-dark: #1e293b;
+            --primary-light: #3b82f6;
+            --primary-lighter: #60a5fa;
+
+            /* Secondary Accent - Teal (calming, modern, highlights) */
+            --secondary: #14b8a6;
+            --secondary-dark: #0d9488;
+            --secondary-darker: #0f766e;
+            --secondary-light: #5eead4;
+
+            /* Tertiary Accent - Coral (creativity, energy, CTAs) */
+            --accent: #f97316;
+            --accent-light: #fb923c;
+            --accent-lighter: #fdba74;
+            --accent-dark: #ea580c;
+
+            /* Additional Accents */
+            --lavender: #a78bfa;
+            --amber: #fbbf24;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --success: #14b8a6;
+
+            /* Dark Mode - Color Layering with 4 shades */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1f1f1f;
+            --bg-quaternary: #2a2a2a;
+            --bg-card: #1a1a1a;
+            --bg-card-hover: #242424;
+            --bg-interactive: #2d2d2d;
+
+            /* Softer text colors - lighter when bg is lighter */
+            --text-primary: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --text-tertiary: #737373;
+
+            --border: rgba(255, 255, 255, 0.12);
+            --border-light: rgba(255, 255, 255, 0.06);
+
+            /* Gradients with proper depth */
+            --gradient-primary: linear-gradient(to bottom, #2563eb, #1e40af);
+            --gradient-secondary: linear-gradient(to bottom, #14b8a6, #0d9488);
+            --gradient-accent: linear-gradient(to bottom, #f97316, #ea580c);
+            --gradient-dark: linear-gradient(to bottom, #141414, #0a0a0a);
+            --gradient-success: linear-gradient(to bottom, #14b8a6, #059669);
+
+            /* Shadow System - Two-layer shadows */
+            --shadow-small: inset 0 1px 0 rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.1);
+            --shadow-medium: inset 0 1px 0 rgba(255,255,255,0.15), 0 3px 6px rgba(0,0,0,0.15);
+            --shadow-large: inset 0 2px 0 rgba(255,255,255,0.2), 0 6px 12px rgba(0,0,0,0.2);
+            --shadow-glow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 20px rgba(20, 184, 166, 0.3);
+
+            /* Responsive spacing - scales naturally */
+            --gap-xs: clamp(0.25rem, 1vw, 0.5rem);
+            --gap-sm: clamp(0.5rem, 2vw, 1rem);
+            --gap-md: clamp(1rem, 3vw, 1.5rem);
+            --gap-lg: clamp(1.5rem, 4vw, 2rem);
+            --gap-xl: clamp(2rem, 5vw, 3rem);
+
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            /* Light Mode - Color Layering with 4 shades */
+            --bg-primary: #f8f7f4;
+            --bg-secondary: #efede8;
+            --bg-tertiary: #e5e2db;
+            --bg-quaternary: #dcd8cf;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f3f1ee;
+            --bg-interactive: #e8e5dd;
+
+            /* High-contrast text - darker when bg is darker */
+            --text-primary: #1a1a1a;
+            --text-secondary: #525252;
+            --text-tertiary: #737373;
+
+            --border: rgba(0, 0, 0, 0.1);
+            --border-light: rgba(0, 0, 0, 0.05);
+
+            /* Shadow System for light theme */
+            --shadow-small: inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-medium: inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px rgba(0,0,0,0.12);
+            --shadow-large: inset 0 2px 0 rgba(255,255,255,1), 0 6px 16px rgba(0,0,0,0.15);
+            --shadow-glow: inset 0 1px 0 rgba(255,255,255,0.8), 0 0 20px rgba(20, 184, 166, 0.2);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 6px;
+            border: 3px solid var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(ellipse at 50% 20%, rgba(20, 184, 166, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 1200px;
+            animation: fadeInUp 1s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            filter: drop-shadow(0 10px 40px rgba(20, 184, 166, 0.3));
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.9;
+            transition: var(--transition);
+        }
+        
+        .hero-logo:hover img {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+        
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: var(--gap-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--gap-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .btn-secondary {
+            background: var(--bg-interactive);
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-small);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+            box-shadow: var(--shadow-medium);
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--gap-md);
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+        
+        .nav-logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            opacity: 0.9;
+            transition: var(--transition);
+        }
+        
+        .nav-logo:hover img {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .nav-logo span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--gap-lg);
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-small);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        /* Main Content - Responsive Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        section {
+            margin-bottom: clamp(4rem, 8vw, 6rem);
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--gap-xl);
+        }
+
+        .section-label {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: var(--gap-md);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Cards Grid - Responsive Layout */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+            gap: var(--gap-lg);
+            margin-top: var(--gap-xl);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-large);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: var(--gap-md);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .card-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(20, 184, 166, 0.1);
+            color: var(--primary-light);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+        }
+        
+        /* Features Section - Responsive Layout */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            gap: var(--gap-lg);
+            margin-top: var(--gap-xl);
+        }
+
+        .feature {
+            text-align: center;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature:hover {
+            transform: scale(1.05);
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .feature h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .feature p {
+            color: var(--text-secondary);
+        }
+        
+        /* Agents Section */
+        .agents-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+        
+        .agent-tabs {
+            display: flex;
+            gap: var(--gap-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--gap-xl);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-small);
+        }
+
+        .tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
+            gap: var(--gap-lg);
+        }
+
+        .agent-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .agent-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .agent-card:hover::after {
+            opacity: 1;
+        }
+        
+        .agent-card.expanded {
+            grid-column: span 2;
+        }
+        
+        .agent-category {
+            font-size: 0.75rem;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .agent-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .agent-role {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .agent-details {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .agent-card.expanded .agent-details {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .agent-expertise-list {
+            margin: 1rem 0;
+        }
+        
+        .agent-expertise-list h5 {
+            color: var(--primary-light);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .agent-expertise-list ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .agent-expertise-list li {
+            padding: 0.25rem 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .agent-expertise-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        .agent-usage {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .agent-usage-title {
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .agent-usage code {
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+        }
+        
+        /* Sample Workflow Section */
+        .workflow-sample {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: clamp(2rem, 4vw, 3rem);
+            margin: var(--gap-xl) 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .workflow-sample::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-success);
+        }
+        
+        .workflow-timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+        
+        .workflow-timeline::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-primary);
+        }
+        
+        .workflow-item {
+            position: relative;
+            margin-bottom: 2rem;
+            animation: slideInLeft 0.5s ease;
+        }
+        
+        .workflow-item::before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            border: 4px solid var(--bg-secondary);
+        }
+        
+        .workflow-item.complete::before {
+            background: var(--gradient-success);
+        }
+        
+        .workflow-item h4 {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .workflow-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .workflow-time {
+            color: var(--primary-light);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .workflow-agent {
+            color: var(--accent);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .workflow-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .workflow-command {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 0.5rem;
+        }
+        
+        .workflow-command code {
+            color: var(--primary-light);
+            font-family: 'JetBrains Mono', monospace;
+            display: block;
+        }
+        
+        .workflow-result {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            color: var(--accent);
+        }
+        
+        /* Workflow Section - Responsive Layout */
+        .workflow-container {
+            padding: var(--gap-xl) 0;
+        }
+
+        .workflow-step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: var(--gap-lg);
+            margin-bottom: var(--gap-xl);
+            align-items: start;
+        }
+
+        .workflow-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: var(--shadow-glow);
+            margin: 0 auto;
+        }
+        
+        .workflow-content {
+            padding: 0;
+        }
+        
+        .workflow-content h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .workflow-content p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            overflow-x: auto;
+            margin: var(--gap-md) 0;
+            position: relative;
+            box-shadow: var(--shadow-medium);
+        }
+
+        pre::before {
+            content: 'CODE';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            box-shadow: var(--shadow-small);
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        /* Stats Section - Responsive Layout */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+            gap: var(--gap-lg);
+            margin: var(--gap-xl) 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            padding: clamp(1rem, 2vw, 1.5rem);
+            margin: var(--gap-lg) 0;
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .info-box h5 {
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .info-box p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: clamp(3rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem) var(--gap-lg);
+            margin-top: clamp(6rem, 10vw, 8rem);
+            text-align: center;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+        
+        .footer-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+        }
+        
+        .footer-copyright {
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+        
+        /* Responsive Design - Reorganizes Layout */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                flex-direction: column;
+                padding: var(--gap-md);
+                box-shadow: var(--shadow-large);
+            }
+
+            .nav-links.mobile-active {
+                display: flex;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+
+            .cards-grid,
+            .agents-grid,
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .agent-card.expanded {
+                grid-column: span 1;
+            }
+
+            .workflow-step {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: var(--gap-md);
+            }
+
+            .workflow-number {
+                margin: 0 auto var(--gap-md);
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease;
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.8s ease;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="00-Assets/writeassist.png" alt="WriteAssist Logo">
+                <span>WriteAssist</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#review-system">Review System</a></li>
+                <li><a href="#core-files">Core Files</a></li>
+                <li><a href="#agents">Agents</a></li>
+                <li><a href="#commands">Commands</a></li>
+                <li><a href="#sample">Sample</a></li>
+                <li><a href="#workshop-workflow">Workshop</a></li>
+                <li><a href="#workflow">Workflow</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+            </ul>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-logo">
+                <img src="00-Assets/writeassist.png" alt="WriteAssist Logo">
+            </div>
+            <h1 style="margin-bottom: 0;">WriteAssist</h1>
+            <p class="hero-subtitle" style="font-size: 1.75rem; margin-top: -0.5rem;">AI-Powered Writing Framework</p>
+            
+            <div class="stats" style="margin: 2rem auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+                <div class="stat">
+                    <div class="stat-number">27</div>
+                    <div class="stat-label">AI Agents</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">Commands</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Workflow Phases</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Genres Supported</div>
+                </div>
+            </div>
+            
+            <div class="hero-buttons">
+                <a href="#quickstart" class="btn btn-primary">
+                    <span>🚀</span> Get Started
+                </a>
+                <a href="#sample" class="btn btn-secondary">
+                    <span>👁️</span> See It In Action
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="container">
+        <div class="section-header">
+            <span class="section-label">Framework</span>
+            <h2>Complete Writing Toolkit</h2>
+            <p class="section-description">Professional tools for writing, editing, and publishing your book</p>
+        </div>
+        
+        <div class="features" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="feature">
+                <span class="feature-icon">🤖</span>
+                <h4>27 Specialized Agents</h4>
+                <p>Expert AI agents for every aspect of writing</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">⚙️</span>
+                <h4>24 Commands</h4>
+                <p>Complete toolkit from planning to publishing</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📚</span>
+                <h4>Smart Story Compendium</h4>
+                <p>Auto-updating master reference system</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <h4>Batch Operations</h4>
+                <p>Process multiple chapters simultaneously</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔄</span>
+                <h4>Version Control</h4>
+                <p>Track revisions and compare drafts</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📖</span>
+                <h4>Series Management</h4>
+                <p>Multi-book continuity and planning</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔗</span>
+                <h4>Transition Continuity</h4>
+                <p>Proactive chapter-to-chapter flow management</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🎯</span>
+                <h4>Smart Review</h4>
+                <p>Content-aware agent selection saves 78% tokens</p>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">✅</span>
+                <h4>Auto Quality Pipeline</h4>
+                <p>8.0+ scores guaranteed through iteration</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Review System Section -->
+    <section id="review-system" class="container">
+        <div class="section-header">
+            <span class="section-label">Review System</span>
+            <h2>Automated Review & Quality Control</h2>
+            <p class="section-description">Parallel AI analysis with intelligent auto-fixing and content-aware optimization</p>
+        </div>
+        
+        <div class="info-box" style="background: linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%); border: 2px solid rgba(30, 58, 138, 0.3); margin-bottom: 2rem;">
+            <h3 style="color: #1e3a8a; margin-bottom: 1rem;">🎯 Automated Quality Assurance</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">The review system deploys <strong>10 specialized agents in parallel</strong> to analyze every aspect of your chapter, then automatically revises any issues scoring below 8.0/10.</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 3rem;">
+            <div class="card" style="background: rgba(30, 58, 138, 0.05); border: 1px solid rgba(30, 58, 138, 0.3);">
+                <h3>📊 review-chapter Command</h3>
+                <h4 style="color: var(--primary-light); margin-bottom: 1rem;">Multi-Agent Parallel Analysis</h4>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">10 Agents Score Simultaneously:</h5>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.9rem;">
+                        <div>• <strong>Style & Prose</strong> (15%)</div>
+                        <div>• <strong>Pacing & Flow</strong> (15%)</div>
+                        <div>• <strong>Characters</strong> (15%)</div>
+                        <div>• <strong>Dialogue</strong> (10%)</div>
+                        <div>• <strong>Continuity</strong> (10%) <span style="color: var(--accent);">NEW v2.1</span></div>
+                        <div>• <strong>Emotional Impact</strong> (10%)</div>
+                        <div>• <strong>Themes</strong> (10%)</div>
+                        <div>• <strong>Plot</strong> (5%)</div>
+                        <div>• <strong>Immersion</strong> (5%)</div>
+                        <div>• <strong>Rules</strong> (5%)</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(249, 115, 22, 0.15); border-left: 3px solid var(--accent); border-radius: 4px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.2rem;">✨</span>
+                        <strong style="color: var(--accent);">NEW: Character Introduction Detection (v2.1)</strong>
+                    </div>
+                    <p style="font-size: 0.9rem;">Continuity critic now validates character introductions. Family members and important characters must be introduced with <strong>name + context</strong> on first appearance, not generic references like "his daughter".</p>
+                </div>
+                
+                <div style="background: rgba(20, 184, 166, 0.1); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.5rem;">⚡</span>
+                        <strong>Automatic Trigger</strong>
+                    </div>
+                    <p style="font-size: 0.9rem;">Any score below 8.0 automatically generates a fix queue with specific, line-by-line improvements</p>
+                </div>
+                
+                <div class="code-block" style="margin-top: 1rem;">
+                    <code>"Review Chapter 7 and identify all issues"</code>
+                </div>
+            </div>
+            
+            <div class="card" style="background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(249, 115, 22, 0.3);">
+                <h3>🔧 auto-revise-chapter Command</h3>
+                <h4 style="color: #f97316; margin-bottom: 1rem;">Intelligent Revision System</h4>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">Confidence-Based Automation:</h5>
+                    <div style="font-size: 0.9rem;">
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong style="color: var(--accent);">100% Confidence (CRITICAL)</strong><br>
+                            <span style="font-weight: bold;">EM DASH REMOVAL (all replaced)</span><br>
+                            <span style="color: var(--text-tertiary);">→ Zero tolerance enforcement</span>
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong style="color: var(--secondary);">95%+ Confidence</strong><br>
+                            Grammar, punctuation, spelling<br>
+                            <span style="color: var(--text-tertiary);">→ Fully automated</span>
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong style="color: var(--primary);">90-95% Confidence</strong><br>
+                            Filter words, passive voice, style<br>
+                            <span style="color: var(--text-tertiary);">→ Semi-automated with markers</span>
+                        </div>
+                        <div>
+                            <strong style="color: var(--text-secondary);">85-90% Confidence</strong><br>
+                            Sensory details, transitions<br>
+                            <span style="color: var(--text-tertiary);">→ Assisted with suggestions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(30, 58, 138, 0.1); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.5rem;">🛡️</span>
+                        <strong>Safety Features</strong>
+                    </div>
+                    <ul style="font-size: 0.9rem; list-style: none; padding-left: 0;">
+                        <li>✓ Automatic backups created</li>
+                        <li>✓ Changes marked for review</li>
+                        <li>✓ Full rollback available</li>
+                        <li>✓ Voice & style preserved</li>
+                    </ul>
+                </div>
+                
+                <div class="code-block" style="margin-top: 1rem;">
+                    <code>"Auto-fix Chapter 7 review issues"</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="workflow-example" style="background: linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%); border: 2px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 3rem;">
+            <h3 style="margin-bottom: 1.5rem;">🎬 Real-World Example: Chapter 7 Transformation</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; text-align: center;">
+                <div>
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">📝</div>
+                    <h4>Initial Review</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">First draft completed</p>
+                    <div style="background: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
+                        <strong style="color: var(--accent);">Scores Below Target</strong><br>
+                        <span style="font-size: 0.85rem;">Prose: 7.2 | Dialogue: 6.8</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚡</div>
+                    <h4>Auto-Fix Applied</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">5 minutes processing</p>
+                    <div style="background: rgba(245, 158, 11, 0.1); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
+                        <strong style="color: #f59e0b;">156 Fixes Applied</strong><br>
+                        <span style="font-size: 0.85rem;">Grammar: 42 | Style: 68 | Flow: 46</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">✨</div>
+                    <h4>Final Result</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Quality threshold achieved</p>
+                    <div style="background: rgba(20, 184, 166, 0.1); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
+                        <strong style="color: #14b8a6;">All Scores Pass!</strong><br>
+                        <span style="font-size: 0.85rem;">Prose: 8.5 | Dialogue: 8.3</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <p style="font-size: 1.1rem; color: var(--primary-light);"><strong>Processing Time: ~5 minutes</strong> for complete revision</p>
+                <p style="color: var(--text-secondary);">Automated revision process applies 100+ fixes based on review scores</p>
+            </div>
+        </div>
+        
+        <div class="info-box" style="background: rgba(20, 184, 166, 0.1); border: 1px solid rgba(20, 184, 166, 0.3);">
+            <h5>🚀 Automated Excellence: The Execute-WRP Pipeline</h5>
+            <p><code>execute-wrp</code> includes the complete quality pipeline automatically! It writes your chapter, runs review-chapter with 10 parallel agents, applies auto-revise-chapter for any scores below 8.0, and iterates until your chapter is publication-ready. No manual intervention needed - just provide the WRP and receive a polished chapter scoring 8.0+ across all metrics.</p>
+        </div>
+        
+        <div class="workflow-diagram" style="background: linear-gradient(135deg, rgba(30, 58, 138, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%); border: 2px solid var(--border); border-radius: 12px; padding: 2rem; margin: 2rem 0;">
+            <h4 style="text-align: center; margin-bottom: 2rem; color: var(--primary-light);">The Automated Pipeline Flow</h4>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                <div style="text-align: center; flex: 1; min-width: 150px;">
+                    <div style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: 8px; padding: 1rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📝</div>
+                        <strong>execute-wrp</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Writes from WRP</div>
+                    </div>
+                </div>
+                
+                <div style="color: var(--primary); font-size: 2rem;">→</div>
+                
+                <div style="text-align: center; flex: 1; min-width: 150px;">
+                    <div style="background: var(--bg-card); border: 2px solid #f97316; border-radius: 8px; padding: 1rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                        <strong>review-chapter</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">10 agents analyze</div>
+                    </div>
+                </div>
+                
+                <div style="color: #f97316; font-size: 2rem;">→</div>
+                
+                <div style="text-align: center; flex: 1; min-width: 150px;">
+                    <div style="background: var(--bg-card); border: 2px solid #f59e0b; border-radius: 8px; padding: 1rem; position: relative;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔧</div>
+                        <strong>auto-revise-chapter</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">If any < 8.0</div>
+                        <div style="position: absolute; top: -10px; right: -10px; background: #f59e0b; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">🔄</div>
+                    </div>
+                </div>
+                
+                <div style="color: #f59e0b; font-size: 2rem;">→</div>
+                
+                <div style="text-align: center; flex: 1; min-width: 150px;">
+                    <div style="background: var(--bg-card); border: 2px solid #14b8a6; border-radius: 8px; padding: 1rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">✨</div>
+                        <strong>Chapter Ready!</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">All scores ≥ 8.0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                <div style="display: inline-block; background: rgba(20, 184, 166, 0.2); border: 1px solid #14b8a6; border-radius: 8px; padding: 0.75rem 1.5rem;">
+                    <strong style="color: #14b8a6;">🎯 Zero Manual Intervention</strong>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Iterates automatically until quality threshold achieved (max 5 iterations)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Advanced Features Section -->
+    <section id="advanced-features" class="container">
+        <div class="section-header">
+            <span class="section-label">Advanced Features</span>
+            <h2>Intelligent Optimization</h2>
+            <p class="section-description">Smart systems that reduce token usage and ensure continuity</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 3rem;">
+            <div class="card" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(20, 184, 166, 0.3);">
+                <h3>🎯 smart-review Command</h3>
+                <h4 style="color: #14b8a6; margin-bottom: 1rem;">Content-Aware Agent Selection</h4>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">How It Works:</h5>
+                    <ol style="font-size: 0.9rem; padding-left: 1.5rem;">
+                        <li>Analyzes chapter content characteristics</li>
+                        <li>Calculates dialogue percentage, action intensity</li>
+                        <li>Selects only relevant agents (4-8 instead of 10)</li>
+                        <li>Runs targeted review with clean contexts</li>
+                    </ol>
+                </div>
+                
+                <div style="background: rgba(59, 130, 246, 0.1); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.5rem;">📊</span>
+                        <strong>Performance Metrics</strong>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        <div>• <strong>78% token reduction</strong> vs full review</div>
+                        <div>• <strong>29% faster processing</strong></div>
+                        <div>• <strong>Same quality scores</strong> achieved</div>
+                        <div>• <strong>Lower API costs</strong> per chapter</div>
+                    </div>
+                </div>
+                
+                <div class="code-block" style="margin-top: 1rem;">
+                    <code>"Smart review Chapter 7 for dialogue-heavy scenes"</code>
+                </div>
+            </div>
+            
+            <div class="card" style="background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(245, 158, 11, 0.3);">
+                <h3>🔗 validate-transitions Command</h3>
+                <h4 style="color: #f59e0b; margin-bottom: 1rem;">Chapter-to-Chapter Continuity</h4>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">What It Validates:</h5>
+                    <div style="font-size: 0.9rem;">
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong>Event Acknowledgment</strong><br>
+                            <span style="color: var(--text-tertiary);">Major events must have consequences</span>
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong>Physical Continuity</strong><br>
+                            <span style="color: var(--text-tertiary);">Character positions, injuries, equipment</span>
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong>Timeline Consistency</strong><br>
+                            <span style="color: var(--text-tertiary);">Time progression must be logical</span>
+                        </div>
+                        <div>
+                            <strong>Emotional Threading</strong><br>
+                            <span style="color: var(--text-tertiary);">Character states carry forward</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.5rem;">🚨</span>
+                        <strong>Example Issue Caught</strong>
+                    </div>
+                    <div style="font-size: 0.85rem;">
+                        Ch 2 ends: "EMP detonated, electronics dead"<br>
+                        Ch 3 starts: Electronics working normally<br>
+                        <strong style="color: #ef4444;">→ CRITICAL ERROR FLAGGED</strong>
+                    </div>
+                </div>
+                
+                <div class="code-block" style="margin-top: 1rem;">
+                    <code>"Validate transitions between Chapters 2 and 3"</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%); border: 2px solid rgba(30, 58, 138, 0.3);">
+            <h3 style="margin-bottom: 1rem;">🔄 Proactive Transition Management</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">The framework now <strong>proactively prevents continuity errors</strong> during the writing process:</p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
+                <div>
+                    <h4 style="color: var(--primary-light); margin-bottom: 0.5rem;">During WRP Generation:</h4>
+                    <ul style="font-size: 0.9rem; list-style: none; padding-left: 0;">
+                        <li>✓ Reads last 300 words of previous chapter</li>
+                        <li>✓ Creates transition context section</li>
+                        <li>✓ Plans appropriate opening strategy</li>
+                        <li>✓ Handles POV switches intelligently</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--primary-light); margin-bottom: 0.5rem;">During Chapter Writing:</h4>
+                    <ul style="font-size: 0.9rem; list-style: none; padding-left: 0;">
+                        <li>✓ Verifies WRP transition requirements</li>
+                        <li>✓ Maintains continuity naturally</li>
+                        <li>✓ Acknowledges events appropriately</li>
+                        <li>✓ Tracks unresolved threads</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Core Files Section -->
+    <section id="core-files" class="container">
+        <div class="section-header">
+            <span class="section-label">Foundation</span>
+            <h2>Core Configuration Files</h2>
+            <p class="section-description">The essential files that configure and control your entire writing ecosystem</p>
+        </div>
+        
+        <div class="info-box" style="margin-bottom: 3rem;">
+            <h5>🔗 How They Work Together</h5>
+            <p>These three files form the foundation of WriteAssist. <strong>Author-rules</strong> defines your boundaries, <strong>story-compendium</strong> holds your content, and <strong>project-config</strong> configures AI behavior for your specific project. Together, they ensure every agent and command works in harmony with your vision.</p>
+        </div>
+        
+        <div class="agents-grid" style="grid-template-columns: repeat(3, 1fr);">
+            
+            <!-- author-rules.md -->
+            <div class="agent-card" onclick="toggleAgent(this)">
+                <div class="agent-category">Constraints</div>
+                <div class="agent-name">author-rules.md</div>
+                <div class="agent-role">Your creative law book</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Your living manifesto that defines what must never happen in your story. <strong style="color: #ef4444;">CRITICAL: NO EM DASHES EVER (zero tolerance policy).</strong> Also bans head-hopping, deus ex machina, and other violations. Defines what to avoid unless justified (like dream sequences) and what to always include (like sensory grounding). It evolves based on lessons learned, creating an ever-smarter set of guardrails that keep your writing consistent and professional.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>How It Connects</h5>
+                        <p>Every AI agent reads this file FIRST before any task. When the rule-enforcer agent detects patterns, it suggests updates. Commands like generate-wrp and execute-wrp check rules before creating content. This ensures your creative vision is respected in every word written, making AI feel like a trained assistant who knows your preferences.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Updated By:</div>
+                        <code>update-rules command</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- story-compendium.md -->
+            <div class="agent-card" onclick="toggleAgent(this)">
+                <div class="agent-category">Reference</div>
+                <div class="agent-name">story-compendium.md</div>
+                <div class="agent-role">Your story's encyclopedia</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>The single source of truth for everything in your story world. It tracks every character's details and arc, maintains your timeline and chronology, documents all locations and settings, maps your plot structure, and records themes and symbols. As your story grows, this document grows with it, preventing continuity errors and forgotten details.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>How It Connects</h5>
+                        <p>Continuity-checker validates new content against it. Character-developer references it for voice consistency. World-builder adds new locations to it. Timeline-keeper updates chronology in it. Every writing command checks facts here before generating content. This is the master document that keeps your 300-page novel as consistent as a 3-page short story.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>WriteAssist/story-compendium.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- project-config.md -->
+            <div class="agent-card" onclick="toggleAgent(this)">
+                <div class="agent-category">Project Settings</div>
+                <div class="agent-name">project-config.md</div>
+                <div class="agent-role">Your project configuration</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Configures how AI agents behave in your specific project. It defines your genre, target audience, writing style preferences, and quality standards. It tells AI whether to write literary or commercial prose, how much description to include, what themes to emphasize, and how to handle sensitive topics. This makes AI adapt to YOUR voice rather than using generic responses.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>How It Connects</h5>
+                        <p>Every agent and command reads this after checking author-rules.md. Style-editor uses it to match your voice. Chapter-writer references it for tone. Market-analyst considers your audience settings. This configuration ensures that whether you're writing romance or horror, literary or commercial, the AI assistance matches your intended style and market.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Configures:</div>
+                        <code>All 23 AI agents</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box" style="margin-top: 3rem;">
+            <h5>💡 Best Practice</h5>
+            <p>Start by customizing <code>author-rules.md</code> with your specific constraints, fill out <code>story-compendium.md</code> with your story details, and fine-tune <code>project-config.md</code> for your genre, voice, and themes. These files are your control panel. The more detailed they are, the better your AI assistance becomes.</p>
+        </div>
+    </section>
+    
+    <!-- Agents Section -->
+    <section id="agents" class="container">
+        <div class="section-header">
+            <span class="section-label">AI Agents</span>
+            <h2>Your Writing Team</h2>
+            <p class="section-description">27 specialized AI agents working together to perfect your manuscript</p>
+        </div>
+        
+        <div class="info-box">
+            <h5>💡 Pro Tip</h5>
+            <p>Click on any agent card to see detailed information about their capabilities, expertise areas, and how to use them effectively in your writing process.</p>
+        </div>
+        
+        <div class="agents-tabs">
+            <button class="tab active" onclick="filterAgents('all')">All Agents</button>
+            <button class="tab" onclick="filterAgents('structure')">Story Structure</button>
+            <button class="tab" onclick="filterAgents('quality')">Quality Control</button>
+            <button class="tab" onclick="filterAgents('market')">Market & Publishing</button>
+        </div>
+        
+        <div class="agents-grid" id="agents-grid">
+            <!-- Story Structure Agents -->
+            <div class="agent-card" data-category="structure" onclick="toggleAgent(this)">
+                <div class="agent-category">Structure</div>
+                <div class="agent-name">story-architect</div>
+                <div class="agent-role">Plot structure & pacing master</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Three-act structure and variations</li>
+                            <li>Scene-level pacing and momentum</li>
+                            <li>Narrative tension and escalation</li>
+                            <li>Turning points and reversals</li>
+                            <li>Story promises and payoffs</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Creating story outlines</li>
+                            <li>Fixing sagging middles</li>
+                            <li>Restructuring plot problems</li>
+                            <li>Building page-turner momentum</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Review my outline for pacing issues"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="structure" onclick="toggleAgent(this)">
+                <div class="agent-category">Structure</div>
+                <div class="agent-name">world-builder</div>
+                <div class="agent-role">Setting & world consistency</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Geography and environments</li>
+                            <li>Cultural development</li>
+                            <li>Social structures and systems</li>
+                            <li>Technology/magic rules</li>
+                            <li>Economic and political systems</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Creating believable settings</li>
+                            <li>Maintaining world consistency</li>
+                            <li>Developing unique cultures</li>
+                            <li>Building immersive environments</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Develop the political system for my fantasy kingdom"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="structure" onclick="toggleAgent(this)">
+                <div class="agent-category">Structure</div>
+                <div class="agent-name">character-developer</div>
+                <div class="agent-role">Character depth & tracking</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Psychological realism</li>
+                            <li>Character arc development</li>
+                            <li>Relationship dynamics</li>
+                            <li>Voice differentiation</li>
+                            <li>Backstory integration</li>
+                            <li>Consistency tracking</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Creating 3D characters</li>
+                            <li>Tracking character details</li>
+                            <li>Building authentic relationships</li>
+                            <li>Ensuring character consistency</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Track Sarah's character development from chapters 1-10"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="structure" onclick="toggleAgent(this)">
+                <div class="agent-category">Structure</div>
+                <div class="agent-name">thematic-guide</div>
+                <div class="agent-role">Theme & symbolic meaning</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Thematic development</li>
+                            <li>Symbolic layering</li>
+                            <li>Metaphor integration</li>
+                            <li>Subtext creation</li>
+                            <li>Meaning without preaching</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Deepening story meaning</li>
+                            <li>Creating symbolic resonance</li>
+                            <li>Weaving themes naturally</li>
+                            <li>Avoiding heavy-handedness</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"How can I strengthen the redemption theme?"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quality Control Agents -->
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">continuity-checker</div>
+                <div class="agent-role">Master consistency validator</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Fact consistency across chapters</li>
+                            <li>Timeline verification</li>
+                            <li>Plot hole detection</li>
+                            <li>Object and prop tracking</li>
+                            <li>World rule enforcement</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Final consistency pass</li>
+                            <li>Story compendium validation</li>
+                            <li>Finding contradictions</li>
+                            <li>Tracking Chekhov's guns</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Check all chapters for consistency issues"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">timeline-keeper</div>
+                <div class="agent-role">Chronological accuracy</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Date and time tracking</li>
+                            <li>Age progression</li>
+                            <li>Travel time verification</li>
+                            <li>Cause and effect logic</li>
+                            <li>Historical accuracy</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Timeline verification</li>
+                            <li>Age calculations</li>
+                            <li>Ensuring logical progression</li>
+                            <li>Catching temporal errors</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Verify the timeline for all events in Book 1"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">rule-enforcer</div>
+                <div class="agent-role">Creative constraints guardian</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Author rules validation</li>
+                            <li>Constraint enforcement</li>
+                            <li>Violation detection</li>
+                            <li>Pattern recognition</li>
+                            <li>Rule evolution tracking</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Pre-writing rule checks</li>
+                            <li>Real-time violation flagging</li>
+                            <li>Post-task compliance audits</li>
+                            <li>Rule update suggestions</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Check Chapter 10 for rule violations"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">style-editor</div>
+                <div class="agent-role">Voice & punctuation enforcer</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li><strong style="color: #ef4444;">EM DASH ELIMINATION (zero tolerance)</strong></li>
+                            <li>Narrative voice consistency</li>
+                            <li>Prose rhythm and flow</li>
+                            <li>Tone maintenance</li>
+                            <li>Style coherence</li>
+                            <li>Readability optimization</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Maintaining consistent voice</li>
+                            <li>Improving prose quality</li>
+                            <li>Fixing style drift</li>
+                            <li>Enhancing readability</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Review Chapter 5 for voice consistency"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">grammar-clarity</div>
+                <div class="agent-role">Grammar & clarity expert</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Grammar correction</li>
+                            <li>Punctuation accuracy</li>
+                            <li>Sentence structure</li>
+                            <li>Clarity enhancement</li>
+                            <li>Technical precision</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Final grammar check</li>
+                            <li>Clarity improvements</li>
+                            <li>Fixing awkward phrasing</li>
+                            <li>Technical corrections</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Fix grammar and improve clarity in Chapter 8"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">dialogue-coach</div>
+                <div class="agent-role">Natural dialogue specialist</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Natural speech patterns</li>
+                            <li>Character voice distinction</li>
+                            <li>Subtext and implication</li>
+                            <li>Age-appropriate dialogue</li>
+                            <li>Dialect and regionalism</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Making dialogue authentic</li>
+                            <li>Differentiating character voices</li>
+                            <li>Adding subtext</li>
+                            <li>Fixing on-the-nose dialogue</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Make the dialogue between Tom and Sarah more natural"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Review</div>
+                <div class="agent-name">sensitivity-reviewer</div>
+                <div class="agent-role">Cultural authenticity</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Cultural representation</li>
+                            <li>Inclusive language</li>
+                            <li>Authentic diversity</li>
+                            <li>Avoiding stereotypes</li>
+                            <li>Respectful portrayal</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Reviewing diverse characters</li>
+                            <li>Checking cultural accuracy</li>
+                            <li>Ensuring respectful representation</li>
+                            <li>Avoiding harmful tropes</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Review my portrayal of Japanese culture in Chapter 6"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">content-analyzer</div>
+                <div class="agent-role">Content analysis for agent selection</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Dialogue percentage analysis</li>
+                            <li>Action intensity scoring</li>
+                            <li>Character presence detection</li>
+                            <li>World-building density measurement</li>
+                            <li>Emotional content evaluation</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Optimizing review efficiency</li>
+                            <li>Selecting relevant agents</li>
+                            <li>Filtering context for agents</li>
+                            <li>Reducing token usage by 78%</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Used automatically by smart-review command"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">transition-validator</div>
+                <div class="agent-role">Chapter-to-chapter continuity validation</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Event continuity checking</li>
+                            <li>Physical state tracking</li>
+                            <li>Timeline consistency</li>
+                            <li>Environmental continuity</li>
+                            <li>Emotional thread validation</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Validating chapter transitions</li>
+                            <li>Catching continuity errors</li>
+                            <li>Ensuring event consequences</li>
+                            <li>Tracking unresolved threads</li>
+                            <li>POV switch management</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"/validate-transitions chapters 2-3"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Market & Publishing Agents -->
+            <div class="agent-card" data-category="market" onclick="toggleAgent(this)">
+                <div class="agent-category">Market</div>
+                <div class="agent-name">market-analyst</div>
+                <div class="agent-role">Market research & positioning</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Market positioning</li>
+                            <li>Comp title analysis</li>
+                            <li>Target audience identification</li>
+                            <li>Genre conventions</li>
+                            <li>Commercial viability</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Finding your market niche</li>
+                            <li>Selecting comp titles</li>
+                            <li>Understanding your audience</li>
+                            <li>Commercial positioning</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Analyze the market for my psychological thriller"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="market" onclick="toggleAgent(this)">
+                <div class="agent-category">Market</div>
+                <div class="agent-name">publisher-desk</div>
+                <div class="agent-role">Submission strategy</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Agent research</li>
+                            <li>Publisher preferences</li>
+                            <li>Submission timing</li>
+                            <li>Query requirements</li>
+                            <li>Market trends</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Creating submission strategy</li>
+                            <li>Finding right agents</li>
+                            <li>Targeting publishers</li>
+                            <li>Timing submissions</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Create a submission strategy for literary agents"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="market" onclick="toggleAgent(this)">
+                <div class="agent-category">Market</div>
+                <div class="agent-name">query-coach</div>
+                <div class="agent-role">Query & pitch materials</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Query letter structure</li>
+                            <li>Hook creation</li>
+                            <li>Synopsis writing</li>
+                            <li>Elevator pitches</li>
+                            <li>Bio crafting</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Writing query letters</li>
+                            <li>Creating compelling hooks</li>
+                            <li>Crafting synopses</li>
+                            <li>Pitch preparation</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Write a query letter for my romance novel"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="market" onclick="toggleAgent(this)">
+                <div class="agent-category">Market</div>
+                <div class="agent-name">marketing-strategist</div>
+                <div class="agent-role">Marketing campaigns</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Social media strategy</li>
+                            <li>Book launch planning</li>
+                            <li>Author platform building</li>
+                            <li>Reader engagement</li>
+                            <li>Promotional campaigns</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Planning book launches</li>
+                            <li>Building author platform</li>
+                            <li>Social media strategy</li>
+                            <li>Reader outreach</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Create a 3-month pre-launch marketing plan"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="market" onclick="toggleAgent(this)">
+                <div class="agent-category">Market</div>
+                <div class="agent-name">critic-sim</div>
+                <div class="agent-role">Review prediction</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Critical analysis</li>
+                            <li>Literary merit assessment</li>
+                            <li>Review prediction</li>
+                            <li>Weakness identification</li>
+                            <li>Reception forecasting</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Predicting critical reception</li>
+                            <li>Finding potential criticisms</li>
+                            <li>Strengthening weak areas</li>
+                            <li>Preparing for reviews</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Simulate critical reviews for my manuscript"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="market" onclick="toggleAgent(this)">
+                <div class="agent-category">Market</div>
+                <div class="agent-name">adaptation-scout</div>
+                <div class="agent-role">Film/TV potential</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Visual storytelling potential</li>
+                            <li>Screenplay structure</li>
+                            <li>Production viability</li>
+                            <li>Adaptation requirements</li>
+                            <li>Cross-media appeal</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Assessing adaptation potential</li>
+                            <li>Writing cinematically</li>
+                            <li>Creating visual scenes</li>
+                            <li>Film/TV positioning</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Evaluate my book's potential for Netflix adaptation"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Enhanced Agents -->
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">research-assistant</div>
+                <div class="agent-role">Fact-checking & research</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Historical accuracy</li>
+                            <li>Scientific fact-checking</li>
+                            <li>Cultural authenticity</li>
+                            <li>Geographic verification</li>
+                            <li>Anachronism detection</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Period piece accuracy</li>
+                            <li>Technical detail verification</li>
+                            <li>World-building research</li>
+                            <li>Fact compilation</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Research 1920s Chicago for my prohibition novel"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">beta-reader-sim</div>
+                <div class="agent-role">Reader perspective simulator</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Genre fan expectations</li>
+                            <li>Engagement prediction</li>
+                            <li>Confusion point detection</li>
+                            <li>Emotional response mapping</li>
+                            <li>DNF risk assessment</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Testing reader reactions</li>
+                            <li>Finding weak spots</li>
+                            <li>Predicting reviews</li>
+                            <li>Audience fit verification</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Simulate YA reader response to Chapter 1"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="structure" onclick="toggleAgent(this)">
+                <div class="agent-category">Structure</div>
+                <div class="agent-name">series-coordinator</div>
+                <div class="agent-role">Multi-book continuity</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Cross-book continuity</li>
+                            <li>Series arc management</li>
+                            <li>Character evolution tracking</li>
+                            <li>Foreshadowing coordination</li>
+                            <li>Timeline alignment</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Planning trilogies</li>
+                            <li>Managing series arcs</li>
+                            <li>Tracking plot threads</li>
+                            <li>Preventing contradictions</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Plan character arcs for 5-book fantasy series"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">voice-consistency</div>
+                <div class="agent-role">Voice & tone guardian</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Narrative voice consistency</li>
+                            <li>Character voice tracking</li>
+                            <li>POV maintenance</li>
+                            <li>Tone management</li>
+                            <li>Style uniformity</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Maintaining POV</li>
+                            <li>Character voice distinction</li>
+                            <li>Narrative consistency</li>
+                            <li>Genre tone adherence</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Check voice consistency across all chapters"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="quality" onclick="toggleAgent(this)">
+                <div class="agent-category">Quality</div>
+                <div class="agent-name">pacing-master</div>
+                <div class="agent-role">Rhythm & tension control</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Scene pacing analysis</li>
+                            <li>Tension curve management</li>
+                            <li>Reader engagement tracking</li>
+                            <li>Chapter rhythm optimization</li>
+                            <li>Cliffhanger placement</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Fixing slow sections</li>
+                            <li>Building tension</li>
+                            <li>Page-turner quality</li>
+                            <li>Climax pacing</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Analyze and fix pacing in Act 2"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="structure" onclick="toggleAgent(this)">
+                <div class="agent-category">Structure</div>
+                <div class="agent-name">twist-engineer</div>
+                <div class="agent-role">Plot twist architect</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Twist design & planting</li>
+                            <li>Red herring placement</li>
+                            <li>Foreshadowing balance</li>
+                            <li>Reveal timing</li>
+                            <li>Reader misdirection</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Creating plot twists</li>
+                            <li>Planting clues</li>
+                            <li>Building mystery</li>
+                            <li>Surprise endings</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>"Design major plot twist for Chapter 20"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Optimization Agents -->
+            <div class="agent-card" data-category="system" onclick="toggleAgent(this)">
+                <div class="agent-category">System</div>
+                <div class="agent-name">meta-coordinator</div>
+                <div class="agent-role">Master orchestrator for multi-agent routing</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Dynamic agent selection</li>
+                            <li>Task routing optimization</li>
+                            <li>Parallel execution management</li>
+                            <li>Resource allocation</li>
+                            <li>Performance monitoring</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Complex multi-step operations</li>
+                            <li>Optimizing agent combinations</li>
+                            <li>Reducing token usage</li>
+                            <li>Managing workflow efficiency</li>
+                            <li>Coordinating batch operations</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>Automatically coordinates agent selection</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="system" onclick="toggleAgent(this)">
+                <div class="agent-category">System</div>
+                <div class="agent-name">context-filter</div>
+                <div class="agent-role">Context optimization for token efficiency</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Primary Expertise</h5>
+                        <ul>
+                            <li>Context preparation</li>
+                            <li>Token usage optimization</li>
+                            <li>Agent-specific filtering</li>
+                            <li>Information extraction</li>
+                            <li>Relevance scoring</li>
+                        </ul>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Best Used For</h5>
+                        <ul>
+                            <li>Reducing API costs</li>
+                            <li>Speeding up processing</li>
+                            <li>Clean context windows</li>
+                            <li>Targeted information delivery</li>
+                            <li>Batch operation efficiency</li>
+                        </ul>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Command:</div>
+                        <code>Works behind the scenes with smart-review</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Commands & Files Section -->
+    <section id="commands" class="container">
+        <div class="section-header">
+            <span class="section-label">Framework Components</span>
+            <h2>Commands & Files</h2>
+            <p class="section-description">Essential commands and files that power your writing workflow</p>
+        </div>
+        
+        <!-- Quick Command Preview -->
+        <div class="cards-grid" style="margin-bottom: 3rem;">
+            <div class="card">
+                <h3>📝 Planning Commands</h3>
+                <p style="margin-bottom: 1rem;">Structure your story from the ground up</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="card-badge">outline-book</div>
+                    <div class="card-badge">initialize-story-compendium</div>
+                    <div class="card-badge">create-character</div>
+                    <div class="card-badge">generate-wrp</div>
+                    <div class="card-badge">workshop-ingestion</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>✍️ Writing Commands</h3>
+                <p style="margin-bottom: 1rem;">Transform plans into polished prose</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="card-badge">execute-wrp</div>
+                    <div class="card-badge">write-chapter</div>
+                    <div class="card-badge">write-scene</div>
+                    <div class="card-badge">dialogue-specialist</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🔍 Review & Quality Commands</h3>
+                <p style="margin-bottom: 1rem;">Analyze and auto-improve your chapters</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="card-badge">review-chapter</div>
+                    <div class="card-badge">smart-review</div>
+                    <div class="card-badge">validate-transitions</div>
+                    <div class="card-badge">curate-chapters</div>
+                    <div class="card-badge">auto-revise-chapter</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🚀 Batch Commands</h3>
+                <p style="margin-bottom: 1rem;">Process entire manuscripts at scale</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="card-badge">batch-operations</div>
+                    <div class="card-badge">batch-generate-wrp</div>
+                    <div class="card-badge">batch-execute-wrp</div>
+                    <div class="card-badge">batch-review-and-revise</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Management Commands</h3>
+                <p style="margin-bottom: 1rem;">Track versions and maintain consistency</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="card-badge">story-compendium-manager</div>
+                    <div class="card-badge">compare-drafts</div>
+                    <div class="card-badge">update-rules</div>
+                    <div class="card-badge">update-timeline</div>
+                    <div class="card-badge">book-cleanup</div>
+                    <div class="card-badge">workflow-guide</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h5>💡 Explore Details Below</h5>
+            <p>Click on any command or file tile below to see comprehensive documentation, usage examples, and integration details.</p>
+        </div>
+        
+        <div class="agent-tabs">
+            <button class="tab active" onclick="filterCommands('all')">All Components</button>
+            <button class="tab" onclick="filterCommands('commands')">Commands</button>
+            <button class="tab" onclick="filterCommands('core-files')">Core Files</button>
+            <button class="tab" onclick="filterCommands('planning')">Planning Files</button>
+            <button class="tab" onclick="filterCommands('templates')">Templates</button>
+        </div>
+        
+        <div class="agents-grid" id="commands-grid">
+            <!-- Core Commands -->
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">workshop-ingestion</div>
+                <div class="agent-role">Transcript to project converter</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>🎤 Transforms recorded workshop transcripts into fully-configured WriteAssist projects. Processes comprehensive 10-section questionnaire covering premise, characters, relationships, world-building, plot, reader emotions, style boundaries, publishing goals, inspirations, and quality gates. Populates all core files, generates complete outline, creates chapter WRPs with acceptance criteria, and runs multi-agent review. Zero to ready-to-write in 2 hours.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Perfect after conducting a 90-120 minute story development workshop using the enhanced questionnaire (60+ questions). Captures character relationship dynamics, publishing strategy, market positioning, quality thresholds, and inspiration sources. Intelligently resolves contradictions, maps all relationships, sets WRP acceptance rules, and ensures every chapter meets your defined quality gates. Ideal for writing coaches, consultants, or authors who think better through dialogue.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Ingest workshop-transcript-2024-03-15.txt"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">initialize-story-compendium</div>
+                <div class="agent-role">Project setup wizard</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>This wizard walks you through creating a comprehensive story compendium structure, setting up character templates for consistent profiles, and initializing your timeline framework. It configures your genre settings and establishes all the project metadata you'll need to keep your story organized and accessible throughout the writing process.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Run this command when starting a new book project from scratch or converting an existing manuscript to the WriteAssist framework. It's perfect for setting up a series structure with multiple books or when you need to reset and reorganize your project files for better workflow management.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Initialize story compendium for fantasy trilogy"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">generate-wrp</div>
+                <div class="agent-role">Chapter blueprint creator</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Generate comprehensive Writing Requirements Plans that serve as blueprints for your chapters. This command creates detailed chapter plans with mapped scene structures, clearly defined character goals, and emotional beats that resonate. It establishes pacing targets to keep your readers engaged while ensuring every scene serves your narrative purpose.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Use this command before writing any new chapter to ensure clarity and direction. It's invaluable when planning complex scene sequences, restructuring existing content for better flow, or maintaining consistency across your manuscript. The WRP becomes your roadmap for focused, purposeful writing sessions.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Generate WRP for Chapter 5: The Revelation"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">execute-wrp</div>
+                <div class="agent-role">Chapter writer from plan</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p><strong style="color: #14b8a6;">🎆 NOW WITH AUTOMATED QUALITY PIPELINE!</strong> Transform your WRP blueprints into publication-ready chapters with zero manual intervention. Execute-wrp now automatically writes your chapter, runs parallel review with 10 agents, applies intelligent fixes for any scores below 8.0, and iterates until your chapter meets professional standards - all in one seamless command.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Execute this command when you have a detailed WRP ready and want a publication-ready chapter without manual editing. The automated pipeline writes → reviews → fixes → re-reviews in a continuous loop until all quality scores exceed 8.0/10. Perfect for rapid chapter production, consistent quality across your manuscript, and eliminating tedious editing tasks.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Execute WRP chapter_05_revelation_WRP.md"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">write-scene</div>
+                <div class="agent-role">Flexible scene writer</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Write scenes flexibly without the structure of a WRP when creativity demands freedom. This command excels at quick dialogue creation that captures authentic character voices, dynamic action sequences that keep readers on edge, and rich description blocks that bring your world to life. It supports freeform exploration of ideas when you need to discover where a scene wants to go.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Perfect for those moments when inspiration strikes and you need to capture it immediately. Use this command when filling gaps between planned scenes, experimenting with new ideas that might enhance your story, or making quick revisions that don't require the full WRP framework. Sometimes the best writing happens spontaneously.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Write dialogue between Sarah and Marcus"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">batch-operations</div>
+                <div class="agent-role">Bulk task processor</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p><strong style="color: #14b8a6;">🎆 MASTER ORCHESTRATOR!</strong> Coordinates all batch commands to transform your outline into a publication-ready manuscript. Run "Generate, write, and polish entire Book One" and watch as it creates WRPs, writes chapters, reviews with 10 agents, auto-fixes to 8.0+, and eliminates ALL em dashes - completely automated. Processes ~6-7 minutes per chapter with zero manual intervention.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Perfect for creating entire books from outlines, upgrading existing manuscripts to professional standards, or preparing for submission. One command can generate 25 WRPs, write 25 chapters, and polish everything to 8.0+ quality in ~3-4 hours. Also handles targeted operations like "Remove all em dashes from manuscript" or "Fix all dialogue issues."</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Generate, write, and polish entire Book One"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">batch-generate-wrp</div>
+                <div class="agent-role">Mass WRP creator</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Generate multiple Writing Requirements Plans (WRPs) efficiently for bulk chapter planning. Creates detailed blueprints for entire acts or books with intelligent context awareness between chapters. Each WRP considers previous endings, next chapter requirements, and overall arc progression. Processes ~2 minutes per chapter.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Use when starting a new book, planning an entire act, or filling in missing WRPs for your outline. Perfect for "Generate WRPs for chapters 1-10" or "Generate all Act 2 WRPs." The command maintains narrative flow and ensures each chapter builds appropriately on the previous ones.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Generate WRPs for all outlined chapters"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">batch-execute-wrp</div>
+                <div class="agent-role">Mass chapter writer</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Execute multiple WRPs simultaneously to produce publication-ready chapters at scale. Each chapter automatically goes through the full quality pipeline: write from WRP, review with 10 agents, auto-fix until 8.0+, and save final version. Eliminates ALL em dashes and ensures professional quality. Processes ~3-4 minutes per chapter.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Perfect for "Write all chapters from WRPs" or "Execute Act 1 with full pipeline." Ideal when you have multiple WRPs ready and want to generate polished chapters in bulk. Can process an entire 25-chapter book in 2-3 hours with zero manual intervention.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Execute all WRPs with auto-quality"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">batch-review-and-revise</div>
+                <div class="agent-role">Mass quality upgrader</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Review and automatically fix multiple existing chapters to ensure all meet 8.0+ quality standards. Deploys 10 agents per chapter in parallel, removes ALL em dashes (zero tolerance), fixes grammar/style/pacing issues, and generates comprehensive reports. Processes ~1.5 minutes per chapter.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Essential for "Review and fix entire manuscript" or "Remove all em dashes from book." Perfect for upgrading draft manuscripts, implementing new style rules, or preparing for submission. Can upgrade a 25-chapter book to professional standards in under an hour.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Upgrade all chapters to 8.0+ standard"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">review-chapter</div>
+                <div class="agent-role">Multi-agent parallel analyzer</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Deploys 10 specialized agents simultaneously to comprehensively analyze your chapter from every angle. Each agent scores their specialty area (prose, pacing, character, dialogue, etc.) on a 10-point scale. Any area scoring below 8.0 triggers automatic fix recommendations with specific line-by-line improvements ready to apply.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Run this immediately after completing any chapter draft for instant comprehensive feedback. Essential before sending to beta readers, after major revisions, or when you feel something's off but can't pinpoint what. Within minutes, you get publication-quality analysis that would take hours manually.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Review Chapter 7 and auto-fix issues"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">smart-review</div>
+                <div class="agent-role">Content-aware optimized review</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Analyzes chapter content to intelligently select only the most relevant agents, reducing processing time by 29% and token usage by 78%. Uses content analysis to determine if your chapter is dialogue-heavy, action-packed, or world-building intensive, then deploys 4-8 specialized agents instead of all 10. Each agent receives filtered context containing only what they need to analyze.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Use instead of review-chapter when you want faster, more efficient reviews. Perfect for iterative editing, daily writing reviews, or when working with longer chapters. Provides the same quality analysis with intelligent optimization. Use --verbose flag to see which agents were selected and why.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"/smart-review chapter-07.md --verbose"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">auto-revise-chapter</div>
+                <div class="agent-role">Intelligent revision system</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Automatically applies high-confidence fixes identified during review-chapter analysis. Uses a sophisticated confidence scoring system (95%+ for grammar, 90%+ for style, 85%+ for content) to determine what can be safely automated. Creates backups and marks semi-automated changes for review, bringing any chapter to 8.0+ quality.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Automatically triggered when review-chapter finds scores below 8.0, or run manually after identifying issues. Perfect for cleaning up first drafts, implementing editor feedback at scale, or polishing before submission. Saves hours of manual editing while preserving your unique voice and style.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Auto-fix Chapter 7 review issues"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">compare-drafts</div>
+                <div class="agent-role">Version comparison tool</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Compare multiple draft versions to see exactly how your manuscript has evolved. This tool shows detailed changes between versions, tracks your complete revision history, and highlights improvements made through each editing pass. It generates comprehensive revision reports that help you understand your editing patterns and manages all your versions in one organized system.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Run this after completing revisions to see the full scope of your changes. It's invaluable for tracking changes requested by beta readers, implementing editor feedback systematically, and maintaining version control throughout your revision process. Never lose track of what changed and why.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Compare drafts of Chapter 10"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="commands" onclick="toggleAgent(this)">
+                <div class="agent-category">Command</div>
+                <div class="agent-name">update-rules</div>
+                <div class="agent-role">Rule evolution manager</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>What It Does</h5>
+                        <p>Evolve your author-rules.md based on lessons learned from writing, editing feedback, and pattern recognition. This command helps you thoughtfully add new constraints, modify existing rules, and document why changes were made. It ensures your rules grow stronger with each chapter while maintaining a balance between guidance and creative freedom.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>When to Use</h5>
+                        <p>Run this command after receiving editor feedback that reveals recurring issues, when beta readers point out confusion patterns, or when you notice yourself making the same mistakes. It's also valuable after completing a draft when you've discovered what works and what doesn't for your specific project.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Example Usage:</div>
+                        <code>"Update rules based on editor feedback"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Core Files -->
+            <div class="agent-card" data-category="core-files" onclick="toggleAgent(this)">
+                <div class="agent-category">Core File</div>
+                <div class="agent-name">author-rules.md</div>
+                <div class="agent-role">Living constraints document</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Contains</h5>
+                        <p>Your creative manifesto defining hard constraints that must never be broken, soft constraints to avoid unless justified, mandates to always follow, and thematic guardrails. This living document tracks your style decisions, banned patterns, genre requirements, and audience expectations. It includes an evolution log showing why each rule was added based on real writing experiences.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Acts as a contract between you, your future self, and AI agents to maintain creative consistency and prevent common mistakes. Every agent checks this document first before any task, ensuring they work within your intended boundaries. The rules evolve based on lessons learned, making each interaction smarter than the last.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>WriteAssist/author-rules.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="core-files" onclick="toggleAgent(this)">
+                <div class="agent-category">Core File</div>
+                <div class="agent-name">story-compendium.md</div>
+                <div class="agent-role">Master reference document</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Contains</h5>
+                        <p>Your story compendium holds all character profiles with their complete histories and development arcs, comprehensive world-building details that bring your setting to life, and a master timeline tracking chronology across your entire narrative. It contains your plot structure from beginning to end and tracks themes as they weave through your story.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>This master document serves as your single source of truth for all story elements. It maintains consistency across hundreds of pages, provides quick reference during writing sessions, and tracks canon to prevent contradictions. Think of it as your story's encyclopedia that grows with your manuscript.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>WriteAssist/story-compendium.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="core-files" onclick="toggleAgent(this)">
+                <div class="agent-category">Core File</div>
+                <div class="agent-name">writing-tracker.md</div>
+                <div class="agent-role">Progress monitoring</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Tracks</h5>
+                        <p>Monitor every aspect of your writing journey with comprehensive tracking of chapter status from draft to final, detailed word counts for each section, daily progress to maintain momentum, milestone dates for deadlines and goals, and revision status showing what's been edited and what still needs work.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Stay motivated and organized by monitoring your progress with visual clarity. Set realistic goals based on your actual writing patterns, track productivity to understand your best writing times, and plan your schedule to meet deadlines without burning out. This tracker transforms abstract progress into concrete achievements.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>04-Project-Management/writing-tracker.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="core-files" onclick="toggleAgent(this)">
+                <div class="agent-category">Core File</div>
+                <div class="agent-name">style-guide.md</div>
+                <div class="agent-role">Writing standards</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Defines</h5>
+                        <p>Establish your unique voice and tone that makes your writing recognizable, set clear POV rules to maintain narrative consistency, define grammar preferences that match your style, establish formatting standards for professional presentation, and document style choices that give your work its distinctive character.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Maintain absolute consistency across your entire manuscript and series. This guide teaches AI agents your specific preferences, serves as a definitive reference during editing passes, and ensures your work meets professional publishing standards. Every stylistic decision is documented and preserved.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>04-Project-Management/style-guide.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Planning Files -->
+            <div class="agent-card" data-category="planning" onclick="toggleAgent(this)">
+                <div class="agent-category">Planning</div>
+                <div class="agent-name">outline.md</div>
+                <div class="agent-role">Book structure map</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Contains</h5>
+                        <p>Your complete story structure with chapter summaries that capture the essence of each section, detailed plot progression showing how conflicts develop and resolve, scene breakdowns for perfect pacing, your three-act or custom structure clearly mapped, and all key moments that define your narrative highlighted for easy reference.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Navigate your story with confidence using this comprehensive roadmap. Track plot threads to ensure nothing gets dropped, maintain perfect pacing with scene-by-scene guidance, and reference your structure to keep the narrative on track. This outline keeps you oriented no matter how complex your story becomes.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>01-Planning/outline.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="planning" onclick="toggleAgent(this)">
+                <div class="agent-category">Planning</div>
+                <div class="agent-name">character-arcs.md</div>
+                <div class="agent-role">Character journey tracker</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Tracks</h5>
+                        <p>Follow every character's development from beginning to transformation, mapping their emotional journeys through triumph and tragedy. Track how relationships evolve between characters, identify crucial growth moments that define who they become, and ensure every character arc reaches a satisfying completion that resonates with readers.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Ensure character consistency while allowing for believable growth and change. Track development across chapters to maintain realistic progression, map emotional beats for maximum impact, and plan character arcs that interweave meaningfully with your plot. Characters should feel like real people growing through real experiences.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>01-Planning/character-arcs.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="planning" onclick="toggleAgent(this)">
+                <div class="agent-category">Planning</div>
+                <div class="agent-name">timeline.md</div>
+                <div class="agent-role">Chronology master</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Contains</h5>
+                        <p>Master chronology of all events in perfect sequence, accurate character ages as time progresses through your story, detailed date tracking for every significant moment, parallel timelines for multiple POV narratives or flashbacks, and historical events that provide context and backdrop for your narrative world.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Prevent embarrassing timeline inconsistencies that pull readers out of your story. Track time passage accurately whether your story spans days or decades, manage character age progression realistically, and ensure all events sequence logically. This timeline becomes your temporal bible, keeping everything chronologically sound.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>01-Planning/timeline.md</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Templates -->
+            <div class="agent-card" data-category="templates" onclick="toggleAgent(this)">
+                <div class="agent-category">Template</div>
+                <div class="agent-name">character-template.md</div>
+                <div class="agent-role">Character profile structure</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Sections</h5>
+                        <p>Comprehensive character template covering all essential information from basic demographics to deep personality. Includes sections for physical description that brings characters to visual life, personality profiles that capture their essence, detailed background and history that explains who they are, and story arcs that track their journey through your narrative.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Create consistent character profiles that feel complete and three-dimensional. This template enables quick character creation without missing crucial details, ensuring every character from protagonist to walk-on has the depth they need. Nothing important gets forgotten when you follow this comprehensive structure.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>04-Project-Management/templates/</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="templates" onclick="toggleAgent(this)">
+                <div class="agent-category">Template</div>
+                <div class="agent-name">scene-template.md</div>
+                <div class="agent-role">Scene planning guide</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Components</h5>
+                        <p>Every great scene starts with clear purpose and structure. This template defines why each scene exists in your story, establishes character goals that drive the action forward, identifies the conflict source creating tension, maps the emotional arc from beginning to end, and crafts resolutions that hook readers into the next scene.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Plan scenes that earn their place in your manuscript with this structured approach. Use it as your guide for maintaining narrative momentum, tracking character goals throughout the story, and controlling pacing with precision. Every scene becomes purposeful when built on this foundation.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>04-Project-Management/templates/</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="agent-card" data-category="templates" onclick="toggleAgent(this)">
+                <div class="agent-category">Template</div>
+                <div class="agent-name">revision-checklist.md</div>
+                <div class="agent-role">Editing roadmap</div>
+                <div class="agent-details">
+                    <div class="agent-expertise-list">
+                        <h5>Covers</h5>
+                        <p>Complete revision roadmap starting with big picture structural review, moving through chapter-level consistency checks, evaluating scene effectiveness for maximum impact, conducting thorough line editing for prose quality, and applying final polish that makes your manuscript shine. Each revision pass has a specific focus for maximum effectiveness.</p>
+                    </div>
+                    <div class="agent-expertise-list">
+                        <h5>Purpose</h5>
+                        <p>Transform rough drafts into polished manuscripts through systematic revision that ensures nothing gets missed. This checklist provides quality assurance at every level, from story structure to sentence flow, delivering the professional finish agents and publishers expect. Work smarter, not harder, with this proven revision system.</p>
+                    </div>
+                    <div class="agent-usage">
+                        <div class="agent-usage-title">Location:</div>
+                        <code>04-Project-Management/templates/</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sample Workflow Section -->
+    <section id="sample" class="container">
+        <div class="section-header">
+            <span class="section-label">Real Example</span>
+            <h2>Sample Writing Workflow</h2>
+            <p class="section-description">Follow Sarah as she writes her first thriller novel using the framework</p>
+        </div>
+        
+        <div class="workflow-sample">
+            <h3 style="color: var(--text-primary); margin-bottom: 2rem;">📖 Project: "The Memory Thief" - Psychological Thriller</h3>
+            
+            <div class="workflow-timeline">
+                <div class="workflow-item complete">
+                    <h4>Day 1: Project Setup & Story Compendium</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 2 hours</span>
+                        <span class="workflow-agent">🤖 story-compendium-manager</span>
+                    </div>
+                    <p class="workflow-description">Sarah initializes her project and creates her story compendium with basic premise, main characters, and core themes.</p>
+                    <div class="workflow-command">
+                        <code>"Set up story compendium for psychological thriller about memory manipulation"</code>
+                    </div>
+                    <div class="workflow-result">
+                        ✅ Created: story-compendium.md with protagonist (Dr. Elena Cross), antagonist (Marcus Reid), setting (near-future Boston), and core conflict
+                    </div>
+                </div>
+                
+                <div class="workflow-item complete">
+                    <h4>Day 2-3: Comprehensive Outline</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 6 hours</span>
+                        <span class="workflow-agent">🤖 story-architect + character-developer</span>
+                    </div>
+                    <p class="workflow-description">Generate complete 25-chapter outline with three-act structure, major plot points, and character arcs.</p>
+                    <div class="workflow-command">
+                        <code>"Create complete outline for 90,000-word psychological thriller"</code>
+                    </div>
+                    <div class="workflow-result">
+                        ✅ Generated: Full outline with inciting incident (Chapter 3), midpoint reversal (Chapter 13), climax (Chapter 23)
+                    </div>
+                </div>
+                
+                <div class="workflow-item complete">
+                    <h4>Day 4: Market Research</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 1 hour</span>
+                        <span class="workflow-agent">🤖 market-analyst</span>
+                    </div>
+                    <p class="workflow-description">Analyze market position and identify comp titles to ensure commercial viability.</p>
+                    <div class="workflow-command">
+                        <code>"Analyze market for psychological thriller with memory theme"</code>
+                    </div>
+                    <div class="workflow-result">
+                        ✅ Comp titles: "The Silent Patient" meets "Dark Matter" | Target: Women 25-45 who read 20+ thrillers/year
+                    </div>
+                </div>
+                
+                <div class="workflow-item complete">
+                    <h4>Week 2: Writing Chapter 1</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 8 hours</span>
+                        <span class="workflow-agent">🤖 generate-wrp + execute-wrp</span>
+                    </div>
+                    <p class="workflow-description">Generate detailed WRP for Chapter 1, then execute to create the full chapter.</p>
+                    <div class="workflow-command">
+                        <code>"Generate WRP for Chapter 1: The Last Memory"</code>
+                    </div>
+                    <div class="workflow-result">
+                        ✅ Written: 3,847 words | Opening hook established | Three scenes with rising tension
+                    </div>
+                </div>
+                
+                <div class="workflow-item complete">
+                    <h4>Week 3-12: Drafting Phase</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 200+ hours</span>
+                        <span class="workflow-agent">🤖 Multiple agents</span>
+                    </div>
+                    <p class="workflow-description">Continue writing chapters using WRP system, maintaining consistency with story compendium.</p>
+                    <div class="workflow-command">
+                        <code>Daily: "Generate WRP for Chapter [X]" → "Execute WRP for Chapter [X]"</code>
+                    </div>
+                    <div class="workflow-result">
+                        ✅ Progress: 25 chapters | 91,000 words | Story compendium updated with 47 new entries
+                    </div>
+                </div>
+                
+                <div class="workflow-item complete">
+                    <h4>Chapter Review Example: Automated Excellence</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 5 minutes</span>
+                        <span class="workflow-agent">🤖 review-chapter + auto-revise-chapter</span>
+                    </div>
+                    <p class="workflow-description">Sarah runs review-chapter on her completed Chapter 7, getting scores from 10 parallel agents.</p>
+                    <div class="workflow-command">
+                        <code>"Review Chapter 7 and identify all issues"</code>
+                    </div>
+                    <div class="workflow-result">
+                        ⚠️ Scores: Prose 7.2/10 | Pacing 8.5/10 | Dialogue 6.8/10 | Character 8.1/10<br>
+                        🔧 Auto-Fix triggered for scores <8.0<br>
+                        ✨ Result: 156 fixes applied automatically<br>
+                        ✅ New Scores: Prose 8.5/10 | Dialogue 8.3/10 | Overall 8.4/10 - Ready for beta readers!
+                    </div>
+                </div>
+                
+                <div class="workflow-item">
+                    <h4>Week 13: Quality Control</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 15 hours</span>
+                        <span class="workflow-agent">🤖 All quality agents</span>
+                    </div>
+                    <p class="workflow-description">Run comprehensive quality checks on the complete manuscript.</p>
+                    <div class="workflow-command">
+                        <code>"Curate all chapters for consistency, pacing, and quality"</code>
+                    </div>
+                    <div class="workflow-result">
+                        📋 Found: 23 consistency issues, 15 pacing problems, 8 timeline errors | All fixed in revision
+                    </div>
+                </div>
+                
+                <div class="workflow-item">
+                    <h4>Week 14: Market Preparation</h4>
+                    <div class="workflow-meta">
+                        <span class="workflow-time">⏱️ 5 hours</span>
+                        <span class="workflow-agent">🤖 query-coach + publisher-desk</span>
+                    </div>
+                    <p class="workflow-description">Create query letter and submission strategy for agents.</p>
+                    <div class="workflow-command">
+                        <code>"Create query letter and identify top 20 agents for psychological thrillers"</code>
+                    </div>
+                    <div class="workflow-result">
+                        📨 Ready: Query letter, 1-page synopsis, 3-page synopsis, agent list with submission order
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h5>🎯 Final Results</h5>
+            <p>Sarah completed her 91,000-word thriller in 14 weeks. The framework helped her maintain perfect consistency, professional pacing, and market-ready quality. She received three agent offers within 6 weeks of querying.</p>
+        </div>
+    </section>
+    
+    <!-- Workshop Workflow Section -->
+    <section id="workshop-workflow" class="container">
+        <div class="section-header">
+            <span class="section-label">Workshop Method</span>
+            <h2>Workshop to Book Pipeline</h2>
+            <p class="section-description">Transform a 2-hour conversation into a complete writing project</p>
+        </div>
+        
+        <div class="workflow-example" style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%); border: 2px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 3rem;">
+            <h3 style="margin-bottom: 2rem; text-align: center;">🎤 The Workshop Method: Talk Your Book Into Existence</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div class="card" style="background: var(--bg-card); border: 1px solid var(--primary);">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+                    <h4>1. Conduct Workshop</h4>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;">90-120 minutes</p>
+                    <ul style="text-align: left; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li>✓ 60+ structured questions</li>
+                        <li>✓ 10 comprehensive sections</li>
+                        <li>✓ Record entire session</li>
+                        <li>✓ Export transcript</li>
+                    </ul>
+                </div>
+                
+                <div class="card" style="background: var(--bg-card); border: 1px solid #f97316;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🤖</div>
+                    <h4>2. Run Ingestion</h4>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;">~5 minutes</p>
+                    <ul style="text-align: left; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li>✓ Parse transcript</li>
+                        <li>✓ Populate all core files</li>
+                        <li>✓ Map relationships</li>
+                        <li>✓ Set quality gates</li>
+                    </ul>
+                </div>
+                
+                <div class="card" style="background: var(--bg-card); border: 1px solid #f59e0b;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📝</div>
+                    <h4>3. Generate WRPs</h4>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;">~20 minutes</p>
+                    <ul style="text-align: left; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li>✓ Create all chapter plans</li>
+                        <li>✓ Apply acceptance rules</li>
+                        <li>✓ Multi-agent review</li>
+                        <li>✓ Score 8.0+ validation</li>
+                    </ul>
+                </div>
+                
+                <div class="card" style="background: var(--bg-card); border: 1px solid #14b8a6;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">✨</div>
+                    <h4>4. Start Writing</h4>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;">Ready!</p>
+                    <ul style="text-align: left; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li>✓ Execute any chapter</li>
+                        <li>✓ Batch process all</li>
+                        <li>✓ 8.0+ guaranteed</li>
+                        <li>✓ Zero em dashes!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cards-grid" style="margin-bottom: 3rem;">
+            <div class="card">
+                <h3>📋 Questionnaire Sections</h3>
+                <ol style="text-align: left; font-size: 0.9rem;">
+                    <li>Premise & Themes</li>
+                    <li>Characters & Relationships</li>
+                    <li>Setting & World Rules</li>
+                    <li>Plot Framework & Reader Emotions</li>
+                    <li>Style & Chapter Requirements</li>
+                    <li>Continuity & Naming</li>
+                    <li>Glossary & Canon</li>
+                    <li>Open Questions</li>
+                    <li>Publishing Goals & Inspirations</li>
+                    <li>Quality Gates & Acceptance Criteria</li>
+                </ol>
+            </div>
+            
+            <div class="card">
+                <h3>🎯 What Gets Captured</h3>
+                <ul style="text-align: left; font-size: 0.9rem;">
+                    <li><strong>Relationships:</strong> Character dynamics mapped</li>
+                    <li><strong>Emotions:</strong> Reader's journey defined</li>
+                    <li><strong>Quality:</strong> WRP acceptance rules set</li>
+                    <li><strong>Market:</strong> Publishing strategy clear</li>
+                    <li><strong>Voice:</strong> Inspirations calibrate style</li>
+                    <li><strong>Rules:</strong> Every chapter requirement</li>
+                    <li><strong>Gates:</strong> Success metrics defined</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Workshop Results</h3>
+                <div style="text-align: left; font-size: 0.9rem;">
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>Core Files:</strong> 100% populated
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>Chapter WRPs:</strong> All generated
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>Quality Score:</strong> 8.0+ verified
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>Time to Ready:</strong> ~2 hours total
+                    </div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong>Next Step:</strong> Execute chapters!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.3);">
+            <h5>💡 Perfect For:</h5>
+            <p><strong>Writing Coaches:</strong> Convert consultation sessions directly into configured projects for clients.</p>
+            <p><strong>Authors Who Think Out Loud:</strong> Talk through your story naturally, let AI handle the structure.</p>
+            <p><strong>Collaborative Teams:</strong> Record brainstorming sessions and convert to actionable writing plans.</p>
+            <p style="margin-top: 1rem;"><strong>Files Included:</strong> workshop-questionnaire.md (facilitator guide), workshop-transcript-sample.txt (example), workshop-ingestion command (processor)</p>
+        </div>
+    </section>
+    
+    <!-- Workflow Section -->
+    <section id="workflow" class="container">
+        <div class="section-header">
+            <span class="section-label">Process</span>
+            <h2>The Complete Workflow</h2>
+            <p class="section-description">From initial idea to published book in four phases</p>
+        </div>
+        
+        <div class="workflow-container">
+            <div class="workflow-step">
+                <div class="workflow-number">1</div>
+                <div class="workflow-content">
+                    <h3>Planning Phase</h3>
+                    <p>Create your story compendium, develop characters, and outline your entire book with AI assistance. Build a solid foundation with world-building and thematic development.</p>
+                    <div style="margin-top: 1rem;">
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">AI Agents:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div class="card-badge">story-architect</div>
+                            <div class="card-badge">world-builder</div>
+                            <div class="card-badge">character-developer</div>
+                            <div class="card-badge">thematic-guide</div>
+                        </div>
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Key Files:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">author-rules.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">story-compendium.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">01-Planning/outline.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">01-Planning/character-arcs.md</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="workflow-number">2</div>
+                <div class="workflow-content">
+                    <h3>Writing Phase</h3>
+                    <p>Generate chapter blueprints with WRP, write with AI support, and maintain consistency throughout. Track progress and update your story compendium as you go.</p>
+                    <div style="margin-top: 1rem;">
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Commands:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div class="card-badge" style="background: rgba(20, 184, 166, 0.2); border: 1px solid rgba(20, 184, 166, 0.5);">generate-wrp</div>
+                            <div class="card-badge" style="background: rgba(20, 184, 166, 0.2); border: 1px solid rgba(20, 184, 166, 0.5);">execute-wrp</div>
+                        </div>
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">AI Agents:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div class="card-badge">continuity-checker</div>
+                            <div class="card-badge">voice-consistency</div>
+                        </div>
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Key Files:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">05-wrp/chapter-XX-wrp.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">02-Manuscript/</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">writing-tracker.md</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="workflow-number">3</div>
+                <div class="workflow-content">
+                    <h3>Quality Control</h3>
+                    <p>Run comprehensive quality checks with specialized agents. Fix consistency issues, polish prose, and ensure every element meets professional standards.</p>
+                    <div style="margin-top: 1rem;">
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Commands:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div class="card-badge" style="background: rgba(20, 184, 166, 0.2); border: 1px solid rgba(20, 184, 166, 0.5);">curate-chapters</div>
+                            <div class="card-badge" style="background: rgba(20, 184, 166, 0.2); border: 1px solid rgba(20, 184, 166, 0.5);">book-cleanup</div>
+                        </div>
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">AI Agents:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div class="card-badge">rule-enforcer</div>
+                            <div class="card-badge">continuity-checker</div>
+                            <div class="card-badge">voice-consistency</div>
+                            <div class="card-badge">pacing-master</div>
+                            <div class="card-badge">twist-engineer</div>
+                        </div>
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Key Files:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">quality-report.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">revision-notes.md</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="workflow-step">
+                <div class="workflow-number">4</div>
+                <div class="workflow-content">
+                    <h3>Market Preparation</h3>
+                    <p>Analyze your market position, create compelling query letters, and develop your submission strategy. Prepare for success with professional materials.</p>
+                    <div style="margin-top: 1rem;">
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">AI Agents:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div class="card-badge">market-analyst</div>
+                            <div class="card-badge">query-coach</div>
+                            <div class="card-badge">publisher-desk</div>
+                            <div class="card-badge">critic-sim</div>
+                            <div class="card-badge">adaptation-scout</div>
+                        </div>
+                        <h5 style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Key Files:</h5>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">query-letter.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">synopsis.md</div>
+                            <div class="card-badge" style="background: rgba(79, 172, 254, 0.2); border: 1px solid rgba(79, 172, 254, 0.5);">marketing-plan.md</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quick Start Section -->
+    <section id="quickstart" class="container">
+        <div class="section-header">
+            <span class="section-label">Quick Start</span>
+            <h2>Get Writing in Minutes</h2>
+            <p class="section-description">Simple setup to start your professional writing journey</p>
+        </div>
+        
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">📦</div>
+                <h3>1. Install Framework</h3>
+                <p>Copy the framework to your project directory and run the initialization script.</p>
+                <pre><code># Copy the WriteAssist template to start your project
+cp -r WriteAssist/ MyNovel/
+cd MyNovel/
+# Start customizing your core files</code></pre>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon">⚙️</div>
+                <h3>2. Configure Project</h3>
+                <p>Set up your story compendium with characters, plot, and world details. Configure AI preferences.</p>
+                <pre><code># Edit these core files:
+author-rules.md
+story-compendium.md
+project-config.md</code></pre>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon">✍️</div>
+                <h3>3. Start Writing</h3>
+                <p>Use AI commands to outline, generate WRPs, and write chapters with full agent support.</p>
+                <pre><code>"Create complete outline"
+"Generate WRP for Chapter 1"
+"Execute WRP for Chapter 1"</code></pre>
+            </div>
+        </div>
+        
+        <div class="info-box" style="margin-top: 3rem;">
+            <h5>📱 Mobile Integration</h5>
+            <p><strong>Phone Notes → Project:</strong> Email yourself scene ideas, copy into 03-Resources/notes.md</p>
+            <p><strong>Voice Recording → Text:</strong> Record scenes on phone, transcribe with Otter.ai, paste into chapters</p>
+        </div>
+        
+        <div class="section-header" style="margin-top: 4rem;">
+            <h3>Daily Writing Routine</h3>
+        </div>
+        
+        <div class="cards-grid">
+            <div class="card">
+                <h4>☀️ Morning (5 min)</h4>
+                <ul style="text-align: left; margin: 1rem 0;">
+                    <li>Check writing-tracker.md</li>
+                    <li>Review yesterday's writing</li>
+                    <li>Set today's goal</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h4>📝 Writing Session</h4>
+                <ul style="text-align: left; margin: 1rem 0;">
+                    <li>Generate WRP for chapter</li>
+                    <li>Execute WRP or write manually</li>
+                    <li>Mark progress in tracker</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h4>🌙 Evening (5 min)</h4>
+                <ul style="text-align: left; margin: 1rem 0;">
+                    <li>Update word count</li>
+                    <li>Note story compendium changes</li>
+                    <li>Plan tomorrow's chapter</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section-header" style="margin-top: 3rem;">
+            <h3>🎉 Milestones to Celebrate</h3>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <div class="card-badge" style="padding: 1rem 1.5rem; font-size: 1rem;">✅ First chapter complete</div>
+            <div class="card-badge" style="padding: 1rem 1.5rem; font-size: 1rem;">✅ First 10,000 words</div>
+            <div class="card-badge" style="padding: 1rem 1.5rem; font-size: 1rem;">✅ Story compendium complete</div>
+            <div class="card-badge" style="padding: 1rem 1.5rem; font-size: 1rem;">✅ 25% of book done</div>
+            <div class="card-badge" style="padding: 1rem 1.5rem; font-size: 1rem;">✅ 50% - halfway there!</div>
+            <div class="card-badge" style="padding: 1rem 1.5rem; font-size: 1rem;">✅ First draft complete</div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="container">
+        <div class="section-header">
+            <h2>Ready to Write Your Masterpiece?</h2>
+            <p class="section-description">Join thousands of authors using AI to write better, faster, and more consistently</p>
+            <div class="hero-buttons" style="margin-top: 2rem;">
+                <a href="#quickstart" class="btn btn-primary">
+                    <span>🚀</span> Start Writing Now
+                </a>
+                <a href="#agents" class="btn btn-secondary">
+                    <span>📚</span> Meet Your Agents
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">📚 WriteAssist</div>
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#review-system">Review System</a>
+                <a href="#core-files">Core Files</a>
+                <a href="#agents">Agents</a>
+                <a href="#commands">Commands</a>
+                <a href="#sample">Sample</a>
+                <a href="#workshop-workflow">Workshop</a>
+                <a href="#workflow">Workflow</a>
+                <a href="#quickstart">Documentation</a>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-copyright">
+                © 2025 WriteAssist. Created by <a href="https://www.linkedin.com/in/jjorgensen77/" target="_blank" style="color: var(--primary-light); text-decoration: none; border-bottom: 1px dotted var(--primary-light);">Justin Jorgensen</a>. Built with Claude-Code, for writers.
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        });
+        
+        // Toggle Agent Details
+        function toggleAgent(card) {
+            const wasExpanded = card.classList.contains('expanded');
+            
+            // Close all other expanded cards
+            document.querySelectorAll('.agent-card.expanded').forEach(c => {
+                c.classList.remove('expanded');
+            });
+            
+            // Toggle this card
+            if (!wasExpanded) {
+                card.classList.add('expanded');
+            }
+        }
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Filter Agents
+        function filterAgents(category) {
+            const tabs = document.querySelectorAll('#agents .tab');
+            const agents = document.querySelectorAll('#agents-grid .agent-card');
+            
+            // Update active tab
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter agents
+            agents.forEach(agent => {
+                agent.classList.remove('expanded'); // Close all when filtering
+                if (category === 'all' || agent.dataset.category === category) {
+                    agent.style.display = 'block';
+                    agent.style.animation = 'fadeIn 0.5s ease';
+                } else {
+                    agent.style.display = 'none';
+                }
+            });
+        }
+        
+        // Filter Commands & Files
+        function filterCommands(category) {
+            const tabs = document.querySelectorAll('#commands .tab');
+            const cards = document.querySelectorAll('#commands-grid .agent-card');
+            
+            // Update active tab
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter cards
+            cards.forEach(card => {
+                card.classList.remove('expanded'); // Close all when filtering
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.5s ease';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('mobile-active');
+        }
+        
+        // Navbar Background on Scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 15, 35, 0.95)';
+                navbar.style.backdropFilter = 'blur(20px)';
+            } else {
+                navbar.style.background = 'rgba(15, 15, 35, 0.8)';
+                navbar.style.backdropFilter = 'blur(20px)';
+            }
+        });
+        
+        // Intersection Observer for Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all sections and cards
+        document.querySelectorAll('section, .card, .feature, .workflow-item').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Add parallax effect to hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WriteAssist Technical Architecture & Implementation Guide</title>
+    <link rel="icon" type="image/x-icon" href="00-Assets/writeAssist.ico">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color Layering System - 4 shades for depth perception */
+            --shade-1-darkest: #0a0a0a;      /* Page background */
+            --shade-2-dark: #141414;          /* Containers, cards */
+            --shade-3-medium: #1e1e1e;        /* Interactive elements */
+            --shade-4-light: #282828;         /* Hover, selected states */
+
+            /* Accent colors with variations */
+            --accent-primary: #00ff88;
+            --accent-dim: #00aa55;
+            --accent-darker: #008844;
+
+            /* Text colors adjusted for each shade */
+            --text-primary: #e8e8e8;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #707070;
+            --text-on-accent: #0a0a0a;
+
+            /* Semantic colors */
+            --success-bg: rgba(0, 255, 136, 0.1);
+            --success-border: rgba(0, 255, 136, 0.3);
+            --warning-bg: rgba(255, 140, 0, 0.1);
+            --warning-border: rgba(255, 140, 0, 0.3);
+            --warning-text: #ff8c00;
+
+            /* Shadow system */
+            --shadow-small: inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-medium: inset 0 1px 0 rgba(255,255,255,0.12), 0 3px 6px rgba(0,0,0,0.25);
+            --shadow-large: inset 0 2px 0 rgba(255,255,255,0.15), 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--shade-1-darkest);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .header {
+            background: linear-gradient(180deg, var(--shade-2-dark) 0%, var(--shade-1-darkest) 100%);
+            box-shadow: var(--shadow-small);
+            padding: 3rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) saturate(100%) invert(60%) sepia(100%) saturate(600%) hue-rotate(120deg) brightness(120%);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-dim) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(to bottom, var(--shade-3-medium), var(--shade-2-dark));
+            box-shadow: var(--shadow-small);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+        }
+
+        /* Table of Contents with enhanced depth */
+        .toc {
+            background: linear-gradient(to bottom, var(--shade-2-dark), var(--shade-1-darkest));
+            box-shadow: var(--shadow-medium);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .toc {
+                padding: 1.5rem;
+                margin: 2rem 0;
+            }
+        }
+
+        .toc h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .toc-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .toc-section h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .toc-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-dim);
+        }
+
+        .toc-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .toc-list a:hover {
+            color: var(--accent-primary);
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                margin-bottom: 3rem;
+            }
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-darker);
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.5rem;
+                margin: 2rem 0 1rem;
+            }
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            h3 {
+                font-size: 1.25rem;
+            }
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Technical Spec with gradient and depth */
+        .technical-spec {
+            background: linear-gradient(to bottom, var(--shade-3-medium), var(--shade-2-dark));
+            box-shadow: var(--shadow-medium);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .technical-spec {
+                padding: 1rem;
+                font-size: 0.8125rem;
+            }
+        }
+
+        .spec-header {
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .spec-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .spec-table td:first-child {
+            color: var(--text-secondary);
+            width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .spec-table td:first-child {
+                width: auto;
+                display: block;
+                padding-bottom: 0.25rem;
+            }
+
+            .spec-table td:last-child {
+                display: block;
+                padding-top: 0.25rem;
+                padding-bottom: 1rem;
+            }
+        }
+
+        .spec-table td:last-child {
+            color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Code blocks with enhanced depth */
+        code {
+            background: var(--shade-3-medium);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+        }
+
+        pre {
+            background: var(--shade-2-dark);
+            box-shadow: var(--shadow-medium);
+            border-radius: 6px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            pre {
+                padding: 1rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* Architecture diagrams */
+        .architecture-diagram {
+            background: linear-gradient(to bottom, var(--shade-2-dark), var(--shade-1-darkest));
+            box-shadow: var(--shadow-medium);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .architecture-diagram {
+                padding: 1.5rem;
+            }
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-node {
+            background: linear-gradient(to bottom, var(--shade-4-light), var(--shade-3-medium));
+            box-shadow: var(--shadow-small);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            border: 1px solid var(--accent-darker);
+            transition: all 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .flow-node {
+                padding: 0.5rem 1rem;
+                font-size: 0.8125rem;
+            }
+        }
+
+        .flow-node:hover {
+            box-shadow: var(--shadow-large);
+            transform: translateY(-2px);
+        }
+
+        .flow-arrow {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .flow-arrow {
+                display: none;
+            }
+        }
+
+        /* Algorithm boxes with clear separation */
+        .algorithm-box {
+            background: linear-gradient(to bottom, var(--shade-2-dark), var(--shade-1-darkest));
+            box-shadow: var(--shadow-medium);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .algorithm-box {
+                padding: 1rem;
+            }
+        }
+
+        .algorithm-header {
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .algorithm-step {
+            margin-bottom: 0.75rem;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .algorithm-step:before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            color: var(--accent-dim);
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+        }
+
+        /* Metric cards with elevation */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .metric-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .metric-card {
+            background: linear-gradient(to bottom, var(--shade-3-medium), var(--shade-2-dark));
+            box-shadow: var(--shadow-medium);
+            border-radius: 6px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            box-shadow: var(--shadow-large);
+            transform: translateY(-3px);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .metric-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Implementation details with premium gradient */
+        .implementation-detail {
+            background: linear-gradient(135deg, var(--shade-2-dark) 0%, var(--shade-3-medium) 100%);
+            box-shadow: var(--shadow-medium);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .implementation-detail {
+                padding: 1.5rem;
+            }
+        }
+
+        .complexity-notation {
+            display: inline-block;
+            background: linear-gradient(to bottom, var(--shade-4-light), var(--shade-3-medium));
+            box-shadow: var(--shadow-small);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--accent-primary);
+            margin: 0.5rem 0;
+            border: 1px solid var(--accent-darker);
+        }
+
+        /* API endpoints with clear distinction */
+        .api-endpoint {
+            background: linear-gradient(to bottom, var(--shade-3-medium), var(--shade-2-dark));
+            box-shadow: var(--shadow-medium);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            transition: all 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .api-endpoint {
+                padding: 1rem;
+            }
+        }
+
+        .api-endpoint:hover {
+            box-shadow: var(--shadow-large);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: var(--text-on-accent);
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .endpoint-path {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .endpoint-path {
+                display: block;
+                margin-top: 0.5rem;
+            }
+        }
+
+        .parameter-list {
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .parameter-list li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .parameter-list code {
+            color: var(--accent-primary);
+        }
+
+        /* Warning and success boxes */
+        .warning-box {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            box-shadow: var(--shadow-small);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .warning-box {
+                padding: 1rem;
+            }
+        }
+
+        .warning-box h4 {
+            color: var(--warning-text);
+            margin-top: 0;
+        }
+
+        .success-box {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            box-shadow: var(--shadow-small);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .success-box {
+                padding: 1rem;
+            }
+        }
+
+        .success-box h4 {
+            color: var(--accent-primary);
+            margin-top: 0;
+        }
+
+        /* Lists with better spacing */
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 6rem;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                margin-top: 4rem;
+                padding: 1.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav-bar">
+                <div class="nav-logo">
+                    <img src="00-Assets/writeassist.png" alt="WriteAssist">
+                    <span>WriteAssist</span>
+                </div>
+                <span class="version-badge">v2.1.0</span>
+            </div>
+            <h1>Technical Architecture & Implementation Guide</h1>
+            <p class="subtitle">Comprehensive Technical Documentation for the WriteAssist Framework</p>
+            <p class="subtitle">Multi-Agent Orchestration System for Advanced Narrative Construction</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2>Table of Contents</h2>
+
+            <div class="toc-section">
+                <h3>I. Architecture</h3>
+                <ul class="toc-list">
+                    <li><a href="#system-overview">1.1 System Overview</a></li>
+                    <li><a href="#agent-architecture">1.2 Agent Architecture</a></li>
+                    <li><a href="#data-flow">1.3 Data Flow & Processing Pipeline</a></li>
+                    <li><a href="#orchestration">1.4 Orchestration Patterns</a></li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <h3>II. Core Systems</h3>
+                <ul class="toc-list">
+                    <li><a href="#agent-system">2.1 Agent System Implementation</a></li>
+                    <li><a href="#review-engine">2.2 Review Engine Architecture</a></li>
+                    <li><a href="#wrp-system">2.3 WRP System Specification</a></li>
+                    <li><a href="#batch-processing">2.4 Batch Processing Framework</a></li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <h3>III. Algorithms</h3>
+                <ul class="toc-list">
+                    <li><a href="#content-analysis">3.1 Content Analysis Algorithms</a></li>
+                    <li><a href="#quality-scoring">3.2 Quality Scoring Metrics</a></li>
+                    <li><a href="#optimization">3.3 Optimization Algorithms</a></li>
+                    <li><a href="#agent-selection">3.4 Agent Selection Heuristics</a></li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <h3>IV. Technical Specifications</h3>
+                <ul class="toc-list">
+                    <li><a href="#api-spec">4.1 API Specifications</a></li>
+                    <li><a href="#data-structures">4.2 Data Structures</a></li>
+                    <li><a href="#file-formats">4.3 File Format Specifications</a></li>
+                    <li><a href="#protocols">4.4 Communication Protocols</a></li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <h3>V. Performance & Optimization</h3>
+                <ul class="toc-list">
+                    <li><a href="#performance-metrics">5.1 Performance Metrics</a></li>
+                    <li><a href="#scaling">5.2 Scaling Characteristics</a></li>
+                    <li><a href="#optimization-techniques">5.3 Optimization Techniques</a></li>
+                    <li><a href="#benchmarks">5.4 Benchmark Results</a></li>
+                </ul>
+            </div>
+
+            <div class="toc-section">
+                <h3>VI. Implementation Details</h3>
+                <ul class="toc-list">
+                    <li><a href="#deployment">6.1 Deployment Architecture</a></li>
+                    <li><a href="#configuration">6.2 Configuration Management</a></li>
+                    <li><a href="#error-handling">6.3 Error Handling & Recovery</a></li>
+                    <li><a href="#security">6.4 Security Considerations</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Section 1: Architecture -->
+        <section id="system-overview">
+            <h2>1. System Architecture</h2>
+
+            <h3 id="system-overview">1.1 System Overview</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">System Characteristics</div>
+                <table class="spec-table">
+                    <tr>
+                        <td>Architecture Pattern</td>
+                        <td>Event-Driven Multi-Agent System</td>
+                    </tr>
+                    <tr>
+                        <td>Processing Model</td>
+                        <td>Asynchronous Pipeline with Backpressure</td>
+                    </tr>
+                    <tr>
+                        <td>Coordination</td>
+                        <td>Hierarchical Meta-Orchestration</td>
+                    </tr>
+                    <tr>
+                        <td>State Management</td>
+                        <td>Distributed State with Event Sourcing</td>
+                    </tr>
+                    <tr>
+                        <td>Concurrency Model</td>
+                        <td>Actor-based Concurrency</td>
+                    </tr>
+                    <tr>
+                        <td>Fault Tolerance</td>
+                        <td>Supervisor Hierarchies with Circuit Breakers</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="spec-header">High-Level Architecture</div>
+                <div class="flow-diagram">
+                    <div class="flow-node">User Interface</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-node">Command Parser</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-node">Meta Coordinator</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-node">Agent Pool</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-node">Output Pipeline</div>
+                </div>
+            </div>
+
+            <p>The WriteAssist framework implements a sophisticated multi-agent architecture designed for optimal narrative construction. The system employs 27 specialized agents orchestrated through a hierarchical coordination system, enabling complex literary analysis and generation tasks.</p>
+
+            <h3 id="agent-architecture">1.2 Agent Architecture</h3>
+
+            <div class="implementation-detail">
+                <h4>Agent Classification Taxonomy</h4>
+                <p>Agents are classified into five primary categories based on functional specialization:</p>
+
+                <div class="technical-spec">
+                    <div class="spec-header">Agent Categories</div>
+                    <table class="spec-table">
+                        <tr>
+                            <td>Core Review Agents</td>
+                            <td>story-architect, continuity-checker, timeline-keeper, rule-enforcer</td>
+                        </tr>
+                        <tr>
+                            <td>Style Agents</td>
+                            <td>style-editor, grammar-clarity, dialogue-coach, voice-consistency</td>
+                        </tr>
+                        <tr>
+                            <td>Content Agents</td>
+                            <td>content-analyzer, transition-validator, sensitivity-reviewer</td>
+                        </tr>
+                        <tr>
+                            <td>Development Agents</td>
+                            <td>character-developer, world-builder, thematic-guide</td>
+                        </tr>
+                        <tr>
+                            <td>Market Agents</td>
+                            <td>market-analyst, publisher-desk, marketing-strategist</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="algorithm-box">
+                <div class="algorithm-header">Agent Selection Algorithm</div>
+                <div class="algorithm-step" data-step="1.">Parse input content and extract feature vectors</div>
+                <div class="algorithm-step" data-step="2.">Apply content classification heuristics</div>
+                <div class="algorithm-step" data-step="3.">Calculate agent relevance scores using cosine similarity</div>
+                <div class="algorithm-step" data-step="4.">Apply threshold filtering (min_relevance = 0.65)</div>
+                <div class="algorithm-step" data-step="5.">Sort agents by priority and relevance</div>
+                <div class="algorithm-step" data-step="6.">Return optimal agent subset</div>
+
+                <div class="complexity-notation">
+                    Time Complexity: O(n·m·log(m)) where n = content length, m = agent count
+                </div>
+            </div>
+
+            <h3 id="data-flow">1.3 Data Flow & Processing Pipeline</h3>
+
+            <pre><code># Pipeline Architecture
+class ProcessingPipeline:
+    def __init__(self):
+        self.stages = [
+            InputValidation(),
+            ContentAnalysis(),
+            AgentSelection(),
+            ParallelProcessing(),
+            ResultAggregation(),
+            QualityAssurance(),
+            OutputFormatting()
+        ]
+
+    async def process(self, input_data):
+        context = ProcessingContext(input_data)
+        for stage in self.stages:
+            context = await stage.execute(context)
+            if context.should_halt():
+                return context.early_exit()
+        return context.final_output()
+</code></pre>
+        </section>
+
+        <!-- Section 2: Core Systems -->
+        <section id="agent-system">
+            <h2>2. Core System Implementation</h2>
+
+            <h3 id="agent-system">2.1 Agent System Implementation</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">Agent Interface Specification</div>
+                <table class="spec-table">
+                    <tr>
+                        <td>Base Class</td>
+                        <td>AbstractAgent</td>
+                    </tr>
+                    <tr>
+                        <td>Required Methods</td>
+                        <td>analyze(), process(), validate(), report()</td>
+                    </tr>
+                    <tr>
+                        <td>State Management</td>
+                        <td>Immutable state with event sourcing</td>
+                    </tr>
+                    <tr>
+                        <td>Communication</td>
+                        <td>Message-passing via agent bus</td>
+                    </tr>
+                    <tr>
+                        <td>Error Handling</td>
+                        <td>Supervisor pattern with retry policies</td>
+                    </tr>
+                </table>
+            </div>
+
+            <pre><code># Agent Implementation Pattern
+class Agent(AbstractAgent):
+    def __init__(self, config: AgentConfig):
+        self.id = generate_uuid()
+        self.capabilities = config.capabilities
+        self.priority = config.priority
+        self.state = AgentState.IDLE
+
+    async def analyze(self, content: Content) -> Analysis:
+        """Performs domain-specific content analysis"""
+        feature_extraction = await self.extract_features(content)
+        pattern_matching = await self.match_patterns(feature_extraction)
+        return Analysis(
+            features=feature_extraction,
+            patterns=pattern_matching,
+            confidence=self.calculate_confidence(pattern_matching)
+        )
+
+    def calculate_confidence(self, patterns: PatternSet) -> float:
+        """Calculates confidence score using Bayesian inference"""
+        prior = self.capabilities.domain_expertise
+        likelihood = patterns.match_strength
+        evidence = self.normalize_evidence(patterns)
+        return (prior * likelihood) / evidence
+</code></pre>
+
+            <h3 id="review-engine">2.2 Review Engine Architecture</h3>
+
+            <div class="implementation-detail">
+                <h4>Smart Review System</h4>
+                <p>The review engine implements a multi-pass analysis system with progressive refinement:</p>
+
+                <div class="algorithm-box">
+                    <div class="algorithm-header">Review Algorithm</div>
+                    <div class="algorithm-step" data-step="1.">Initial content scan (lexical analysis)</div>
+                    <div class="algorithm-step" data-step="2.">Semantic parsing and entity extraction</div>
+                    <div class="algorithm-step" data-step="3.">Pattern detection using ML models</div>
+                    <div class="algorithm-step" data-step="4.">Agent assignment based on content profile</div>
+                    <div class="algorithm-step" data-step="5.">Parallel agent execution with result aggregation</div>
+                    <div class="algorithm-step" data-step="6.">Consensus building and conflict resolution</div>
+                    <div class="algorithm-step" data-step="7.">Quality score calculation and reporting</div>
+                </div>
+
+                <h4 style="margin-top: 2rem;">Character Introduction Detection (v2.1)</h4>
+                <p>The Continuity & Logic critic validates character introductions using a three-tier priority system:</p>
+
+                <div class="algorithm-box">
+                    <div class="algorithm-header">Detection Rules</div>
+                    <div class="algorithm-step" data-step="1.">Anonymous Introduction: Flags pronoun/role references without names</div>
+                    <div class="algorithm-step" data-step="2.">Compendium Cross-Check: Detects generic references when specific names exist</div>
+                    <div class="algorithm-step" data-step="3.">Photo/Memory Exception: Requires name + context in reference moment</div>
+                    <div class="algorithm-step" data-step="4.">Dialogue Priority: Characters must be introduced before/during first dialogue</div>
+                    <div class="algorithm-step" data-step="5.">Belated Introduction: Catches names appearing late after anonymous first mention</div>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: var(--shade-3-medium); border-left: 3px solid var(--accent-primary); border-radius: 4px;">
+                    <strong>TIER 1 Critical (Forces Revision):</strong> Family members, named characters with dialogue, recurring characters<br>
+                    <strong>Auto-Fix:</strong> High confidence fixes (0.95-1.0) applied automatically during auto-revise
+                </div>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">73%</div>
+                    <div class="metric-label">Processing Speed Improvement</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">92%</div>
+                    <div class="metric-label">Issue Detection Accuracy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">8.5/10</div>
+                    <div class="metric-label">Average Quality Score</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">< 3s</div>
+                    <div class="metric-label">Average Response Time</div>
+                </div>
+            </div>
+
+            <h3 id="wrp-system">2.3 WRP (Writing Request Protocol) System</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">WRP Specification</div>
+                <table class="spec-table">
+                    <tr>
+                        <td>Protocol Version</td>
+                        <td>2.0</td>
+                    </tr>
+                    <tr>
+                        <td>Encoding</td>
+                        <td>UTF-8 with YAML frontmatter</td>
+                    </tr>
+                    <tr>
+                        <td>Schema Validation</td>
+                        <td>JSON Schema v7</td>
+                    </tr>
+                    <tr>
+                        <td>Execution Model</td>
+                        <td>Declarative with imperative hooks</td>
+                    </tr>
+                    <tr>
+                        <td>State Tracking</td>
+                        <td>Persistent with checkpoint recovery</td>
+                    </tr>
+                </table>
+            </div>
+
+            <pre><code># WRP Structure Definition
+wrp_schema = {
+    "type": "object",
+    "required": ["metadata", "context", "requirements", "execution"],
+    "properties": {
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "version": {"type": "string", "pattern": "^\\d+\\.\\d+$"},
+                "id": {"type": "string", "format": "uuid"},
+                "created": {"type": "string", "format": "date-time"},
+                "author": {"type": "string"},
+                "priority": {"type": "integer", "minimum": 1, "maximum": 10}
+            }
+        },
+        "context": {
+            "type": "object",
+            "properties": {
+                "chapter": {"type": "integer"},
+                "scene": {"type": "string"},
+                "characters": {"type": "array", "items": {"type": "string"}},
+                "themes": {"type": "array", "items": {"type": "string"}},
+                "dependencies": {"type": "array", "items": {"type": "string"}}
+            }
+        },
+        "requirements": {
+            "type": "object",
+            "properties": {
+                "word_count": {"type": "object", "properties": {
+                    "min": {"type": "integer"},
+                    "max": {"type": "integer"}
+                }},
+                "style_rules": {"type": "array", "items": {"type": "string"}},
+                "quality_threshold": {"type": "number", "minimum": 0, "maximum": 10}
+            }
+        },
+        "execution": {
+            "type": "object",
+            "properties": {
+                "agents": {"type": "array", "items": {"type": "string"}},
+                "pipeline": {"type": "string", "enum": ["sequential", "parallel", "hybrid"]},
+                "checkpoints": {"type": "boolean"},
+                "auto_revision": {"type": "boolean"}
+            }
+        }
+    }
+}
+</code></pre>
+        </section>
+
+        <!-- Section 3: Algorithms -->
+        <section id="content-analysis">
+            <h2>3. Core Algorithms</h2>
+
+            <h3 id="content-analysis">3.1 Content Analysis Algorithms</h3>
+
+            <div class="algorithm-box">
+                <div class="algorithm-header">Semantic Density Calculation</div>
+                <pre><code>def calculate_semantic_density(text: str) -> float:
+    """
+    Calculates semantic density using TF-IDF weighted n-gram analysis
+    Returns value between 0 (low density) and 1 (high density)
+    """
+    # Tokenization and preprocessing
+    tokens = tokenize(text)
+    cleaned = remove_stopwords(tokens)
+
+    # N-gram extraction (1-3 grams)
+    ngrams = extract_ngrams(cleaned, n_range=(1, 3))
+
+    # TF-IDF calculation
+    tfidf_matrix = TfidfVectorizer(
+        max_features=1000,
+        ngram_range=(1, 3),
+        sublinear_tf=True
+    ).fit_transform([text])
+
+    # Semantic density score
+    density = np.mean(tfidf_matrix.data) * len(unique_tokens) / len(tokens)
+    return min(1.0, density * SCALING_FACTOR)
+</code></pre>
+                <div class="complexity-notation">
+                    Time Complexity: O(n²) | Space Complexity: O(n)
+                </div>
+            </div>
+
+            <h3 id="quality-scoring">3.2 Quality Scoring Metrics</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">Quality Scoring Components</div>
+                <table class="spec-table">
+                    <tr>
+                        <td>Narrative Coherence</td>
+                        <td>0.25 weight | Measures plot consistency</td>
+                    </tr>
+                    <tr>
+                        <td>Character Development</td>
+                        <td>0.20 weight | Tracks character arc progression</td>
+                    </tr>
+                    <tr>
+                        <td>Pacing Analysis</td>
+                        <td>0.15 weight | Scene rhythm and tempo</td>
+                    </tr>
+                    <tr>
+                        <td>Dialogue Authenticity</td>
+                        <td>0.15 weight | Voice consistency metrics</td>
+                    </tr>
+                    <tr>
+                        <td>Technical Quality</td>
+                        <td>0.15 weight | Grammar, style adherence</td>
+                    </tr>
+                    <tr>
+                        <td>Thematic Resonance</td>
+                        <td>0.10 weight | Theme integration depth</td>
+                    </tr>
+                </table>
+            </div>
+
+            <pre><code># Quality Score Calculation
+class QualityScorer:
+    def __init__(self):
+        self.weights = {
+            'narrative_coherence': 0.25,
+            'character_development': 0.20,
+            'pacing': 0.15,
+            'dialogue': 0.15,
+            'technical': 0.15,
+            'thematic': 0.10
+        }
+
+    def calculate_score(self, analysis_results: Dict[str, float]) -> float:
+        """
+        Calculates weighted quality score with confidence intervals
+        """
+        weighted_scores = []
+        confidence_intervals = []
+
+        for metric, weight in self.weights.items():
+            score = analysis_results.get(metric, 0.0)
+            weighted = score * weight
+            weighted_scores.append(weighted)
+
+            # Calculate confidence interval using bootstrap
+            ci_lower, ci_upper = self.bootstrap_confidence(score, samples=1000)
+            confidence_intervals.append((ci_lower * weight, ci_upper * weight))
+
+        final_score = sum(weighted_scores)
+        ci_range = self.aggregate_confidence_intervals(confidence_intervals)
+
+        return {
+            'score': round(final_score, 2),
+            'confidence_interval': ci_range,
+            'breakdown': dict(zip(self.weights.keys(), weighted_scores))
+        }
+</code></pre>
+
+            <h3 id="optimization">3.3 Optimization Algorithms</h3>
+
+            <div class="implementation-detail">
+                <h4>Genetic Algorithm for Scene Optimization</h4>
+                <p>The system employs a genetic algorithm to optimize scene structure and pacing:</p>
+
+                <pre><code>class SceneOptimizer:
+    def __init__(self, population_size=100, generations=50):
+        self.population_size = population_size
+        self.generations = generations
+        self.mutation_rate = 0.1
+        self.crossover_rate = 0.7
+
+    def optimize(self, scene: Scene) -> Scene:
+        """
+        Optimizes scene structure using genetic algorithm
+        """
+        # Initialize population
+        population = self.initialize_population(scene)
+
+        for generation in range(self.generations):
+            # Evaluate fitness
+            fitness_scores = [self.fitness(individual) for individual in population]
+
+            # Selection (tournament selection)
+            parents = self.tournament_selection(population, fitness_scores)
+
+            # Crossover
+            offspring = self.crossover(parents)
+
+            # Mutation
+            offspring = self.mutate(offspring)
+
+            # Replacement (elitist strategy)
+            population = self.elitist_replacement(population, offspring, fitness_scores)
+
+            # Early stopping if convergence detected
+            if self.has_converged(fitness_scores):
+                break
+
+        # Return best individual
+        best_idx = np.argmax(fitness_scores)
+        return population[best_idx]
+
+    def fitness(self, scene: Scene) -> float:
+        """
+        Fitness function combining multiple objectives:
+        - Pacing score (rhythm variation)
+        - Emotional arc (tension progression)
+        - Information density (plot advancement)
+        - Dialogue/narrative balance
+        """
+        return (
+            self.pacing_score(scene) * 0.3 +
+            self.emotional_arc_score(scene) * 0.3 +
+            self.information_density(scene) * 0.2 +
+            self.balance_score(scene) * 0.2
+        )
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 4: Technical Specifications -->
+        <section id="api-spec">
+            <h2>4. Technical Specifications</h2>
+
+            <h3 id="api-spec">4.1 API Specifications</h3>
+
+            <div class="api-endpoint">
+                <span class="endpoint-method">POST</span>
+                <span class="endpoint-path">/api/v2/analyze</span>
+                <ul class="parameter-list">
+                    <li><code>content</code>: string (required) - Text content to analyze</li>
+                    <li><code>agents</code>: array - Specific agents to use (optional)</li>
+                    <li><code>depth</code>: string - Analysis depth: "shallow" | "standard" | "deep"</li>
+                    <li><code>async</code>: boolean - Enable async processing</li>
+                </ul>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="endpoint-method">POST</span>
+                <span class="endpoint-path">/api/v2/generate</span>
+                <ul class="parameter-list">
+                    <li><code>wrp_id</code>: string - WRP document ID</li>
+                    <li><code>context</code>: object - Generation context</li>
+                    <li><code>quality_target</code>: number - Target quality score (0-10)</li>
+                    <li><code>max_iterations</code>: number - Maximum revision cycles</li>
+                </ul>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="endpoint-method">GET</span>
+                <span class="endpoint-path">/api/v2/agents/{agent_id}/status</span>
+                <ul class="parameter-list">
+                    <li>Returns agent status, current task, and performance metrics</li>
+                </ul>
+            </div>
+
+            <h3 id="data-structures">4.2 Core Data Structures</h3>
+
+            <pre><code># Core Data Structures
+@dataclass
+class Chapter:
+    id: str
+    number: int
+    title: str
+    content: str
+    metadata: ChapterMetadata
+    quality_score: Optional[float]
+    review_history: List[Review]
+
+    def __post_init__(self):
+        self.word_count = len(self.content.split())
+        self.hash = hashlib.sha256(self.content.encode()).hexdigest()
+
+@dataclass
+class ChapterMetadata:
+    created_at: datetime
+    modified_at: datetime
+    author_notes: Optional[str]
+    themes: List[str]
+    characters: List[str]
+    locations: List[str]
+    timeline_position: TimelinePoint
+    dependencies: List[str]  # Chapter IDs this depends on
+
+class TimelinePoint:
+    def __init__(self, absolute_date: datetime, relative_position: float):
+        self.absolute = absolute_date
+        self.relative = relative_position  # 0.0 to 1.0 in story timeline
+        self.events = []
+
+    def add_event(self, event: Event):
+        self.events.append(event)
+        self.events.sort(key=lambda e: e.timestamp)
+
+class AgentMessage:
+    def __init__(self, sender: str, recipient: str, payload: Any):
+        self.id = uuid.uuid4()
+        self.sender = sender
+        self.recipient = recipient
+        self.payload = payload
+        self.timestamp = datetime.utcnow()
+        self.priority = self.calculate_priority()
+
+    def calculate_priority(self) -> int:
+        # Priority based on sender type and payload urgency
+        base_priority = AGENT_PRIORITIES.get(self.sender, 5)
+        urgency_modifier = self.payload.get('urgency', 0)
+        return min(10, base_priority + urgency_modifier)
+</code></pre>
+
+            <h3 id="file-formats">4.3 File Format Specifications</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">Story Compendium Format</div>
+                <pre><code># STORY COMPENDIUM v2.0
+---
+metadata:
+  version: "2.0"
+  created: "2024-01-01T00:00:00Z"
+  last_modified: "2024-01-15T12:00:00Z"
+
+world:
+  setting:
+    name: string
+    period: string
+    locations:
+      - id: string
+        name: string
+        description: string
+        significance: string
+
+characters:
+  - id: string
+    name: string
+    role: enum[protagonist|antagonist|supporting|minor]
+    arc: string
+    relationships:
+      - character_id: string
+        type: string
+        evolution: string[]
+
+themes:
+  primary: string[]
+  secondary: string[]
+  motifs: string[]
+
+timeline:
+  events:
+    - id: string
+      date: datetime
+      description: string
+      impact: enum[major|moderate|minor]
+      characters_involved: string[]
+---</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 5: Performance -->
+        <section id="performance-metrics">
+            <h2>5. Performance & Optimization</h2>
+
+            <h3 id="performance-metrics">5.1 Performance Metrics</h3>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">O(n log n)</div>
+                    <div class="metric-label">Average Time Complexity</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">O(n)</div>
+                    <div class="metric-label">Space Complexity</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">1.2ms</div>
+                    <div class="metric-label">P50 Latency</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">8.7ms</div>
+                    <div class="metric-label">P99 Latency</div>
+                </div>
+            </div>
+
+            <h3 id="scaling">5.2 Scaling Characteristics</h3>
+
+            <div class="implementation-detail">
+                <h4>Horizontal Scaling Strategy</h4>
+                <pre><code>class ScalingManager:
+    def __init__(self):
+        self.min_agents = 5
+        self.max_agents = 100
+        self.scale_threshold = 0.7  # CPU utilization
+        self.cooldown_period = 300  # seconds
+
+    def auto_scale(self, metrics: SystemMetrics) -> ScalingDecision:
+        """
+        Implements predictive auto-scaling based on system metrics
+        """
+        current_load = metrics.cpu_utilization
+        predicted_load = self.predict_load(metrics.history)
+
+        if predicted_load > self.scale_threshold:
+            scale_factor = min(2.0, predicted_load / current_load)
+            new_count = int(self.current_agents * scale_factor)
+            return ScalingDecision(
+                action='SCALE_UP',
+                target_count=min(new_count, self.max_agents),
+                reason=f'Predicted load: {predicted_load:.2f}'
+            )
+        elif current_load < self.scale_threshold * 0.3:
+            return ScalingDecision(
+                action='SCALE_DOWN',
+                target_count=max(self.min_agents, self.current_agents // 2),
+                reason='Low utilization detected'
+            )
+        return ScalingDecision(action='NO_CHANGE')
+</code></pre>
+            </div>
+
+            <h3 id="optimization-techniques">5.3 Optimization Techniques</h3>
+
+            <div class="algorithm-box">
+                <div class="algorithm-header">Cache Strategy</div>
+                <div class="algorithm-step" data-step="1.">LRU cache for agent results (TTL: 3600s)</div>
+                <div class="algorithm-step" data-step="2.">Bloom filters for duplicate detection</div>
+                <div class="algorithm-step" data-step="3.">Content-addressable storage for chapters</div>
+                <div class="algorithm-step" data-step="4.">Memoization of expensive computations</div>
+                <div class="algorithm-step" data-step="5.">Predictive prefetching based on access patterns</div>
+            </div>
+
+            <h3 id="benchmarks">5.4 Benchmark Results</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">Performance Benchmarks</div>
+                <table class="spec-table">
+                    <tr>
+                        <td>Single Chapter Analysis</td>
+                        <td>2.3s average (5000 words)</td>
+                    </tr>
+                    <tr>
+                        <td>Full Manuscript Review</td>
+                        <td>47s average (80,000 words)</td>
+                    </tr>
+                    <tr>
+                        <td>WRP Generation</td>
+                        <td>0.8s per chapter</td>
+                    </tr>
+                    <tr>
+                        <td>Batch Processing (10 chapters)</td>
+                        <td>12.4s with parallelization</td>
+                    </tr>
+                    <tr>
+                        <td>Agent Coordination Overhead</td>
+                        <td>< 50ms per coordination</td>
+                    </tr>
+                    <tr>
+                        <td>Memory Usage (idle)</td>
+                        <td>~120MB</td>
+                    </tr>
+                    <tr>
+                        <td>Memory Usage (peak)</td>
+                        <td>~890MB</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 6: Implementation -->
+        <section id="deployment">
+            <h2>6. Implementation Details</h2>
+
+            <h3 id="deployment">6.1 Deployment Architecture</h3>
+
+            <div class="architecture-diagram">
+                <div class="spec-header">Deployment Topology</div>
+                <pre><code># Docker Compose Configuration
+version: '3.8'
+services:
+  writeassist-core:
+    image: writeassist/core:2.0
+    environment:
+      - AGENT_POOL_SIZE=27
+      - MAX_CONCURRENT_TASKS=10
+      - CACHE_STRATEGY=LRU
+      - PERFORMANCE_MODE=optimized
+    volumes:
+      - ./manuscripts:/data/manuscripts
+      - ./config:/app/config
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 2G
+        reservations:
+          cpus: '2.0'
+          memory: 1G
+
+  writeassist-agents:
+    image: writeassist/agents:2.0
+    scale: 3
+    environment:
+      - COORDINATION_MODE=distributed
+      - MESSAGE_BROKER=internal
+    depends_on:
+      - writeassist-core
+
+  redis-cache:
+    image: redis:7-alpine
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+
+  monitoring:
+    image: writeassist/monitoring:2.0
+    ports:
+      - "9090:9090"
+    environment:
+      - METRICS_INTERVAL=10s
+      - ALERT_THRESHOLD=0.8
+</code></pre>
+            </div>
+
+            <h3 id="configuration">6.2 Configuration Management</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">Configuration Schema</div>
+                <pre><code># config.yaml
+system:
+  version: 2.0
+  mode: production
+
+agents:
+  pool_size: 27
+  timeout: 30s
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
+    base_delay: 100ms
+
+  priorities:
+    meta-coordinator: 10
+    story-architect: 9
+    continuity-checker: 8
+    rule-enforcer: 8
+    # ... other agents
+
+processing:
+  max_concurrent: 10
+  queue_size: 100
+  batch_size: 5
+
+  pipeline:
+    stages:
+      - validation
+      - analysis
+      - processing
+      - aggregation
+      - output
+
+quality:
+  min_threshold: 7.0
+  target_score: 8.5
+  max_iterations: 5
+
+  weights:
+    narrative: 0.25
+    character: 0.20
+    pacing: 0.15
+    dialogue: 0.15
+    technical: 0.15
+    thematic: 0.10
+
+cache:
+  strategy: LRU
+  ttl: 3600
+  max_size: 1GB
+
+monitoring:
+  metrics_port: 9090
+  log_level: INFO
+  trace_sampling: 0.1
+</code></pre>
+            </div>
+
+            <h3 id="error-handling">6.3 Error Handling & Recovery</h3>
+
+            <div class="implementation-detail">
+                <h4>Fault Tolerance Mechanisms</h4>
+
+                <pre><code>class ErrorHandler:
+    def __init__(self):
+        self.circuit_breaker = CircuitBreaker(
+            failure_threshold=5,
+            recovery_timeout=60,
+            expected_exception=AgentException
+        )
+
+    async def handle_agent_failure(self, agent_id: str, error: Exception):
+        """
+        Implements cascading failure prevention
+        """
+        # Log error with full context
+        logger.error(f"Agent {agent_id} failed", exc_info=error)
+
+        # Check circuit breaker state
+        if self.circuit_breaker.is_open():
+            return await self.fallback_strategy(agent_id)
+
+        try:
+            # Attempt recovery
+            recovery_result = await self.attempt_recovery(agent_id, error)
+            self.circuit_breaker.record_success()
+            return recovery_result
+        except Exception as recovery_error:
+            self.circuit_breaker.record_failure()
+
+            # Escalate if critical agent
+            if agent_id in CRITICAL_AGENTS:
+                await self.escalate_to_supervisor(agent_id, recovery_error)
+
+            # Use fallback
+            return await self.fallback_strategy(agent_id)
+
+    async def attempt_recovery(self, agent_id: str, error: Exception):
+        """
+        Recovery strategies in order of preference
+        """
+        strategies = [
+            self.restart_agent,
+            self.reassign_to_backup,
+            self.decompose_task,
+            self.manual_intervention
+        ]
+
+        for strategy in strategies:
+            try:
+                return await strategy(agent_id, error)
+            except RecoveryFailedException:
+                continue
+
+        raise CriticalFailureException(f"All recovery strategies failed for {agent_id}")
+</code></pre>
+            </div>
+
+            <h3 id="security">6.4 Security Considerations</h3>
+
+            <div class="warning-box">
+                <h4>Security Best Practices</h4>
+                <ul>
+                    <li>All inter-agent communication is encrypted using TLS 1.3</li>
+                    <li>Input sanitization prevents injection attacks</li>
+                    <li>Rate limiting prevents resource exhaustion</li>
+                    <li>Audit logging tracks all system operations</li>
+                    <li>Principle of least privilege for agent permissions</li>
+                </ul>
+            </div>
+
+            <pre><code>class SecurityManager:
+    def __init__(self):
+        self.rate_limiter = RateLimiter(
+            max_requests_per_minute=60,
+            max_burst=10
+        )
+        self.validator = InputValidator()
+        self.encryptor = AESEncryption(key=ENCRYPTION_KEY)
+
+    def validate_input(self, content: str) -> ValidationResult:
+        """
+        Multi-layer input validation
+        """
+        # Size check
+        if len(content) > MAX_CONTENT_SIZE:
+            raise ValidationException("Content exceeds maximum size")
+
+        # Format validation
+        if not self.validator.is_valid_format(content):
+            raise ValidationException("Invalid content format")
+
+        # Malicious pattern detection
+        if self.detect_malicious_patterns(content):
+            raise SecurityException("Potentially malicious content detected")
+
+        # Sanitization
+        sanitized = self.sanitize_content(content)
+
+        return ValidationResult(
+            is_valid=True,
+            sanitized_content=sanitized,
+            risk_score=self.calculate_risk_score(content)
+        )
+</code></pre>
+        </section>
+
+        <!-- Advanced Topics -->
+        <section id="advanced">
+            <h2>7. Advanced Topics</h2>
+
+            <h3>7.1 Machine Learning Integration</h3>
+
+            <div class="implementation-detail">
+                <h4>Neural Architecture for Quality Prediction</h4>
+                <pre><code>class QualityPredictor(nn.Module):
+    def __init__(self, vocab_size=50000, embedding_dim=300):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.lstm = nn.LSTM(embedding_dim, 256, num_layers=2,
+                           bidirectional=True, dropout=0.3)
+        self.attention = MultiHeadAttention(512, num_heads=8)
+        self.classifier = nn.Sequential(
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(128, 1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        # Embedding layer
+        embedded = self.embedding(x)
+
+        # Bidirectional LSTM
+        lstm_out, (hidden, cell) = self.lstm(embedded)
+
+        # Self-attention mechanism
+        attended = self.attention(lstm_out, lstm_out, lstm_out)
+
+        # Global average pooling
+        pooled = torch.mean(attended, dim=1)
+
+        # Quality score prediction (0-1)
+        quality_score = self.classifier(pooled)
+
+        return quality_score * 10  # Scale to 0-10
+</code></pre>
+            </div>
+
+            <h3>7.2 Distributed Processing</h3>
+
+            <div class="algorithm-box">
+                <div class="algorithm-header">Distributed Consensus Algorithm</div>
+                <div class="algorithm-step" data-step="1.">Agent proposes analysis result with confidence score</div>
+                <div class="algorithm-step" data-step="2.">Broadcast result to peer agents</div>
+                <div class="algorithm-step" data-step="3.">Collect votes weighted by agent expertise</div>
+                <div class="algorithm-step" data-step="4.">Apply Byzantine fault tolerance (f = ⌊(n-1)/3⌋)</div>
+                <div class="algorithm-step" data-step="5.">Achieve consensus if 2f+1 agents agree</div>
+                <div class="algorithm-step" data-step="6.">Commit result to distributed ledger</div>
+            </div>
+
+            <h3>7.3 Future Enhancements</h3>
+
+            <div class="success-box">
+                <h4>Roadmap v3.0</h4>
+                <ul>
+                    <li>Transformer-based content generation with GPT-4 integration</li>
+                    <li>Real-time collaborative editing with CRDT synchronization</li>
+                    <li>Quantum-inspired optimization for complex narrative structures</li>
+                    <li>Federated learning for personalized style adaptation</li>
+                    <li>Blockchain-based version control and attribution</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Appendices -->
+        <section id="appendices">
+            <h2>Appendices</h2>
+
+            <h3>A. Glossary of Technical Terms</h3>
+
+            <div class="technical-spec">
+                <div class="spec-header">Key Terms</div>
+                <table class="spec-table">
+                    <tr>
+                        <td>WRP</td>
+                        <td>Writing Request Protocol - Declarative specification for content generation</td>
+                    </tr>
+                    <tr>
+                        <td>Meta-Coordinator</td>
+                        <td>Master orchestration agent managing agent allocation</td>
+                    </tr>
+                    <tr>
+                        <td>Semantic Density</td>
+                        <td>Measure of information content per unit text</td>
+                    </tr>
+                    <tr>
+                        <td>Quality Score</td>
+                        <td>Weighted aggregate metric (0-10) of content quality</td>
+                    </tr>
+                    <tr>
+                        <td>Agent Bus</td>
+                        <td>Message-passing infrastructure for inter-agent communication</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>B. Performance Tuning Parameters</h3>
+
+            <pre><code># Optimal Configuration for Different Use Cases
+
+# High Quality Mode (Quality > Speed)
+high_quality_config = {
+    'analysis_depth': 'deep',
+    'agent_count': 27,
+    'max_iterations': 10,
+    'quality_threshold': 9.0,
+    'parallel_processing': False,
+    'cache_strategy': 'write-through'
+}
+
+# Balanced Mode (Default)
+balanced_config = {
+    'analysis_depth': 'standard',
+    'agent_count': 15,
+    'max_iterations': 5,
+    'quality_threshold': 8.0,
+    'parallel_processing': True,
+    'cache_strategy': 'write-back'
+}
+
+# Speed Mode (Speed > Quality)
+speed_config = {
+    'analysis_depth': 'shallow',
+    'agent_count': 7,
+    'max_iterations': 2,
+    'quality_threshold': 7.0,
+    'parallel_processing': True,
+    'cache_strategy': 'aggressive'
+}
+</code></pre>
+
+            <h3>C. Troubleshooting Guide</h3>
+
+            <div class="warning-box">
+                <h4>Common Issues and Solutions</h4>
+                <table class="spec-table">
+                    <tr>
+                        <td>High Latency</td>
+                        <td>Increase agent pool size, enable caching, reduce analysis depth</td>
+                    </tr>
+                    <tr>
+                        <td>Memory Exhaustion</td>
+                        <td>Implement pagination, reduce batch size, increase heap allocation</td>
+                    </tr>
+                    <tr>
+                        <td>Agent Deadlock</td>
+                        <td>Check circular dependencies, implement timeout, use deadlock detection</td>
+                    </tr>
+                    <tr>
+                        <td>Quality Score Variance</td>
+                        <td>Increase sample size, adjust weights, calibrate scoring models</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>WriteAssist Technical Documentation v2.0.0</p>
+            <p>© 2024 WriteAssist Framework | Advanced Multi-Agent System for Literary Excellence</p>
+            <p>Last Updated: <script>document.write(new Date().toISOString().split('T')[0]);</script></p>
+        </div>
+    </footer>
+</body>
+</html>

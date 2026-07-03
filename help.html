@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WriteAssist: Author's Guide</title>
+<style>
+  /* ---------- Design tokens ---------- */
+  :root {
+    --bg:          #FAF6EE;
+    --bg-card:    #F4ECDF;
+    --bg-deep:    #ECE0CB;
+    --ink:        #1B1A17;
+    --ink-soft:   #4A4640;
+    --ink-mute:   #786F60;
+    --rule:       #D8C9AC;
+    --burgundy:   #6B2C2C;
+    --burgundy-2: #8C3A3A;
+    --brass:      #9C7A35;
+    --forest:     #2F4F3F;
+    --oxblood:    #5A1818;
+    --green-ok:   #3F6B4E;
+    --red-bad:    #8C3A3A;
+
+    --serif:  "Source Serif 4", "Source Serif Pro", "EB Garamond", Georgia, "Times New Roman", serif;
+    --sans:   "Inter", "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono:   "JetBrains Mono", "Source Code Pro", "Consolas", "Menlo", monospace;
+
+    --measure: 68ch;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --section-y: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .wrap {
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--section-y);
+    padding: var(--section-y) 0;
+  }
+
+  @media (min-width: 1100px) {
+    main { grid-template-columns: 14rem minmax(0, 1fr); gap: 4rem; }
+    aside.toc { position: sticky; top: 2rem; align-self: start; }
+  }
+
+  header.masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: 2.5rem 0 1.75rem;
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
+  }
+  header .row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  header .brand {
+    font-family: var(--serif);
+    font-weight: 600; font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.01em; line-height: 1.05;
+    color: var(--burgundy);
+  }
+  header .meta {
+    font-family: var(--sans); font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-mute);
+  }
+  header .meta span + span::before { content: "·"; margin: 0 0.6em; color: var(--rule); }
+  header .tagline {
+    margin: 0.75rem 0 0;
+    font-style: italic; color: var(--ink-soft);
+    font-size: 1.15rem; max-width: 52rem;
+  }
+
+  aside.toc nav {
+    font-family: var(--sans); font-size: 0.86rem;
+    border-left: 2px solid var(--rule); padding-left: 1rem;
+  }
+  aside.toc h4 {
+    font-family: var(--sans); font-size: 0.72rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); margin: 0 0 0.75rem;
+  }
+  aside.toc a {
+    display: block; padding: 0.18rem 0; color: var(--ink-soft);
+    text-decoration: none; border-left: 2px solid transparent;
+    margin-left: -1rem; padding-left: calc(1rem - 2px);
+  }
+  aside.toc a:hover { color: var(--burgundy); }
+  aside.toc a.active { color: var(--burgundy); border-color: var(--burgundy); }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 600; letter-spacing: -0.005em;
+    color: var(--ink);
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  h2 .num {
+    font-family: var(--sans); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); margin-right: 0.75rem; vertical-align: 0.18em;
+  }
+  h3 {
+    font-family: var(--serif);
+    font-size: 1.18rem; font-weight: 600;
+    color: var(--burgundy);
+    margin: 2rem 0 0.5rem;
+  }
+  h4 {
+    font-family: var(--sans);
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 1.5rem 0 0.5rem;
+  }
+  p { margin: 0.6em 0; max-width: var(--measure); }
+  p.lede { font-size: 1.1rem; color: var(--ink-soft); font-style: italic; max-width: 56ch; }
+
+  a { color: var(--burgundy); text-decoration-color: var(--rule); text-underline-offset: 0.18em; }
+  a:hover { text-decoration-color: var(--burgundy); }
+
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+
+  p.dropcap::first-letter {
+    font-family: var(--serif);
+    font-size: 3.4em; line-height: 0.85;
+    float: left; padding: 0.1em 0.12em 0 0;
+    color: var(--burgundy); font-weight: 600;
+  }
+
+  code, pre { font-family: var(--mono); }
+  code {
+    font-size: 0.88em;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    color: var(--oxblood);
+  }
+  pre {
+    background: var(--ink);
+    color: #F4ECDF;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    padding: 1.1rem 1.25rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0.75rem 0 1.25rem;
+    border-left: 3px solid var(--brass);
+  }
+  pre code { background: none; border: none; padding: 0; color: inherit; }
+
+  .grid { display: grid; gap: 1rem; }
+  .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.25rem 1.4rem;
+  }
+  .card h3 { margin-top: 0; }
+  .card .kicker {
+    font-family: var(--sans); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 0.4rem;
+  }
+
+  .callout {
+    border-left: 3px solid var(--burgundy);
+    background: var(--bg-card);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout.warn { border-left-color: var(--oxblood); background: #F3E6E0; }
+  .callout .label {
+    font-family: var(--sans); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--burgundy); font-weight: 600; margin-bottom: 0.3rem;
+    display: block;
+  }
+  .callout.warn .label { color: var(--oxblood); }
+
+  blockquote {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.15rem; line-height: 1.55;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--brass);
+    padding: 0.4rem 0 0.4rem 1.25rem;
+    margin: 1.25rem 0;
+    max-width: 60ch;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem;
+    font-family: var(--sans); font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left; vertical-align: top;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  th {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+    border-bottom: 2px solid var(--ink);
+  }
+  tbody tr:hover { background: var(--bg-card); }
+  td code { font-size: 0.85em; }
+
+  ul, ol { padding-left: 1.25rem; }
+  li { margin: 0.25em 0; max-width: var(--measure); }
+
+  .roster {
+    display: grid; gap: 0.4rem 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    font-family: var(--sans); font-size: 0.9rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+  .roster .agent { padding: 0.18rem 0; border-bottom: 1px dotted var(--rule); }
+  .roster .agent code { background: none; border: none; padding: 0; color: var(--burgundy); font-weight: 600; }
+  .roster .agent .desc { color: var(--ink-soft); display: block; font-size: 0.82rem; margin-top: 0.1rem; }
+
+  /* ---------- Expandable agent tiles ---------- */
+  .agent-tiles {
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: 1fr;
+    margin: 0.75rem 0 2rem;
+  }
+  @media (min-width: 760px) {
+    .agent-tiles { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1300px) {
+    .agent-tiles { grid-template-columns: repeat(3, 1fr); }
+  }
+  .agent-tile {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--brass);
+    border-radius: 4px;
+    font-family: var(--sans);
+    transition: border-left-color 0.15s ease;
+  }
+  .agent-tile.reviewer { border-left-color: var(--brass); }
+  .agent-tile.creator  { border-left-color: var(--forest); }
+  .agent-tile.market   { border-left-color: var(--burgundy); }
+  .agent-tile.orch     { border-left-color: var(--oxblood); }
+
+  .agent-tile summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.75rem 0.95rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "name    expand"
+      "tagline tagline"
+      "tools   tools";
+    gap: 0.2rem 0.55rem;
+  }
+  .agent-tile summary::-webkit-details-marker { display: none; }
+  .agent-tile summary::marker { content: ""; }
+  .agent-tile summary:hover { background: var(--bg-deep); }
+  .agent-tile summary:focus-visible {
+    outline: 2px solid var(--burgundy);
+    outline-offset: -2px;
+  }
+
+  .agent-tile .agent-name {
+    grid-area: name;
+    font-family: var(--mono);
+    color: var(--burgundy);
+    font-weight: 600;
+    font-size: 0.92rem;
+    line-height: 1.3;
+  }
+  .agent-tile .agent-tagline {
+    grid-area: tagline;
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin: 0.1rem 0 0.15rem;
+  }
+  .agent-tile .agent-tools {
+    grid-area: tools;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-mute);
+    background: var(--bg);
+    padding: 0.12em 0.5em;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    white-space: nowrap;
+    justify-self: start;
+    width: fit-content;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .agent-tile summary::after {
+    grid-area: expand;
+    content: "＋";
+    color: var(--brass);
+    font-weight: 400;
+    font-size: 1.1rem;
+    font-family: var(--sans);
+    line-height: 1;
+    align-self: start;
+    margin-top: 0.1rem;
+  }
+  .agent-tile[open] summary::after { content: "－"; color: var(--burgundy); }
+  .agent-tile[open] { border-left-width: 4px; background: var(--bg); }
+  .agent-tile[open] summary { background: var(--bg-card); }
+
+  .agent-tile .body {
+    padding: 0.5rem 0.9rem 1rem;
+    border-top: 1px dotted var(--rule);
+    font-size: 0.88rem;
+  }
+  .agent-tile .body p {
+    margin: 0.55em 0;
+    color: var(--ink);
+    max-width: none;
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .agent-tile .body h5 {
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0.95rem 0 0.3rem;
+    font-weight: 600;
+    border: none;
+    padding: 0;
+  }
+  .agent-tile .body ul {
+    margin: 0.25rem 0 0.5rem;
+    padding-left: 1.1rem;
+  }
+  .agent-tile .body li {
+    margin: 0.18em 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    max-width: none;
+  }
+  .agent-tile .body code {
+    font-size: 0.82em;
+    color: var(--burgundy);
+  }
+  .agent-tile .body strong { color: var(--ink); }
+
+  .role-intro {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .role-intro h3 { margin: 0; flex: 1; }
+  .role-intro .role-count {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    background: var(--bg-card);
+    padding: 0.18em 0.6em;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+  }
+  .role-swatch {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 2px;
+  }
+  .role-swatch.reviewer { background: var(--brass); }
+  .role-swatch.creator  { background: var(--forest); }
+  .role-swatch.market   { background: var(--burgundy); }
+  .role-swatch.orch     { background: var(--oxblood); }
+
+  .genre-list {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .genre-list .chip {
+    font-family: var(--sans); font-size: 0.78rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 0.3rem 0.7rem;
+    border-radius: 3px;
+    color: var(--ink-soft);
+  }
+
+  section { scroll-margin-top: 2rem; }
+  .ornament {
+    text-align: center;
+    color: var(--brass);
+    font-size: 1.1rem;
+    letter-spacing: 0.5em;
+    margin: 0 auto;
+    padding: 1.5rem 0 0;
+  }
+
+  footer.colophon {
+    border-top: 1px solid var(--rule);
+    margin-top: var(--section-y);
+    padding: 2rem 0 3rem;
+    font-family: var(--sans);
+    color: var(--ink-mute);
+    font-size: 0.85rem;
+  }
+  footer p { max-width: 60ch; }
+
+  @media print {
+    aside.toc { display: none; }
+    body { font-size: 11pt; }
+    pre { font-size: 9pt; }
+    h2 { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="row">
+      <div class="brand">WriteAssist</div>
+      <div class="meta">
+        <span>Author's Guide</span><span>Single-file reference</span>
+      </div>
+    </div>
+    <p class="tagline">A constraint-driven, multi-agent framework for producing long-form prose with Claude Code. Built for any book-length narrative: fiction, memoir, autobiography, biography, or narrative non-fiction.</p>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+
+<aside class="toc">
+<nav>
+  <h4>Contents</h4>
+  <a href="#what-it-is">I. What WriteAssist Is</a>
+  <a href="#architecture">II. Architecture</a>
+  <a href="#wrp">III. The WRP Workflow</a>
+  <a href="#quality">IV. Quality Pipeline</a>
+  <a href="#team">V. Your Writing Team</a>
+  <a href="#enforcement">VI. Mechanical Enforcement</a>
+  <a href="#worktrees">VII. Worktree Revisions</a>
+  <a href="#statusline">VIII. The Statusline</a>
+  <a href="#integrations">IX. External Integrations</a>
+  <a href="#skills">X. Skills</a>
+  <a href="#ultrareview">XI. The Final Gate</a>
+  <a href="#cron">XII. Scheduled Jobs</a>
+  <a href="#workflow">XIII. Full Workflow</a>
+  <a href="#quickstart">XIV. Quickstart</a>
+  <a href="#reference">XV. Reference</a>
+</nav>
+</aside>
+
+<div>
+
+<!-- ========== I ========== -->
+<section id="what-it-is">
+<h2><span class="num">I</span>What WriteAssist Is</h2>
+
+<p class="dropcap">WriteAssist is not a software project. It is a writing studio that runs inside Claude Code, a framework of constraint documents, specialized agents, and slash commands designed to produce publishable book-length writing at chapter scale and above.</p>
+
+<p>The premise is simple: <strong>good narrative is the product of disciplined constraint plus relentless review.</strong> WriteAssist makes both cheap. Constraints live in plain markdown files the author owns. Review is a 10-agent panel that runs in parallel against every chapter, with an auto-revision loop that won't stop until every quality dimension scores 8.0/10 or higher.</p>
+
+<h3>What it's for</h3>
+<p>Long-form prose in any narrative mode. The framework was originally built for fiction and has since been used for memoir and autobiography as well. The constraint hierarchy, WRP workflow, and 10-agent review apply identically regardless of mode.</p>
+
+<div class="genre-list">
+  <span class="chip">Fiction (novel)</span>
+  <span class="chip">Memoir</span>
+  <span class="chip">Autobiography</span>
+  <span class="chip">Biography</span>
+  <span class="chip">Narrative non-fiction</span>
+  <span class="chip">Short story collection</span>
+  <span class="chip">Multi-book series</span>
+</div>
+
+<p>What changes between modes is what goes into <code>author-rules.md</code>, <code>project-config.md</code>, and <code>story-compendium.md</code>. For autobiography, the "characters" are real people; the "world" is a real time and place; the "twist engineer" agent matters less while <code>continuity-checker</code> and <code>sensitivity-reviewer</code> matter more. The framework adapts to the shape of the book.</p>
+
+<blockquote>
+Writing is rewriting. WriteAssist's contribution is making the rewriting fast, mechanical, and traceable, so the author's attention stays where it belongs, on the story.
+</blockquote>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== II ========== -->
+<section id="architecture">
+<h2><span class="num">II</span>Architecture</h2>
+
+<h3>The constraint hierarchy</h3>
+<p>Four documents govern every creative decision. Agents <strong>must</strong> read them in this order before any writing task.</p>
+
+<table>
+<thead><tr><th>Document</th><th>Owner</th><th>Role</th></tr></thead>
+<tbody>
+  <tr><td><code>author-rules.md</code></td><td>Author</td><td>Hard constraints (never break), soft constraints (avoid unless justified), mandates (always do).</td></tr>
+  <tr><td><code>story-compendium.md</code></td><td>Author</td><td>The book's reference: people, places, timeline, world or era rules, narrative threads.</td></tr>
+  <tr><td><code>project-config.md</code></td><td>Author</td><td>Project knobs: genre or mode, voice, tone, formality, emotional range.</td></tr>
+  <tr><td><code>CLAUDE.md</code></td><td>Framework</td><td>System rules. Do not edit.</td></tr>
+</tbody>
+</table>
+
+<h3>Directory layout</h3>
+<pre><code>01-Planning/           Outlines, beat sheets, narrative structure
+02-Manuscript/         Chapter files (the actual book)
+03-Resources/          Research, source materials, workshop transcripts
+04-Project-Management/ Style guide, writing tracker, query tracker
+05-wrp/                Writing Requirements Plans (chapter blueprints)
+.claude/
+  agents/              29 specialized agents (YAML frontmatter with tool isolation)
+  commands/            27 slash commands
+  scripts/             Hook scripts and statusline
+  skills/              Cross-project skills
+  docs/system-guides/  Internal framework docs
+  settings.json        Hook + statusline configuration
+.worktrees/            Created on demand for auto-revise iterations</code></pre>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== III ========== -->
+<section id="wrp">
+<h2><span class="num">III</span>The WRP Workflow</h2>
+
+<p>WRP stands for <em>Writing Requirements Plan</em>. It is a 5-10 page chapter blueprint capturing point of view, key beats, required setups and payoffs, continuity hooks, and pacing targets. WRPs are the difference between a chapter that lands and one that meanders.</p>
+
+<p>For memoir and autobiography, the WRP captures the same things in a slightly different vocabulary: the period covered, the people present, the truth at stake, the emotional throughline, the connection to prior and subsequent chapters.</p>
+
+<h3>The four-step loop</h3>
+<ol>
+  <li><strong><code>/generate-wrp [chapter]</code></strong>: gathers context, enters plan mode, and after the author approves the blueprint, writes it to <code>05-wrp/chapter_XX_WRP.md</code>.</li>
+  <li><strong><code>/execute-wrp [file]</code></strong>: writes the chapter from the WRP into <code>02-Manuscript/</code> and auto-fires <code>/review-chapter</code>.</li>
+  <li><strong>10-agent review (automatic):</strong> parallel panel scores the chapter on 10 quality dimensions.</li>
+  <li><strong>Auto-revise loop:</strong> if any score is below 8.0, <code>/auto-revise-chapter</code> applies confidence-tiered fixes inside a worktree and re-runs review. Up to 5 iterations.</li>
+</ol>
+
+<div class="callout">
+<span class="label">Pro move</span>
+For a book, run <code>/batch-generate-wrp</code> across the outline once you trust your structure, then review the WRPs as a group. A weak chapter at the WRP stage is a five-minute fix; a weak chapter at the manuscript stage is a five-day fix.
+</div>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== IV ========== -->
+<section id="quality">
+<h2><span class="num">IV</span>The Quality Pipeline</h2>
+
+<p>Every chapter passes through a 10-dimension scoring panel before it is considered done. The dimensions:</p>
+
+<div class="roster">
+  <div class="agent"><code>prose</code><span class="desc">Sentence craft, rhythm, word choice</span></div>
+  <div class="agent"><code>pacing</code><span class="desc">Tension curve, scene rhythm</span></div>
+  <div class="agent"><code>character</code><span class="desc">Voice distinction, motivation</span></div>
+  <div class="agent"><code>dialogue</code><span class="desc">Authenticity, subtext</span></div>
+  <div class="agent"><code>continuity</code><span class="desc">Cross-chapter consistency</span></div>
+  <div class="agent"><code>emotional engineering</code><span class="desc">Earned beats</span></div>
+  <div class="agent"><code>themes</code><span class="desc">Motif reinforcement</span></div>
+  <div class="agent"><code>plot</code><span class="desc">Cause-effect, setups, payoffs</span></div>
+  <div class="agent"><code>sensory immersion</code><span class="desc">Presence in the scene</span></div>
+  <div class="agent"><code>rule compliance</code><span class="desc">author-rules.md adherence</span></div>
+</div>
+
+<h3>The commands</h3>
+<table>
+<thead><tr><th>Command</th><th>Use</th><th>Cost</th></tr></thead>
+<tbody>
+<tr><td><code>/review-chapter [file]</code></td><td>Full 10-agent parallel panel</td><td>~30 sec, full price</td></tr>
+<tr><td><code>/smart-review [file]</code></td><td>Content-aware: skips irrelevant agents</td><td>78% cheaper than full</td></tr>
+<tr><td><code>/auto-revise-chapter [file]</code></td><td>Apply panel fixes by confidence tier</td><td>Per-pass review cost × iterations</td></tr>
+<tr><td><code>/curate-chapters [range]</code></td><td>Deep cross-chapter consistency sweep</td><td>One large review</td></tr>
+<tr><td><code>/dialogue-specialist [file]</code></td><td>Focused dialogue review</td><td>Single agent</td></tr>
+<tr><td><code>/validate-transitions [chapters]</code></td><td>Chapter-to-chapter handoff check</td><td>Single agent</td></tr>
+<tr><td><code>/compare-drafts [files]</code></td><td>Side-by-side version comparison</td><td>Single agent</td></tr>
+</tbody>
+</table>
+
+<h3>The confidence ladder (auto-revise)</h3>
+<table>
+<thead><tr><th>Confidence</th><th>Action</th><th>Examples</th></tr></thead>
+<tbody>
+<tr><td>0.95-1.00</td><td>Apply immediately, no marker</td><td>Em-dash removal (always 1.0), filter words, passive in action</td></tr>
+<tr><td>0.90-0.95</td><td>Apply with inline <code>[AR-XXX]</code> marker</td><td>Transition smoothing, dialogue tag variety</td></tr>
+<tr><td>0.85-0.90</td><td>Suggest as HTML comment only</td><td>Sensory enrichment, action beat additions</td></tr>
+<tr><td>&lt; 0.85</td><td>Skip and log</td><td>Plot-critical edits, voice rewrites</td></tr>
+</tbody>
+</table>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== V ========== -->
+<section id="team">
+<h2><span class="num">V</span>Your Writing Team</h2>
+
+<p>29 specialized agents live in <code>.claude/agents/</code>. Each agent carries YAML frontmatter declaring its tool access. Reviewers are locked to read-only. Creators can author and edit. Orchestrators can dispatch other agents.</p>
+
+<p style="font-family: var(--sans); font-size: 0.85rem; color: var(--ink-mute); margin: 1rem 0;">Tap any tile to expand. The colored left rule indicates role: <span class="role-swatch reviewer"></span> reviewer · <span class="role-swatch creator"></span> creator · <span class="role-swatch market"></span> market &amp; publishing · <span class="role-swatch orch"></span> orchestrator.</p>
+
+<!-- ============== REVIEWERS ============== -->
+<div class="role-intro">
+  <h3>Reviewers</h3>
+  <span class="role-count">16 agents · read-only</span>
+</div>
+<p>These agents cannot write to the manuscript. They analyze, score, and report. They form the 10-agent panel that scores every chapter.</p>
+
+<div class="agent-tiles">
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">grammar-clarity</span>
+    <span class="agent-tagline">Sentence-level clarity, grammar, readability.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Catches grammatical errors, comma splices, dangling modifiers, and muddy sentences. Suggests rewrites that improve clarity without altering voice.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Final clean-up pass before <code>/review-chapter</code>.</li>
+      <li>After a fast first draft when sentences are tripping you up.</li>
+      <li>Inside batch revisions for mechanical correctness.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A list of locations with original line, suggested fix, and rationale.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>style-editor</code> on prose level; defers to <code>voice-consistency</code> for character voice.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Can flatten intentional fragments or stylistic rule-breaking. Pass with caution on poetic passages.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">style-editor</span>
+    <span class="agent-tagline">Rhythm, word choice, sentence variety, prose density.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>The agent that asks "is this sentence pulling its weight?" Optimizes for rhythm and word economy. Identifies passages where prose has flattened into a uniform texture.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>When prose feels homogeneous or stiff.</li>
+      <li>Second pass on a chapter that scored OK on review but felt lifeless.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Sentence-level suggestions, often with paired alternatives so the author picks.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>grammar-clarity</code> (partner on the prose level), <code>voice-consistency</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Can over-edit toward a generic "good prose" baseline. Re-check that the author's voice survives.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">dialogue-coach</span>
+    <span class="agent-tagline">Dialogue authenticity, subtext, character voice distinction.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Evaluates whether dialogue carries subtext, whether characters sound distinct, and whether tag economy is healthy. Catches the failure mode where every character starts sounding like the same narrator.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>After any dialogue-heavy scene.</li>
+      <li>When two characters have a long exchange.</li>
+      <li>During a <code>/curate-chapters</code> pass.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Per-character vocal fingerprints and a list of lines that don't fit them.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>voice-consistency</code>, <code>sensitivity-reviewer</code> when dialogue touches identity.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Dialect and idiolect are easy to flatten. Deliberate non-standard speech should be documented in <code>author-rules.md</code>.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">pacing-master</span>
+    <span class="agent-tagline">Scene rhythm, tension curve, beat distribution.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Analyzes how energy moves through a chapter. Identifies pacing dead zones (too much exposition, repeated beats) and abrupt jumps (skipped emotional gear-shifts).</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Mid-chapter when you feel the energy sag.</li>
+      <li>When a chapter scores high on prose but reviewers say "it dragged."</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A scene-by-scene tension graph (text) with compress/expand notes.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>story-architect</code> for structural pacing, <code>transition-validator</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Optimizes for engagement. Can flatten reflective scenes that should breathe.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">voice-consistency</span>
+    <span class="agent-tagline">Character voice distinction and narrator drift.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Checks that character voices stay distinct chapter-to-chapter and that the narrator doesn't drift. In memoir, checks that the subject's actual voice (pulled from transcripts) survives the chapter.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Every chapter, especially after <code>/auto-revise-chapter</code> (which can flatten voice).</li>
+      <li>Critical for autobiographies built from interview transcripts.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A voice-fidelity score per character or narrator, with the worst-offending lines flagged.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>dialogue-coach</code>, <code>character-developer</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Only as good as <code>story-compendium.md</code>'s voice notes. Keep them current.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">continuity-checker</span>
+    <span class="agent-tagline">Cross-chapter facts, contradictions, forgotten details.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Cross-checks every chapter against <code>story-compendium.md</code>. Catches contradictions, forgotten injuries, mis-stated relationships, year mismatches, and quietly drifted facts.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Every chapter at review time.</li>
+      <li>Full manuscript sweep via <code>/curate-chapters</code> before publishing.</li>
+      <li>Especially critical for biography and autobiography.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Per-finding entries with both source locations and the contradiction.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>timeline-keeper</code>, <code>sensitivity-reviewer</code> for biography.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Only as good as the compendium. Unrecorded facts can't be contradicted.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">timeline-keeper</span>
+    <span class="agent-tagline">Chronology, character ages, era-appropriate references.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Maintains the in-story calendar. Catches age math errors, anachronisms, and time-jump references that don't line up.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>After any flashback or time-jump.</li>
+      <li>When adding scenes that reference dated events.</li>
+      <li>Always for biography and historical fiction.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A maintained <code>01-Planning/timeline.md</code> view and a list of any new event references that lack dates.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>continuity-checker</code>, <code>research-assistant</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>"A few years later" drifts. Convert to absolute dates in the compendium when possible.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">transition-validator</span>
+    <span class="agent-tagline">Chapter-to-chapter handoff continuity.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Checks that chapter endings carry forward into the next chapter's beginning. Catches events that "happen" then vanish from acknowledgment in the next scene.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>After writing or revising any chapter that ends mid-action or with a cliffhanger.</li>
+      <li>Automatically as part of <code>/validate-transitions</code>.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A pass/fail per chapter handoff with the specific carry-forward miss.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>continuity-checker</code>, <code>pacing-master</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Strict about acknowledgment. Deliberate ellipses between chapters should be documented in <code>author-rules.md</code>.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">thematic-guide</span>
+    <span class="agent-tagline">Motif and theme reinforcement tracking.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Tracks whether the book's central themes are landing in a given chapter or have been forgotten in favor of plot mechanics.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Mid-book sanity check.</li>
+      <li>Before finalizing the structure.</li>
+      <li>Whenever a chapter feels "tactical" rather than meaningful.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Theme-by-theme presence map across chapters.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>story-architect</code>, <code>critic-sim</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Works best when <code>project-config.md</code> names themes explicitly.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">sensitivity-reviewer</span>
+    <span class="agent-tagline">Representation, harmful tropes, real-person care.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Flags potentially harmful tropes, misrepresentation, or insensitive handling of identity, trauma, or culture. For biography and memoir, especially attentive to fairness toward real subjects.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Any chapter touching identity, illness, abuse, religion, ethnicity, or living subjects.</li>
+      <li>Always in memoir and biography.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Severity-graded findings with rewrite suggestions.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>continuity-checker</code> in memoir, <code>publisher-desk</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Not a substitute for a paid sensitivity reader from the relevant community. Treat output as a first pass.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">rule-enforcer</span>
+    <span class="agent-tagline">author-rules.md compliance and override management.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Reads <code>author-rules.md</code> first, then audits the chapter against hard constraints, soft constraints, and mandates. Catches em-dashes, POV slips, head-hopping, filter words, and any other rule the author has set.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>First in any review chain. Its findings set the floor.</li>
+      <li>Automatically during <code>/review-chapter</code>.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Severity-tagged violations (CRITICAL, WARNING, NOTICE) and override-justification prompts.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li>Every other reviewer (it sets the baseline).</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Updates to <code>author-rules.md</code> should be deliberate. This agent enforces what's there, including bad rules.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">critic-sim</span>
+    <span class="agent-tagline">Tough literary critic, says the uncomfortable thing.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Plays a hostile critic reading the chapter cold. Designed to surface the objection the friendly panel won't raise.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>When you suspect the review panel is being too kind.</li>
+      <li>Before sending to beta readers.</li>
+      <li>Before <code>/ultrareview</code>.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A short, sharp critic's note with specific objections.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>beta-reader-sim</code> (complementary perspective), <code>publisher-desk</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>It can be harsh. Don't auto-revise on its feedback alone; weigh it.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">beta-reader-sim</span>
+    <span class="agent-tagline">Target-audience reader reactions and engagement.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Simulates a target-audience reader's lived experience: confusions, emotional responses, where they'd skim, where they'd reread.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Late-stage when the chapter passes panel but you want a reader-shaped check.</li>
+      <li>Whenever audience fit is uncertain.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A reading-experience trace with engagement markers.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>critic-sim</code>, <code>marketing-strategist</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Depends on a clear target audience in <code>project-config.md</code>. Vague audience equals vague feedback.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">content-analyzer</span>
+    <span class="agent-tagline">Structural map of a chapter for smart-review routing.</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Builds a structural map: scene types, character entries, plot beats, dialogue density. Used by <code>/smart-review</code> to route to the right specialists.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>First step of a <code>/smart-review</code> run (automatic).</li>
+      <li>Manually when restructuring a chapter.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A scene-by-scene tagged outline.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>context-filter</code>, <code>meta-coordinator</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Tagging is heuristic. A scene that mixes types may be tagged inconsistently.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">simple-content-analyzer</span>
+    <span class="agent-tagline">Lightweight scene tagger (Haiku model, fast and cheap).</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Faster and cheaper than <code>content-analyzer</code>. Single-token scene labels per scene. Used in high-volume batch flows where the routing signal matters but deep analysis would be wasteful.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Batch routing across 50+ chapters.</li>
+      <li>Quick smoke-test of scene composition.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Per-scene tag list, no deeper analysis.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>context-filter</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Less nuanced than <code>content-analyzer</code>. Don't use as the only input to a critical routing decision.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile reviewer">
+  <summary>
+    <span class="agent-name">context-filter</span>
+    <span class="agent-tagline">Decides which agents review which chapter (Haiku model).</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Sits between the content analyzer and the review panel. Decides which agents are relevant for the chapter's content, saving the cost of running every agent on every chapter.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Automatically by <code>/smart-review</code>. Rarely invoked directly.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>An agent dispatch list per chapter with rationale.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>content-analyzer</code>, <code>meta-coordinator</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Decisions are conservative. If you suspect a chapter needs an agent it skipped, run the full <code>/review-chapter</code>.</li></ul>
+  </div>
+</details>
+
+</div><!-- /reviewer tiles -->
+
+<!-- ============== CREATORS ============== -->
+<div class="role-intro">
+  <h3>Creators</h3>
+  <span class="role-count">5 agents · read &amp; write</span>
+</div>
+<p>These agents can author and edit content files in <code>01-Planning/</code>, <code>02-Manuscript/</code>, and <code>03-Resources/</code>. They are the only agents that produce the manuscript itself.</p>
+
+<div class="agent-tiles">
+
+<details class="agent-tile creator">
+  <summary>
+    <span class="agent-name">story-architect</span>
+    <span class="agent-tagline">Plot, act structure, beat sheet, chapter progression.</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>The agent in charge of "where is this story going." Designs the overall narrative structure including act breakdown, beat sheet, and chapter progression. For memoir, builds the life-story arc.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>At project start via <code>/outline-book</code>.</li>
+      <li>Any time you restructure the book.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li><code>01-Planning/outline.md</code> and beat-sheet files.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>pacing-master</code>, <code>thematic-guide</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Imposes three-act structure by default. Tell it explicitly if you're writing nonlinear or fragmentary.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile creator">
+  <summary>
+    <span class="agent-name">character-developer</span>
+    <span class="agent-tagline">Character profiles, arcs, backstories (also real people in memoir).</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Builds character profiles, motivations, backstory, and arc curves. In memoir or biography, builds real-person profiles from transcripts and interview material.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li><code>/create-character</code> at project start.</li>
+      <li>Any time a new principal appears in the manuscript.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li><code>01-Planning/character-arcs.md</code> entries plus <code>story-compendium.md</code> additions.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>voice-consistency</code>, <code>dialogue-coach</code>, <code>sensitivity-reviewer</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>For real people, verify with the source. Reconstructed motivations can become fictionalization fast.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile creator">
+  <summary>
+    <span class="agent-name">world-builder</span>
+    <span class="agent-tagline">Setting, lore, magic systems, period detail.</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Constructs the story's setting and supporting world. For biography and historical fiction, constructs the era's texture (1970s suburb, 1990s office culture).</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Project start for fiction.</li>
+      <li>For memoir, useful for capturing the era's vibe alongside <code>research-assistant</code>.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li><code>03-Resources/worldbuilding/*.md</code> files and compendium entries.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>research-assistant</code>, <code>timeline-keeper</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>It loves world. Will over-elaborate. Cap it with a worldbuilding mandate in <code>project-config.md</code>.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile creator">
+  <summary>
+    <span class="agent-name">twist-engineer</span>
+    <span class="agent-tagline">Reveals, misdirection, narrative surprise (fiction-leaning).</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>Designs reveals and misdirection. Asks "what does the reader assume, and how do we earn flipping it?" Less applicable to straight memoir.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Fiction with mystery, thriller, or revelation structure.</li>
+      <li>Late drafting when shaping a payoff.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Reveal-tracking notes attached to specific chapters in <code>05-wrp/</code>.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>story-architect</code>, <code>thematic-guide</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Cheap twists are worse than no twists. This agent proposes surprises; the author decides which earn their setup.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile creator">
+  <summary>
+    <span class="agent-name">research-assistant</span>
+    <span class="agent-tagline">Domain/historical accuracy with web access for sourcing.</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob · WebFetch · WebSearch</span>
+  </summary>
+  <div class="body">
+    <p>The only creator agent with web access by default. Verifies domain accuracy, looks up historical detail, sources claims. Heavily used for biography and narrative non-fiction.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Any chapter referencing real history, science, geography, or culture you don't have firsthand.</li>
+      <li>To source citations for narrative non-fiction.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li><code>03-Resources/research/*.md</code> files with sourced claims and URLs.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>world-builder</code>, <code>sensitivity-reviewer</code>, <code>timeline-keeper</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Don't trust without citation. Always require source URLs alongside claims.</li></ul>
+  </div>
+</details>
+
+</div><!-- /creator tiles -->
+
+<!-- ============== MARKET ============== -->
+<div class="role-intro">
+  <h3>Market &amp; Publishing</h3>
+  <span class="role-count">5 agents · read + web</span>
+</div>
+<p>External-facing agents with web access for comp research, pitch building, and publishing strategy. Most useful once the manuscript is complete.</p>
+
+<div class="agent-tiles">
+
+<details class="agent-tile market">
+  <summary>
+    <span class="agent-name">query-coach</span>
+    <span class="agent-tagline">Query letters, synopses, elevator pitches.</span>
+    <span class="agent-tools">Read · Grep · Glob · WebFetch · WebSearch</span>
+  </summary>
+  <div class="body">
+    <p>Drafts query letters and synopses tailored to specific agents or editors. Pulls in the agent's MSWL (manuscript wishlist) when known and matches tone to recipient.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>After the book is complete and you're entering submission.</li>
+      <li>Via <code>/send-query-letter</code> for the full Gmail-routed pipeline.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Personalized query drafts; 1-page, 2-page, and 5-page synopses.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>market-analyst</code> (for comp titles), <code>publisher-desk</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Generic queries are dead on arrival. Insist on real personalization, not template-filling.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile market">
+  <summary>
+    <span class="agent-name">market-analyst</span>
+    <span class="agent-tagline">Comp titles, category positioning, sales context.</span>
+    <span class="agent-tools">Read · Grep · Glob · WebFetch · WebSearch</span>
+  </summary>
+  <div class="body">
+    <p>Researches comparable titles, category positioning, and recent sales data in the relevant genre. Tells you where your book sits commercially.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Before query letters, when defining the book's pitch.</li>
+      <li>When evaluating a target publisher or imprint.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li><code>04-Project-Management/market-notes.md</code> with comp titles and rationale.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>query-coach</code>, <code>marketing-strategist</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Comp data ages fast. Re-run shortly before submission.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile market">
+  <summary>
+    <span class="agent-name">marketing-strategist</span>
+    <span class="agent-tagline">Launch strategy, audience targeting, channels.</span>
+    <span class="agent-tools">Read · Grep · Glob · WebFetch · WebSearch</span>
+  </summary>
+  <div class="body">
+    <p>Plans launch strategy, audience targeting, and channel selection (newsletter, podcast circuit, social). Less about paid ads, more about reaching the right readers.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Post-acceptance for traditionally published books.</li>
+      <li>For self-publishing, 3-6 months before release.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A launch plan with milestone dates and channel-by-channel actions.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>market-analyst</code>, <code>beta-reader-sim</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Marketing fads age fast. Treat output as a starting frame, not a finished plan.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile market">
+  <summary>
+    <span class="agent-name">publisher-desk</span>
+    <span class="agent-tagline">Simulated acquiring editor; pressure-tests commercial viability.</span>
+    <span class="agent-tools">Read · Grep · Glob · WebFetch · WebSearch</span>
+  </summary>
+  <div class="body">
+    <p>Simulates an acquiring editor reading the manuscript. Surfaces the editorial concerns and positioning questions a real editor would raise.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>When deciding whether to submit.</li>
+      <li>When an agent has the manuscript and you want a second opinion on what they'll say.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>An editor's-eye report with positioning, concerns, and likely revision asks.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>critic-sim</code>, <code>market-analyst</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Simulates a generic editor. A specific editor's tastes vary widely.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile market">
+  <summary>
+    <span class="agent-name">adaptation-scout</span>
+    <span class="agent-tagline">Film, TV, audio adaptation potential and rights value.</span>
+    <span class="agent-tools">Read · Grep · Glob · WebFetch · WebSearch</span>
+  </summary>
+  <div class="body">
+    <p>Identifies adaptation potential. Looks at structural cinematicity, character cast economy, scene economy, and IP value.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Post-publication.</li>
+      <li>When the book has agent representation and rights conversations are starting.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>An adaptation potential note with format recommendations (limited series vs. feature vs. podcast).</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>publisher-desk</code>, <code>marketing-strategist</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Highly speculative. Treat any "this could be a Netflix series" prediction with skepticism.</li></ul>
+  </div>
+</details>
+
+</div><!-- /market tiles -->
+
+<!-- ============== ORCHESTRATORS ============== -->
+<div class="role-intro">
+  <h3>Orchestrators</h3>
+  <span class="role-count">3 agents · read + write + dispatch</span>
+</div>
+<p>Coordinate multi-agent work. These agents can spawn other agents via the <code>Task</code> tool, which makes them the only agents that can compose the whole framework into a single response.</p>
+
+<div class="agent-tiles">
+
+<details class="agent-tile orch">
+  <summary>
+    <span class="agent-name">meta-coordinator</span>
+    <span class="agent-tagline">Routes work to optimal agent combinations, synthesizes panels (Opus).</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob · Task</span>
+  </summary>
+  <div class="body">
+    <p>The conductor of the framework. Routes work to the optimal combination of agents and synthesizes a unified verdict from a parallel review panel.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Automatically by <code>/review-chapter</code> and <code>/curate-chapters</code>.</li>
+      <li>Rarely invoked directly.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A consolidated review report from N parallel agent outputs.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li>Every reviewer (it's their conductor).</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Synthesis can lose specificity. If you want raw agent outputs, ask for them explicitly.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile orch">
+  <summary>
+    <span class="agent-name">series-coordinator</span>
+    <span class="agent-tagline">Multi-book continuity, cross-volume arc tracking (Opus).</span>
+    <span class="agent-tools">Read · Write · Edit · Grep · Glob · Task</span>
+  </summary>
+  <div class="body">
+    <p>Manages continuity, character aging, and arc tracking across multiple books in a series. Skip for standalone work.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>Series projects spanning two or more books.</li>
+      <li>When planning a sequel and want to audit setups from book one.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>A series-wide compendium and cross-book consistency reports.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>continuity-checker</code>, <code>timeline-keeper</code>, <code>story-architect</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Don't engage on a standalone. It will impose series-thinking on a book that doesn't need it.</li></ul>
+  </div>
+</details>
+
+<details class="agent-tile orch">
+  <summary>
+    <span class="agent-name">agent-roster</span>
+    <span class="agent-tagline">Registry and routing reference; the "who to call" agent (Haiku).</span>
+    <span class="agent-tools">Read · Grep · Glob</span>
+  </summary>
+  <div class="body">
+    <p>The framework's index of who's who. Read this agent's notes to understand what every other agent does and who to call when. More of a reference doc than an active reviewer.</p>
+    <h5>When to use</h5>
+    <ul>
+      <li>When unsure which agent to invoke.</li>
+      <li>As a meta-doc, not as part of a review pipeline.</li>
+    </ul>
+    <h5>Produces</h5>
+    <ul><li>Decision-tree-style "if X, use Y" guidance.</li></ul>
+    <h5>Pairs with</h5>
+    <ul><li><code>meta-coordinator</code>.</li></ul>
+    <h5>Watch out for</h5>
+    <ul><li>Stays slightly stale relative to actual agent definitions. Check individual agent files for the source of truth.</li></ul>
+  </div>
+</details>
+
+</div><!-- /orch tiles -->
+
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== VI ========== -->
+<section id="enforcement">
+<h2><span class="num">VI</span>Mechanical Enforcement</h2>
+
+<p>Three hooks in <code>.claude/settings.json</code> give the framework a concrete floor of enforcement, not just policy.</p>
+
+<h3>1. Em-dash guard (PostToolUse)</h3>
+<p>Every <code>Write</code> or <code>Edit</code> targeting <code>02-Manuscript/</code>, <code>01-Planning/</code>, <code>05-wrp/</code>, <code>story-compendium.md</code>, or <code>author-rules.md</code> is scanned for em dashes (<code>—</code>) and double-hyphens (<code>--</code> not part of <code>---</code>). If found, exit 2 surfaces the violation to Claude and the write is rejected.</p>
+
+<pre><code>[EM-DASH GUARD] Blocked: em-dash detected in /path/Chapter-07.md
+
+37:She paused—then ran.
+
+Replace with: comma, colon, semicolon, parentheses, or full stop.</code></pre>
+
+<h3>2. Session word-count tracker (Stop)</h3>
+<p>When a session ends, the total manuscript word count and any chapters touched in the last hour are appended to <code>04-Project-Management/writing-tracker.md</code>. The author's word log keeps itself.</p>
+
+<h3>3. Chapter-save breadcrumb (opt-in)</h3>
+<p>Set <code>WRITEASSIST_AUTO_REVIEW=1</code> in your environment, and any save to a <code>Chapter-XX.md</code> or <code>Scene-XX.md</code> drops the filename into <code>.claude/state/pending-review.txt</code>. The next user turn can pick this up to fire <code>/review-chapter</code> automatically.</p>
+
+<div class="callout warn">
+<span class="label">Important</span>
+The em-dash guard is the only hook that <em>blocks</em>. The others are passive: they observe and record but never refuse an action.
+</div>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== VII ========== -->
+<section id="worktrees">
+<h2><span class="num">VII</span>Worktree Revisions</h2>
+
+<p><code>/auto-revise-chapter</code> runs each revision pass in its own git worktree, on its own branch.</p>
+
+<pre><code># Pass 1
+git worktree add -b revise/chapter-07-pass-1 .worktrees/chapter-07-pass-1 HEAD
+# auto-revise applies fixes inside .worktrees/chapter-07-pass-1/
+git -C .worktrees/chapter-07-pass-1 commit -am "auto-revise pass 1"
+
+# Pass 2 branches from pass 1
+git worktree add -b revise/chapter-07-pass-2 .worktrees/chapter-07-pass-2 revise/chapter-07-pass-1
+# ...and so on, up to MAX_ITERATIONS = 5
+
+# Compare passes
+git diff revise/chapter-07-pass-1 revise/chapter-07-pass-3 -- 02-Manuscript/Chapter-07.md</code></pre>
+
+<p>When a pass clears the 8.0 panel gate, that branch fast-forward merges back into the working branch. Failed branches stay around for inspection until you remove them with <code>git worktree remove</code>.</p>
+
+<div class="callout">
+<span class="label">Why this matters</span>
+You can see exactly what each revision pass did to your prose. A score jump from 7.4 to 8.1 is not opaque, it is a diff you can read and reject if you disagree.
+</div>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== VIII ========== -->
+<section id="statusline">
+<h2><span class="num">VIII</span>The Statusline</h2>
+
+<p>A custom statusline rides at the bottom of every Claude Code session inside a WriteAssist project:</p>
+
+<pre><code>[Opus 4.7] My-Book │ Chapter-07.md │ 42,318 words │ em-dash:0 │ last:8.4/10</code></pre>
+
+<p>The em-dash counter is green at zero and red at anything else. The last-score field reads the most recent file in <code>.claude/state/reviews/</code>. The chapter shown is whichever file in <code>02-Manuscript/</code> was modified most recently.</p>
+
+<p>Script: <code>.claude/scripts/statusline.sh</code>. Edit it to add fields you care about (streak count, daily target progress, time to next Calendar block).</p>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== IX ========== -->
+<section id="integrations">
+<h2><span class="num">IX</span>External Integrations</h2>
+
+<p>Three commands route through Claude Code's MCP connectors. Each requires the relevant MCP to be authenticated first.</p>
+
+<div class="grid cols-3">
+  <div class="card">
+    <div class="kicker">Drive MCP</div>
+    <h3><code>/sync-to-drive</code></h3>
+    <p>Push the manuscript (or one chapter) to a Google Drive folder. Each <code>.md</code> becomes a Google Doc beta readers can comment on. Tracks last-synced revision per file; flags conflicts.</p>
+  </div>
+  <div class="card">
+    <div class="kicker">Gmail MCP</div>
+    <h3><code>/send-query-letter</code></h3>
+    <p>Draft a query via <code>query-coach</code>, plan-mode approve, send through Gmail, append to <code>04-Project-Management/query-tracker.md</code> with auto-set 8-week follow-up date.</p>
+  </div>
+  <div class="card">
+    <div class="kicker">Calendar MCP</div>
+    <h3><code>/schedule-writing-time</code></h3>
+    <p>Block writing time on Google Calendar with an attached word-count goal. Recurring or one-off. Pairs with the daily smart-review cron to nudge missed sessions.</p>
+  </div>
+</div>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== X ========== -->
+<section id="skills">
+<h2><span class="num">X</span>Skills</h2>
+
+<p>Skills are Claude Code's mechanism for cross-project capabilities. WriteAssist ships two.</p>
+
+<h3><code>writeassist-workflow</code></h3>
+<p>The author-facing stage-to-command map. Triggers when the user is inside (or starting) a WriteAssist project and asks how to plan, write, revise, or publish. Surfaces the right command for their current stage and reminds them of the constraint-doc reading order.</p>
+
+<h3><code>improv-story-form</code></h3>
+<p>A premise builder ported from the original <code>improv_story_form.html</code>. Walks the user through seven inputs (arc, genres, setting, characters, spark, extras, length and tone) and produces a logline, synopsis, or opening scene. Use it for short stories, RPG one-shots, or writing warm-ups, even outside the WriteAssist framework.</p>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== XI ========== -->
+<section id="ultrareview">
+<h2><span class="num">XI</span>The Final Gate</h2>
+
+<p>Local <code>review-chapter</code> is fast and roughly free. It is the iterative tool. <code>/ultrareview</code> is the gate.</p>
+
+<p><code>/ultrareview</code> is a Claude Code feature: a multi-agent cloud review of the current branch (or a specific PR) that runs in fresh contexts free of session contamination. It is <strong>author-triggered and billed</strong>. WriteAssist's contract:</p>
+
+<blockquote>
+Run <code>/ultrareview</code> only on chapters that have already passed the local 8.0 gate. Never as a substitute for iteration, only as the gate before publication, beta-reader release, or agent submission.
+</blockquote>
+
+<p>See <code>.claude/docs/system-guides/ultrareview-gate.md</code> for the full pre-flight checklist and the triage protocol after results come back.</p>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== XII ========== -->
+<section id="cron">
+<h2><span class="num">XII</span>Scheduled Jobs</h2>
+
+<p>Three opt-in routines live in <code>.claude/docs/system-guides/cron-setup.md</code>:</p>
+
+<table>
+<thead><tr><th>Routine</th><th>Cadence</th><th>What it does</th></tr></thead>
+<tbody>
+<tr>
+  <td><code>writeassist-weekly-curate</code></td>
+  <td>Mondays 9am</td>
+  <td>Runs <code>/curate-chapters all</code>, pipes through continuity + timeline agents, saves report, pings if any CRITICAL issue found.</td>
+</tr>
+<tr>
+  <td><code>writeassist-daily-smart-review</code></td>
+  <td>Daily 7am</td>
+  <td>Smart-reviews chapters modified in the last 24h. Flags any below 7.5 to <code>needs-attention.md</code>. Silent if nothing changed.</td>
+</tr>
+<tr>
+  <td><code>writeassist-query-followups</code></td>
+  <td>Mondays 10am</td>
+  <td>Reads <code>query-tracker.md</code>, surfaces queries due for follow-up. Doesn't auto-send.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Install with the <code>schedule</code> skill in any Claude Code session inside the project. See <code>cron-setup.md</code> for the exact prompts.</p>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== XIII ========== -->
+<section id="workflow">
+<h2><span class="num">XIII</span>The Full Workflow</h2>
+
+<p>From blank folder to published book.</p>
+
+<h3>Phase 1: Configure</h3>
+<ol>
+  <li>Fill in <code>project-config.md</code> (genre or mode, voice, target audience, dialogue style).</li>
+  <li>Fill in <code>author-rules.md</code>, your hard constraints. Em-dash ban is the default; add your own.</li>
+  <li>Run <code>/initialize-story-compendium</code> and fill in <code>story-compendium.md</code>. For memoir or autobiography, this captures real people, real places, real timeline.</li>
+</ol>
+
+<h3>Phase 2: Plan</h3>
+<ol>
+  <li><code>/outline-book</code> produces a structured outline. <strong>Plan-mode gate:</strong> approve before it writes.</li>
+  <li><code>/create-character</code> for each principal, profiles and arc.</li>
+  <li>Optional: <code>/workshop-ingestion</code> if you have transcripts from voice-talking your book.</li>
+</ol>
+
+<h3>Phase 3: Write</h3>
+<ol>
+  <li><code>/generate-wrp 1</code> builds the blueprint for chapter 1. <strong>Plan-mode gate.</strong></li>
+  <li><code>/execute-wrp 05-wrp/chapter_01_WRP.md</code> writes the chapter.</li>
+  <li>The review panel fires automatically. Below 8.0, the auto-revise loop takes over (worktree-isolated).</li>
+  <li>Repeat for each chapter, or use <code>/batch-generate-wrp</code> and <code>/batch-execute-wrp</code> for the full book.</li>
+</ol>
+
+<h3>Phase 4: Quality sweep</h3>
+<ol>
+  <li><code>/curate-chapters all</code> for cross-chapter consistency.</li>
+  <li><code>/validate-transitions 1-30</code> for every chapter handoff.</li>
+  <li><code>/batch-review-and-revise</code> on anything still under 8.0.</li>
+</ol>
+
+<h3>Phase 5: Beta readers</h3>
+<ol>
+  <li><code>/sync-to-drive --beta</code> pushes to Drive with a shareable comment link.</li>
+  <li>Collect feedback, fold the useful parts into <code>author-rules.md</code> if it surfaces a pattern.</li>
+  <li>Re-run the chapter through review and revise for any substantive feedback.</li>
+</ol>
+
+<h3>Phase 6: Submit</h3>
+<ol>
+  <li><code>/ultrareview</code> as final cloud gate. Triage MUST FIX items.</li>
+  <li><code>/send-query-letter</code> for each agent on your list. Tracker auto-records.</li>
+  <li>Weekly cron surfaces follow-up dates.</li>
+</ol>
+
+<div class="callout">
+<span class="label">For memoir and autobiography</span>
+Phases 1 and 4 do extra work. In Phase 1 the story compendium becomes a fact-checked record of real people, places, and dates. In Phase 4 <code>/curate-chapters</code> and <code>sensitivity-reviewer</code> become load-bearing, because the cost of getting a real-life detail wrong is higher than getting a fictional one wrong.
+</div>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== XIV ========== -->
+<section id="quickstart">
+<h2><span class="num">XIV</span>Quickstart</h2>
+
+<p>If you already have this folder, you are five steps from your first chapter.</p>
+
+<ol>
+  <li>Open Claude Code inside the WriteAssist folder. (Or copy this folder to a per-book directory first.)</li>
+  <li>Edit <code>project-config.md</code>: set genre or mode, voice, audience.</li>
+  <li>Edit <code>author-rules.md</code>: add any hard constraints beyond the em-dash default.</li>
+  <li>Fill in the bones of <code>story-compendium.md</code>. You can flesh it out as you go.</li>
+  <li>Run <code>/outline-book</code> and follow the plan-mode prompts.</li>
+</ol>
+
+<p>The statusline appears as soon as your session is inside the project. The em-dash guard is active immediately. If you try to write one, you will see it stop you.</p>
+
+<div class="callout">
+<span class="label">First-chapter ritual</span>
+After your first <code>/execute-wrp</code> finishes, look at the auto-revise report. The em-dash count should be 0. The panel scores should average above 8.0. If something feels off about the chapter despite the scores, trust your instinct and run <code>/critic-sim</code> or <code>/beta-reader-sim</code> for a second opinion before continuing.
+</div>
+</section>
+
+<div class="ornament">❦ ❦ ❦</div>
+
+<!-- ========== XV ========== -->
+<section id="reference">
+<h2><span class="num">XV</span>Reference</h2>
+
+<h3>All slash commands</h3>
+<table>
+<thead><tr><th>Phase</th><th>Command</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td rowspan="4">Planning</td>
+    <td><code>/outline-book</code></td><td>Book outline (plan-mode gated)</td></tr>
+<tr><td><code>/initialize-story-compendium</code></td><td>Set up compendium from scratch</td></tr>
+<tr><td><code>/story-compendium-manager</code></td><td>Update compendium</td></tr>
+<tr><td><code>/create-character</code></td><td>Add character or real-person profile</td></tr>
+
+<tr><td rowspan="4">Writing</td>
+    <td><code>/generate-wrp [ch]</code></td><td>Chapter blueprint (plan-mode gated)</td></tr>
+<tr><td><code>/execute-wrp [file]</code></td><td>Write from WRP, auto-fires review</td></tr>
+<tr><td><code>/write-chapter [ch]</code></td><td>Direct write without WRP</td></tr>
+<tr><td><code>/write-scene</code></td><td>Single-scene write</td></tr>
+
+<tr><td rowspan="7">Quality</td>
+    <td><code>/review-chapter [file]</code></td><td>10-agent parallel panel</td></tr>
+<tr><td><code>/smart-review [file]</code></td><td>Content-aware reduced review</td></tr>
+<tr><td><code>/auto-revise-chapter [file]</code></td><td>Apply fixes in worktree</td></tr>
+<tr><td><code>/curate-chapters [range]</code></td><td>Cross-chapter sweep</td></tr>
+<tr><td><code>/dialogue-specialist [ch]</code></td><td>Focused dialogue review</td></tr>
+<tr><td><code>/validate-transitions [ch]</code></td><td>Chapter handoff check</td></tr>
+<tr><td><code>/compare-drafts [files]</code></td><td>Version comparison</td></tr>
+
+<tr><td rowspan="3">Batch</td>
+    <td><code>/batch-generate-wrp</code></td><td>Mass WRP creation</td></tr>
+<tr><td><code>/batch-execute-wrp</code></td><td>Mass chapter production</td></tr>
+<tr><td><code>/batch-review-and-revise</code></td><td>Mass quality upgrade</td></tr>
+
+<tr><td rowspan="4">Maintenance</td>
+    <td><code>/book-cleanup</code></td><td>Archive, organize</td></tr>
+<tr><td><code>/update-rules</code></td><td>Modify author-rules.md</td></tr>
+<tr><td><code>/update-timeline</code></td><td>Update timeline</td></tr>
+<tr><td><code>/workshop-ingestion</code></td><td>Import workshop transcripts</td></tr>
+
+<tr><td rowspan="3">External</td>
+    <td><code>/sync-to-drive</code></td><td>Drive sync for beta readers</td></tr>
+<tr><td><code>/send-query-letter</code></td><td>Gmail-delivered query</td></tr>
+<tr><td><code>/schedule-writing-time</code></td><td>Calendar block + goal</td></tr>
+
+<tr><td rowspan="2">Reference</td>
+    <td><code>/workflow-guide</code></td><td>Workflow docs</td></tr>
+<tr><td><code>/batch-operations</code></td><td>Batch command docs</td></tr>
+</tbody>
+</table>
+
+<h3>File map</h3>
+<pre><code>WriteAssist/
+├── CLAUDE.md                         framework system rules
+├── author-rules.md                   constraints (you edit)
+├── project-config.md                 project knobs (you edit)
+├── story-compendium.md               book reference (you edit)
+├── help.html                         this file
+├── technical-guide.html              deep technical reference
+├── improv_story_form.html            interactive premise form
+├── 00-Assets/                        logos, icons
+├── 01-Planning/                      outlines, beats
+├── 02-Manuscript/                    chapters
+├── 03-Resources/                     research, source materials
+├── 04-Project-Management/            trackers, style guide
+├── 05-wrp/                           chapter blueprints
+└── .claude/
+    ├── settings.json                 hooks + statusline config
+    ├── agents/         (29)          review, creator, and orchestrator agents
+    ├── commands/       (27)          slash command definitions
+    ├── scripts/                      hook scripts and statusline
+    │   ├── em-dash-guard.sh
+    │   ├── update-tracker.sh
+    │   ├── post-chapter-review.sh
+    │   └── statusline.sh
+    ├── skills/
+    │   ├── writeassist-workflow/SKILL.md
+    │   └── improv-story-form/SKILL.md
+    ├── docs/system-guides/
+    │   ├── PARALLEL-EXECUTION-GUIDE.md
+    │   ├── parallel-review-implementation.md
+    │   ├── ultrareview-gate.md
+    │   ├── cron-setup.md
+    │   └── README.md
+    └── monitoring/                   placeholder for future telemetry</code></pre>
+
+<h3>Glossary</h3>
+<dl style="font-family: var(--sans); font-size: 0.95rem;">
+  <dt style="font-weight: 600; margin-top: 1em;">WRP, Writing Requirements Plan</dt>
+  <dd style="color: var(--ink-soft);">A 5-10 page chapter blueprint. The contract between outline and prose.</dd>
+
+  <dt style="font-weight: 600; margin-top: 0.6em;">Panel gate</dt>
+  <dd style="color: var(--ink-soft);">The 8.0/10 floor across all 10 review dimensions. Auto-revise stops when this is cleared.</dd>
+
+  <dt style="font-weight: 600; margin-top: 0.6em;">Confidence ladder</dt>
+  <dd style="color: var(--ink-soft);">The auto-revise rule that decides whether a fix is auto-applied, marker-tagged, suggested, or skipped.</dd>
+
+  <dt style="font-weight: 600; margin-top: 0.6em;">AR marker</dt>
+  <dd style="color: var(--ink-soft);"><code>[AR-XXX]</code> inline tag left by auto-revise for medium-confidence fixes. The author reviews them after the loop.</dd>
+
+  <dt style="font-weight: 600; margin-top: 0.6em;">Hook</dt>
+  <dd style="color: var(--ink-soft);">A Claude Code mechanism that fires shell commands on lifecycle events (tool use, session stop, etc.). The framework uses three.</dd>
+
+  <dt style="font-weight: 600; margin-top: 0.6em;">Plan-mode gate</dt>
+  <dd style="color: var(--ink-soft);">A required author-approval step before a command writes a load-bearing artifact (outline, WRP).</dd>
+</dl>
+</section>
+
+</div>
+</main>
+</div>
+
+<footer class="colophon">
+<div class="wrap">
+  <p><strong>WriteAssist</strong>: constraint-driven creative writing for Claude Code. Built for any book-length narrative: fiction, memoir, autobiography, biography, narrative non-fiction.</p>
+  <p>Typeset in Source Serif and Inter. Palette inspired by archival paper, ink, burgundy cloth, brass, and forest endpapers.</p>
+  <p>For framework internals, see <code>CLAUDE.md</code>. For the cloud final gate, see <code>.claude/docs/system-guides/ultrareview-gate.md</code>.</p>
+</div>
+</footer>
+
+<script>
+  const tocLinks = document.querySelectorAll('aside.toc a');
+  const sections = document.querySelectorAll('section');
+  function onScroll() {
+    let current = null;
+    const top = window.scrollY + 120;
+    sections.forEach(s => { if (s.offsetTop <= top) current = s.id; });
+    tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>

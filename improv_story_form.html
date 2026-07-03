@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improv Story Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: clamp(1rem, 5vw, 3rem);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: min(900px, 95vw);
+            margin: 0 auto;
+            background: linear-gradient(to bottom, #1e293b, #1a2332);
+            border-radius: 20px;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            box-shadow:
+                inset 0 2px 0 rgba(255,255,255,0.08),
+                0 10px 40px rgba(0,0,0,0.5),
+                0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #67e8f9;
+            margin-bottom: 0.5rem;
+            font-size: clamp(1.5rem, 5vw, 2.25rem);
+            text-shadow: 0 2px 10px rgba(103, 232, 249, 0.3);
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            opacity: 0.9;
+        }
+
+        .section {
+            margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+            background: #0f1629;
+            padding: clamp(1rem, 3vw, 1.75rem);
+            border-radius: 12px;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.05),
+                0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        label.section-label {
+            display: block;
+            color: #67e8f9;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            letter-spacing: 0.02em;
+        }
+
+        .hint {
+            color: #cbd5e1;
+            font-size: clamp(0.75rem, 1.8vw, 0.875rem);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            opacity: 0.95;
+        }
+
+        .example-line {
+            color: #94a3b8;
+            font-size: clamp(0.7rem, 1.5vw, 0.8125rem);
+            font-style: italic;
+            margin-top: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(103, 232, 249, 0.3);
+            opacity: 0.85;
+        }
+
+        .arc-descriptions {
+            color: #94a3b8;
+            font-size: clamp(0.7rem, 1.5vw, 0.8125rem);
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(15, 22, 41, 0.5);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .arc-descriptions div {
+            margin-bottom: 0.35rem;
+            padding-left: 0.25rem;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(0.5rem, 2vw, 0.875rem);
+        }
+
+        .radio-item, .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to bottom, #1a2332, #151e2e);
+            padding: clamp(0.5rem, 2vw, 0.65rem) clamp(0.75rem, 3vw, 1.25rem);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                0 2px 6px rgba(0,0,0,0.15);
+            border: 1px solid rgba(103, 232, 249, 0.1);
+        }
+
+        .radio-item:hover, .checkbox-item:hover {
+            background: linear-gradient(to bottom, #253447, #1e2a3d);
+            transform: translateY(-2px);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.12),
+                0 4px 12px rgba(0,0,0,0.25),
+                0 0 0 2px rgba(103, 232, 249, 0.2);
+        }
+
+        .radio-item input, .checkbox-item input {
+            margin-right: 0.6rem;
+            cursor: pointer;
+            accent-color: #67e8f9;
+            width: 18px;
+            height: 18px;
+        }
+
+        .radio-item span, .checkbox-item span {
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            color: #e2e8f0;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            background: linear-gradient(to bottom, #0a0f1e, #0d1424);
+            border: 2px solid #334155;
+            border-radius: 10px;
+            padding: clamp(0.65rem, 2vw, 0.875rem);
+            color: #f1f5f9;
+            font-family: inherit;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            transition: all 0.25s ease;
+            box-shadow:
+                inset 0 2px 4px rgba(0,0,0,0.3),
+                0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #67e8f9;
+            background: linear-gradient(to bottom, #0d1424, #10172a);
+            box-shadow:
+                inset 0 2px 4px rgba(0,0,0,0.3),
+                0 0 0 3px rgba(103, 232, 249, 0.15),
+                0 2px 8px rgba(103, 232, 249, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: clamp(80px, 15vw, 120px);
+            line-height: 1.6;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2367e8f9' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        select option {
+            background: #1a2332;
+            color: #f1f5f9;
+            padding: 0.5rem;
+        }
+
+        .conditional-input {
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        .conditional-input.active {
+            display: block;
+        }
+
+        .tone-options {
+            background: linear-gradient(to bottom, #0a0f1e, #0d1424);
+            border-radius: 12px;
+            padding: clamp(1rem, 3vw, 1.5rem);
+            margin-top: 1rem;
+            box-shadow:
+                inset 0 2px 4px rgba(0,0,0,0.3),
+                0 1px 3px rgba(0,0,0,0.2);
+            border: 1px solid rgba(103, 232, 249, 0.1);
+        }
+
+        .tone-options-title {
+            color: #67e8f9;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tone-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(0.5rem, 2vw, 0.875rem);
+            margin-top: 0.75rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(0.75rem, 2vw, 1rem);
+            margin-top: clamp(1.5rem, 4vw, 2.5rem);
+        }
+
+        button {
+            flex: 1;
+            min-width: clamp(120px, 30vw, 160px);
+            background: linear-gradient(to bottom, #0ea5c9, #0891b2);
+            color: white;
+            border: none;
+            padding: clamp(0.875rem, 3vw, 1.125rem);
+            border-radius: 10px;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                0 4px 12px rgba(8, 145, 178, 0.3),
+                0 2px 4px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        button:hover {
+            background: linear-gradient(to bottom, #0891b2, #0e7490);
+            transform: translateY(-3px);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.25),
+                0 6px 20px rgba(8, 145, 178, 0.4),
+                0 3px 8px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.15),
+                0 2px 8px rgba(8, 145, 178, 0.3);
+        }
+
+        #copyBtn {
+            background: linear-gradient(to bottom, #7c3aed, #6366f1);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                0 4px 12px rgba(99, 102, 241, 0.3),
+                0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #copyBtn:hover {
+            background: linear-gradient(to bottom, #6366f1, #4f46e5);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.25),
+                0 6px 20px rgba(99, 102, 241, 0.4),
+                0 3px 8px rgba(0,0,0,0.3);
+        }
+
+        #copyBtn:disabled {
+            background: linear-gradient(to bottom, #4b5563, #374151);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.05),
+                0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0.6;
+        }
+
+        #resetBtn {
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                0 4px 12px rgba(220, 38, 38, 0.3),
+                0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #resetBtn:hover {
+            background: linear-gradient(to bottom, #dc2626, #b91c1c);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.25),
+                0 6px 20px rgba(220, 38, 38, 0.4),
+                0 3px 8px rgba(0,0,0,0.3);
+        }
+
+        #output {
+            background: linear-gradient(to bottom, #0a0f1e, #0d1424);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: clamp(1rem, 3vw, 1.75rem);
+            margin-top: clamp(1.5rem, 4vw, 2rem);
+            white-space: pre-wrap;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+            line-height: 1.8;
+            display: none;
+            box-shadow:
+                inset 0 2px 6px rgba(0,0,0,0.4),
+                0 2px 8px rgba(0,0,0,0.2);
+            color: #e2e8f0;
+        }
+
+        #output.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-message {
+            background: linear-gradient(to bottom, #047857, #065f46);
+            color: #d1fae5;
+            padding: clamp(0.75rem, 2vw, 1rem);
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                0 4px 12px rgba(6, 95, 70, 0.4);
+            font-weight: 600;
+        }
+
+        .success-message.active {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-message {
+            background: linear-gradient(to bottom, #991b1b, #7f1d1d);
+            color: #fecaca;
+            padding: clamp(0.75rem, 2vw, 1rem);
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                0 4px 12px rgba(127, 29, 29, 0.4);
+            font-weight: 600;
+        }
+
+        .error-message.active {
+            display: block;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 640px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .radio-group, .checkbox-group {
+                gap: 0.5rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Improv Story Builder</h1>
+        <p class="subtitle">Collaborate to create a unique story prompt for WriteAssist</p>
+
+        <form id="storyForm">
+            <div class="section">
+                <label class="section-label" title="What makes a good arc? One that matches your group's energy and time">Story Arc</label>
+                <p class="hint" aria-live="polite">Pick the emotional shape of the story. This guides the beginning, middle, climax, and ending.</p>
+                <div class="radio-group">
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Hero's Journey" required>
+                        <span>Hero's Journey</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Rags to Riches">
+                        <span>Rags to Riches</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Tragedy">
+                        <span>Tragedy</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Rebirth">
+                        <span>Rebirth</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Voyage and Return">
+                        <span>Voyage and Return</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Overcoming the Monster">
+                        <span>Overcoming the Monster</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Comedy">
+                        <span>Comedy</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Transcendence">
+                        <span>Transcendence</span>
+                    </label>
+                    <label class="radio-item" title="Select one overall arc for tone and direction">
+                        <input type="radio" name="arc" value="Fall and Rise">
+                        <span>Fall and Rise</span>
+                    </label>
+                </div>
+                <div class="arc-descriptions">
+                    <div>• Hero's Journey: growth through trials</div>
+                    <div>• Rags to Riches: rise from nothing</div>
+                    <div>• Tragedy: downfall from flaw or fate</div>
+                    <div>• Rebirth: renewal or redemption</div>
+                    <div>• Voyage and Return: leave, learn, return</div>
+                    <div>• Overcoming the Monster: face a looming threat</div>
+                    <div>• Comedy: chaos resolves into harmony</div>
+                    <div>• Transcendence: sacrifice or enlightenment</div>
+                    <div>• Fall and Rise: crash, then comeback</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <label class="section-label" id="genres" title="What makes good genre picks? Ones that excite your group">Genres (select multiple)</label>
+                <p class="hint" aria-live="polite">Pick one or more flavors. Genres set expectations for mood, pacing, and tropes.</p>
+                <div class="checkbox-group">
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Fantasy">
+                        <span>Fantasy</span>
+                    </label>
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Sci-Fi">
+                        <span>Sci-Fi</span>
+                    </label>
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Mystery">
+                        <span>Mystery</span>
+                    </label>
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Romance">
+                        <span>Romance</span>
+                    </label>
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Horror">
+                        <span>Horror</span>
+                    </label>
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Comedy">
+                        <span>Comedy</span>
+                    </label>
+                    <label class="checkbox-item" title="Choose any that fit; mixes are welcome">
+                        <input type="checkbox" name="genre" value="Slice of Life">
+                        <span>Slice of Life</span>
+                    </label>
+                </div>
+                <p class="example-line">Example mixes: Sci-Fi + Comedy, Fantasy + Mystery.</p>
+            </div>
+
+            <div class="section">
+                <label class="section-label" for="setting" title="What makes a good setting? A place that feels alive with sensory detail">Setting</label>
+                <p class="hint" aria-live="polite">Where and when does it happen? Add one vivid detail.</p>
+                <input type="text" id="setting" name="setting" placeholder="Where + when + one vivid detail" title="Place, time, and a striking detail that sets the mood" required>
+                <p class="example-line">Example: Derelict mining ship orbiting Jupiter with frozen windows that sing.</p>
+            </div>
+
+            <div class="section">
+                <label class="section-label" for="characters" title="What makes good characters? Clear wants, flaws, or secrets">Characters</label>
+                <p class="hint" aria-live="polite">Each person adds one character: name, role, quirk or secret. One per line.</p>
+                <textarea id="characters" name="characters" placeholder="Name, role, quirk/secret per line…" title="List cast members quickly; one line per character" required></textarea>
+                <p class="example-line">Example: Dr. Imani Reyes, xenobiologist who hears the rocks sing.</p>
+            </div>
+
+            <div class="section">
+                <label class="section-label" for="spark" title="What makes a good spark? Something urgent that forces a choice">Story Spark</label>
+                <p class="hint" aria-live="polite">What kicks things off. The spark disrupts normal life and forces action.</p>
+                <select id="spark" name="spark" title="The inciting incident that starts the plot" required>
+                    <option value="">Choose a spark...</option>
+                    <option value="A mysterious message appears">A mysterious message appears</option>
+                    <option value="Something valuable is stolen">Something valuable is stolen</option>
+                    <option value="A strange visitor arrives">A strange visitor arrives</option>
+                    <option value="A disaster begins">A disaster begins</option>
+                    <option value="Someone vanishes">Someone vanishes</option>
+                    <option value="other">Other (specify below)</option>
+                </select>
+                <p class="example-line">Examples: a strange visitor arrives; someone vanishes; a disaster begins.</p>
+                <div id="sparkOther" class="conditional-input">
+                    <input type="text" id="sparkCustom" placeholder="Describe a custom spark in one sentence" title="The inciting incident that starts the plot">
+                </div>
+            </div>
+
+            <div class="section">
+                <label class="section-label" for="extras" title="What makes good extras? Constraints that add challenge or surprise">Extras / Wildcards (optional)</label>
+                <p class="hint" aria-live="polite">Optional twists, constraints, or surprises. Use for callbacks, secrets, or a wildcard event.</p>
+                <textarea id="extras" name="extras" placeholder="Constraints, twist ideas, tone notes, wildcard rules…" title="Optional guidance the AI should respect"></textarea>
+                <p class="example-line">Example: Once per round someone may shout Wildcard to add a surprise portal or betrayal.</p>
+            </div>
+
+            <div class="section">
+                <label class="section-label" title="What makes good tone/length picks? Ones that fit your session time">Summary Length and Tone</label>
+                <p class="hint" aria-live="polite">Choose suggested length and tone so the output matches your session.</p>
+                <div class="tone-options">
+                    <div class="tone-options-title">Target Length</div>
+                    <div class="radio-group">
+                        <label class="radio-item" title="Affects pacing and word count">
+                            <input type="radio" name="length" value="Short Story (7000 words)" checked>
+                            <span>Short Story (7000 words)</span>
+                        </label>
+                    </div>
+                    <div class="tone-options-title" style="margin-top: 1rem;">Tone Options (optional)</div>
+                    <div class="tone-group">
+                        <label class="checkbox-item" title="Sets voice and vibe">
+                            <input type="checkbox" name="tone" value="Lighthearted">
+                            <span>Lighthearted</span>
+                        </label>
+                        <label class="checkbox-item" title="Sets voice and vibe">
+                            <input type="checkbox" name="tone" value="Gritty">
+                            <span>Gritty</span>
+                        </label>
+                        <label class="checkbox-item" title="Sets voice and vibe">
+                            <input type="checkbox" name="tone" value="Hopeful">
+                            <span>Hopeful</span>
+                        </label>
+                        <label class="checkbox-item" title="Sets voice and vibe">
+                            <input type="checkbox" name="tone" value="Bittersweet">
+                            <span>Bittersweet</span>
+                        </label>
+                        <label class="checkbox-item" title="Sets voice and vibe">
+                            <input type="checkbox" name="tone" value="High-energy">
+                            <span>High-energy</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" id="buildBtn">Build Prompt</button>
+                <button type="button" id="copyBtn" disabled>Copy Prompt</button>
+                <button type="button" id="resetBtn">Reset Form</button>
+            </div>
+        </form>
+
+        <div id="output"></div>
+        <div id="successMsg" class="success-message">Copied to clipboard!</div>
+        <div id="errorMsg" class="error-message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('storyForm');
+        const sparkSelect = document.getElementById('spark');
+        const sparkOther = document.getElementById('sparkOther');
+        const sparkCustom = document.getElementById('sparkCustom');
+        const output = document.getElementById('output');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const successMsg = document.getElementById('successMsg');
+        const errorMsg = document.getElementById('errorMsg');
+
+        sparkSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                sparkOther.classList.add('active');
+                sparkCustom.required = true;
+            } else {
+                sparkOther.classList.remove('active');
+                sparkCustom.required = false;
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Clear previous errors
+            errorMsg.classList.remove('active');
+
+            const formData = new FormData(form);
+            const arc = formData.get('arc');
+            const genres = formData.getAll('genre');
+            const setting = formData.get('setting');
+            const characters = formData.get('characters');
+            let spark = formData.get('spark');
+            const extras = formData.get('extras');
+            const length = formData.get('length');
+            const tones = formData.getAll('tone');
+
+            // Validation
+            if (!arc) {
+                showError('Please select a story arc.');
+                return;
+            }
+
+            if (genres.length === 0) {
+                showError('Please select at least one genre.');
+                return;
+            }
+
+            if (setting.length < 10) {
+                showError('Setting should be at least 10 characters. Add more detail!');
+                return;
+            }
+
+            const characterLines = characters.trim().split('\n').filter(line => line.trim().length > 0);
+            if (characterLines.length === 0) {
+                showError('Please add at least one character.');
+                return;
+            }
+
+            if (spark === 'other') {
+                spark = sparkCustom.value;
+                if (!spark || spark.trim().length === 0) {
+                    showError('Please describe your custom spark.');
+                    return;
+                }
+            }
+
+            const genreText = genres.join(', ');
+            const toneText = tones.length > 0 ? tones.join(', ') : 'Default';
+            const extrasText = extras.trim() || 'None';
+
+            const characterBlock = characterLines.join('\n');
+
+            const prompt = `Write a short story for a live improv group. Use the selected arc to shape the beats, honor the genres, and incorporate the spark. Keep characters consistent and weave in any extras.
+
+Story Arc: ${arc}
+Genres: ${genreText}
+Setting: ${setting}
+Characters:
+${characterBlock}
+Spark: ${spark}
+Tone: ${toneText}
+Target Length: 7000 words
+Wildcards/Extras: ${extrasText}
+
+Deliver a cohesive first pass. After each round, be ready to summarize and continue.`;
+
+            output.textContent = prompt;
+            output.classList.add('active');
+            copyBtn.disabled = false;
+        });
+
+        copyBtn.addEventListener('click', async function() {
+            const text = output.textContent;
+            try {
+                await navigator.clipboard.writeText(text);
+                successMsg.classList.add('active');
+                setTimeout(() => {
+                    successMsg.classList.remove('active');
+                }, 2000);
+            } catch (err) {
+                showError('Failed to copy to clipboard');
+            }
+        });
+
+        resetBtn.addEventListener('click', function() {
+            form.reset();
+            output.classList.remove('active');
+            output.textContent = '';
+            copyBtn.disabled = true;
+            errorMsg.classList.remove('active');
+            successMsg.classList.remove('active');
+            sparkOther.classList.remove('active');
+            sparkCustom.required = false;
+        });
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('active');
+            setTimeout(() => {
+                errorMsg.classList.remove('active');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
