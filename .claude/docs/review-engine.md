@@ -1,7 +1,9 @@
 # WriteAssist Review Engine - Four-Tier Rubric System
 
-**Version:** 2.1
-**Last Updated:** 2025-10-01
+**Version:** 2.2
+**Last Updated:** 2026-07-03
+
+> **CANONICAL SOURCE OF TRUTH.** This document is the ONLY place where review gate numbers, tier values, dimension weights, and iteration caps are defined. Every other file (commands, agents, skills, docs, CLAUDE.md) must link here instead of restating these numbers. If another file appears to state a different gate or threshold, this document wins.
 
 ---
 
@@ -554,10 +556,10 @@ if weighted_score >= 7.0:
 
 A chapter is approved when:
 ```
-(passes_panel_gate AND passes_weighted_gate) OR no_critical_fails
+(passes_panel_gate AND passes_weighted_gate) AND no_critical_fails
 ```
 
-If either gate fails AND no critical fail override, chapter goes to Revise.
+If either gate fails, or any critical fail is present, the chapter goes to Revise.
 
 ### Critical Fail Override
 
@@ -718,7 +720,7 @@ Smart-review might run only:
 - Rules (ALWAYS)
 - Prose (light check)
 
-5 critics run. Need 4 passes (80%) or 5 passes (100% of 5) to succeed.
+5 critics run. Need at least 4 passes to succeed: 4/5 = 80%, which clears the 70% threshold (3/5 = 60% does not).
 
 ---
 

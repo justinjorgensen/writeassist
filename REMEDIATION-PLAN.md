@@ -38,7 +38,7 @@
   Do: `git init`; create `.gitignore` covering `.claude/state/`, `.worktrees/`, `*-backup-*.md`, `archive/`; initial commit of the whole project.
   Verify: `git log --oneline` shows the initial commit; `git status` is clean.
 
-- [ ] **R-01: Fix the pass-formula contradiction and crown the engine doc.**
+- [x] **R-01: Fix the pass-formula contradiction and crown the engine doc.**
   Evidence: `.claude/commands/review-chapter.md:177` requires `(panel AND weighted) AND no_critical_fails`; `.claude/docs/review-engine.md:557` says `(panel AND weighted) OR no_critical_fails`, which passes chapters that fail both gates.
   Do: change line 557 (locate by content, line may drift) to the AND form per D2. Add a header note to review-engine.md declaring it the single source of truth for all gate numbers (D3). Also fix its internal arithmetic slip: line ~708 says pass if `pass_count/critics_run >= 0.70` but line ~721 claims 5 critics "need 4 passes (80%)"; make the label match the rule.
   Verify: grep review-engine.md for `OR no_critical_fails` returns nothing; the doc states it is canonical.
@@ -158,4 +158,5 @@
 (Each iteration appends: date, task ID, what was done, deviations.)
 
 - 2026-07-03: Plan created from the full harness audit. No tasks executed yet.
-- 2026-07-03: R-00 done. git init, .gitignore (.claude/state/, .worktrees/, *-backup-*.md, archive/), initial commit e5363d9. No deviations.
+- 2026-07-03: R-00 done. git init, .gitignore (.claude/state/, .worktrees/, *-backup-*.md, archive/), initial commit. No deviations.
+- 2026-07-03: R-01 done. review-engine.md line 557 OR changed to AND (D2); canonical source-of-truth header added (D3); pruned-panel example at old line 721 relabeled so 4/5 passes is explained against the 70% rule. No deviations.
