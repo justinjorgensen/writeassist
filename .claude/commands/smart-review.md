@@ -1,6 +1,6 @@
 # Smart Review Command
 
-You implement an optimized chapter review that uses content analysis to select only the most relevant critics, reducing processing time and token usage by 40-60% while preserving critical fail detection (Continuity and Rules ALWAYS run).
+You implement an optimized chapter review that uses content analysis to select only the most relevant critics, reducing processing time and token usage while preserving critical fail detection (Continuity and Rules ALWAYS run).
 
 ## Command Flow
 
@@ -10,25 +10,39 @@ You implement an optimized chapter review that uses content analysis to select o
    - Determine optimal critic set
 
 2. **Preserve Critical Critics**
-   - **ALWAYS RUN:** Continuity & Logic (critical fail override)
-   - **ALWAYS RUN:** Rules Compliance (critical fail override)
+   - **ALWAYS RUN:** Continuity (continuity-checker) and Rules (rule-enforcer), the two critical-fail dimensions
    - Content analysis can only suggest OTHER critics to prune
 
 3. **Filter Context for Each Critic**
    - Apply critic-specific context filtering
-   - Reduce token usage by 50-80%
    - Maintain semantic integrity
 
 4. **Execute Selected Critics**
-   - Run critics in parallel with four-tier rubric
+   - Run critics in parallel with the four-tier rubric
    - Process filtered content instead of full chapter
    - Collect tier assessments and fixes
 
-5. **Aggregate with Adjusted Panel Gate**
-   - If 7 critics run: need 5 Pass or Better
-   - If 5 critics run: need 4 Pass or Better (80%)
-   - Critical fail overrides still apply
-   - Generate comprehensive review report with performance metrics
+5. **Aggregate with the Pruned Panel Gate**
+   - Gating with a pruned panel is defined in `.claude/docs/review-engine.md` (see "Panel gate with pruning"); critical-fail overrides still apply
+   - Generate the review report
+
+## Critic Roster (named read-only agents only)
+
+Critics are spawned as NAMED agents from `.claude/agents/`, never as generic agents. All hold only `Read, Grep, Glob` and carry the shared Output Contract. Creator agents (character-developer, world-builder, etc.) are NEVER used as reviewers.
+
+| Dimension | subagent_type | Selection |
+|-----------|---------------|-----------|
+| Continuity | `continuity-checker` | ALWAYS |
+| Rules | `rule-enforcer` | ALWAYS |
+| Prose | `style-editor` | if selected |
+| Pacing | `pacing-master` | if selected |
+| Character | `beta-reader-sim` (character/arc lens) | if selected |
+| Dialogue | `dialogue-coach` | if selected |
+| Engagement | `critic-sim` | if selected |
+| Grammar | `grammar-clarity` | if selected |
+| Sensitivity | `sensitivity-reviewer` | if selected |
+
+World-building and lore consistency concerns are covered by `continuity-checker`; reader-experience concerns by `beta-reader-sim`.
 
 ## Implementation Steps
 
@@ -41,87 +55,64 @@ When user runs `/smart-review [chapter_file]`:
 1. First, read the chapter file to get the full content
 2. Use the content-analyzer to analyze the chapter
 3. Parse the analysis report to get critic selections
-4. **FORCE INCLUDE:** Continuity & Logic, Rules Compliance (never pruned)
+4. **FORCE INCLUDE:** Continuity (continuity-checker), Rules (rule-enforcer); these are never pruned
 
-### Step 2: Adjusted Panel Gate
+### Step 2: Pruned Panel Gate
 
-Calculate threshold based on critics running:
-
-```python
-critics_run = len(selected_critics)  # Will be 5-7 (Continuity+Rules always included)
-
-if critics_run == 7:
-    pass_threshold = 5  # Standard panel gate
-elif critics_run == 6:
-    pass_threshold = 5  # Still need 5 (83%)
-elif critics_run == 5:
-    pass_threshold = 4  # Need 4 (80%)
-else:
-    # Minimum 5 critics (must include Continuity + Rules + 3 others)
-    pass_threshold = 4
-```
+The pass threshold for a reduced critic set is defined in `.claude/docs/review-engine.md` ("Panel gate with pruning"). Run a minimum of 5 critics (Continuity + Rules + 3 selected).
 
 ### Step 3: Context Filtering
 
 For each selected critic, prepare filtered context:
 
-**dialogue_coach** (if selected):
+**dialogue-coach** (if selected):
 - Extract all dialogue lines and attributions
 - Include 50 words before/after each dialogue block
-- Approximate reduction: 75%
 
-**continuity_checker** (always included):
+**continuity-checker** (always included):
 - Extract character names, locations, times, facts
 - Format as structured data, not prose
-- Approximate reduction: 85%
 
-**character_developer** (if selected):
+**beta-reader-sim** (if selected):
 - Extract only scenes mentioning target characters
 - Include character dialogue and descriptions
-- Approximate reduction: 70%
 
-**pacing_master** (if selected):
+**pacing-master** (if selected):
 - Extract chapter opening (200 words) and closing (200 words)
 - Include all action sequences and transitions
-- Approximate reduction: 60%
 
-**world_builder** (if selected):
-- Extract location descriptions and world details
-- Include sensory descriptions
-- Approximate reduction: 80%
-
-**style_editor** (always included):
+**style-editor** (if selected):
 - Extract narrative prose sections
 - Exclude dialogue unless stylistically relevant
-- Approximate reduction: 40%
 
-**sensitivity_reviewer** (if selected):
+**sensitivity-reviewer** (if selected):
 - Extract romantic, violent, or culturally sensitive content
 - Include full context for these scenes
-- Approximate reduction: 85%
 
-**rules_enforcer** (always included):
+**rule-enforcer** (always included):
 - Scan for rule violations only
 - Extract violations with 20-word context
-- Approximate reduction: 95%
 
-**grammar_clarity** (if selected):
+**grammar-clarity** (if selected):
 - Extract sample sentences for review
 - Focus on complex or potentially problematic sentences
-- Approximate reduction: 90%
 
-### Step 3: Parallel Execution
+**critic-sim** (if selected):
+- Provide the full chapter opening and closing plus scene summaries
+- Focus on engagement, stakes, and reader pull-through
 
-Execute selected agents simultaneously by invoking multiple Task tools in a single response, providing each with:
+### Step 4: Parallel Execution
+
+Execute selected critics simultaneously by invoking multiple Task tools in a single response, using each critic's named subagent_type from the roster table, providing each with:
 - Their filtered context (not full chapter)
 - The specific analysis focus
-- Their assigned weight value
+- The instruction to follow their Output Contract (shared JSON schema)
 
-### Step 4: Results Aggregation
+### Step 5: Results Aggregation
 
-Combine agent feedback considering weights:
-- Higher weight agents have more influence on final score
-- Critical issues from any agent are always included
+Combine critic verdicts per `.claude/docs/review-engine.md`:
+- Apply the pruned panel gate and critical-fail overrides
+- Critical issues from any critic are always included
 - Generate unified recommendations
 
 ## Output Format
@@ -131,42 +122,35 @@ Combine agent feedback considering weights:
 
 ## Content Analysis
 - **Type**: [Dialogue-heavy/Action-packed/Character-focused/World-building]
-- **Agents Used**: [X] of 16 (Standard review uses 10)
-- **Processing Time**: [XX] seconds (vs [XX] standard)
-- **Token Usage**: ~[XXXX] (vs ~[XXXXX] standard)
-- **Efficiency Gain**: [XX]% faster, [XX]% fewer tokens
+- **Critics Run**: [list] ([X] of the core panel)
+- **Critics Skipped**: [list with reasons]
 
-## Review Scores (Weighted)
-- Overall Quality: [X.X]/10
-- Dialogue Quality: [X.X]/10 (weight: [X.X])
-- Pacing: [X.X]/10 (weight: [X.X])
-- Character Development: [X.X]/10 (weight: [X.X])
-- World Building: [X.X]/10 (weight: [X.X])
-- Style: [X.X]/10 (weight: [X.X])
-- Continuity: [X.X]/10 (weight: [X.X])
+## Critic Verdicts (four-tier rubric)
+- Continuity: [tier]
+- Rules: [tier]
+- [Dimension]: [tier]
+- ...
+
+## Decision
+[PASS / REVISE] per the pruned panel gate and critical-fail overrides in `.claude/docs/review-engine.md`
 
 ## Key Findings
 
 ### Strengths
-[Aggregated from agent feedback]
+[Aggregated from critic feedback]
 
 ### Areas for Improvement
-[Prioritized by weight and severity]
+[Prioritized by severity]
 
 ### Critical Issues
-[Any major problems flagged]
+[Any critical fails flagged]
 
-## Agent-Specific Feedback
+## Critic-Specific Feedback
 
-[Include detailed feedback from each agent that ran]
-
-## Performance Metrics
-- Agents Run: [List of agents with weights]
-- Agents Skipped: [List with reasons]
-- Context Reduction: [XX]% average
-- Time Saved: [XX] seconds
-- Tokens Saved: ~[XXXX]
+[Include the JSON verdict and fixes from each critic that ran]
 ```
+
+Write the final report to `.claude/state/reviews/` (same contract as review-chapter).
 
 ## Fallback Behavior
 
@@ -177,18 +161,7 @@ If content analysis fails or produces unexpected results:
 
 ## User Options
 
-- `--all`: Force all agents to run (bypass optimization)
+- `--all`: Force all critics to run (bypass optimization)
 - `--verbose`: Show detailed analysis metrics
-- `--quick`: Use only core agents for fastest review
+- `--quick`: Use only Continuity + Rules + Prose for the fastest check
 - `--focus=[aspect]`: Emphasize specific aspect (dialogue, action, etc.)
-
-## Expected Performance
-
-Based on content type:
-- **Dialogue-heavy chapters**: 4-5 agents, 60% token reduction
-- **Action chapters**: 5-6 agents, 50% token reduction  
-- **Character development**: 4-5 agents, 55% token reduction
-- **World-building**: 5-6 agents, 45% token reduction
-- **Mixed content**: 6-7 agents, 40% token reduction
-
-Average improvement: 50% faster, 60% fewer tokens

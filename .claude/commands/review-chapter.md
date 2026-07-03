@@ -377,29 +377,35 @@ review-chapter Chapter-07 --verbose
 ## Parallel Execution Instructions
 
 **Incorrect approach (sequential or simulated):**
-```python
-Task(
-    subagent_type="general-purpose",
-    description="Multi-Critic Review",
-    prompt="Simulate 7 different critics..."  # Sequential, not parallel
-)
-```
+One Task told to "simulate 7 different critics" in a single context. This is sequential, contaminates analyses, and (worse) a generic agent holds Write/Edit, violating the read-only review policy.
 
-**Correct approach (true parallel execution):**
+**Correct approach (true parallel execution, named read-only agents):**
+Each critic is spawned as its NAMED agent from `.claude/agents/`. These agents are locked to `Read, Grep, Glob` and carry the Output Contract for the shared JSON schema. The core-7 mapping:
+
+| Dimension | subagent_type |
+|-----------|---------------|
+| Prose | `style-editor` |
+| Pacing | `pacing-master` |
+| Character | `beta-reader-sim` (character/arc lens) |
+| Dialogue | `dialogue-coach` |
+| Continuity | `continuity-checker` |
+| Engagement | `critic-sim` |
+| Rules | `rule-enforcer` |
+
 Invoke all 7 Task tools in a SINGLE response like this:
 ```xml
 <function_calls>
 <invoke name="Task">
-  <parameter name="subagent_type">general-purpose</parameter>
-  <parameter name="description">Prose & Voice Critic</parameter>
-  <parameter name="prompt">Evaluate prose using four-tier rubric. Return JSON: {"critic":"Prose","tier":"Pass|Strong Pass|Needs Work|Fail","confidence":0.92,"one_line_reason":"...","fixes":[]}. Chapter: [content]</parameter>
+  <parameter name="subagent_type">style-editor</parameter>
+  <parameter name="description">Prose Critic</parameter>
+  <parameter name="prompt">Review the chapter at [path] as the Prose critic using the four-tier rubric. Follow your Output Contract: final output is the shared JSON schema with "critic":"Prose".</parameter>
 </invoke>
 <invoke name="Task">
-  <parameter name="subagent_type">general-purpose</parameter>
-  <parameter name="description">Pacing & Flow Critic</parameter>
-  <parameter name="prompt">Evaluate pacing using four-tier rubric. Return JSON schema as above. Chapter: [content]</parameter>
+  <parameter name="subagent_type">pacing-master</parameter>
+  <parameter name="description">Pacing Critic</parameter>
+  <parameter name="prompt">Review the chapter at [path] as the Pacing critic using the four-tier rubric. Follow your Output Contract: final output is the shared JSON schema with "critic":"Pacing".</parameter>
 </invoke>
-<!-- ... ALL 7 CRITICS IN ONE MESSAGE ... -->
+<!-- ... ALL 7 CRITICS IN ONE MESSAGE, each with its named subagent_type from the table ... -->
 </function_calls>
 ```
 
