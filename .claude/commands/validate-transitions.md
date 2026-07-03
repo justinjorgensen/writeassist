@@ -1,4 +1,13 @@
+---
+description: Check chapter-to-chapter continuity at boundaries
+argument-hint: "[chapter-pair | all]"
+allowed-tools: Read, Grep, Glob, Task
+---
 # Validate Chapter Transitions
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: validate every adjacent pair in `02-Manuscript/`.
 
 **Target:** Check continuity between consecutive chapters
 

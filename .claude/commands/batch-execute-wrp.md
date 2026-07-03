@@ -1,4 +1,10 @@
+---
+description: Execute multiple WRPs into reviewed chapters by looping the execute-wrp command
+argument-hint: "[wrp-files... | all]"
+---
 # Batch Execute WRP (Mass Chapter Production)
+
+**No-argument behavior:** If no argument is given: list the WRPs in `05-wrp/` and stop.
 
 **Target WRPs:** $ARGUMENTS
 

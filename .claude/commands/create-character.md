@@ -1,4 +1,12 @@
+---
+description: Create or deepen a character profile in the story compendium
+argument-hint: "[character-name]"
+---
 # create-character
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: list existing compendium characters and ask which to create or deepen.
 
 Generate a comprehensive character profile and add them to your story compendium.
 

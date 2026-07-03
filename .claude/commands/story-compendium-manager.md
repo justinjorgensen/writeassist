@@ -1,4 +1,12 @@
+---
+description: Create or update the story compendium
+argument-hint: "[section (optional)]"
+---
 # Story Compendium Manager
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: review the whole compendium for gaps and staleness.
 
 Maintain and protect the integrity of your story universe through vigilant curation of the story-compendium.md.
 

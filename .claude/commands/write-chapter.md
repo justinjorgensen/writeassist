@@ -1,4 +1,12 @@
+---
+description: Write a chapter directly without a WRP
+argument-hint: "[chapter-number]"
+---
 # write-chapter
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: list outline chapters and stop.
 
 Write a complete chapter based on the outline and parameters provided.
 

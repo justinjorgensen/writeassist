@@ -1,4 +1,10 @@
+---
+description: Create Calendar writing blocks with word-count goals via the Calendar MCP
+argument-hint: "[window]"
+---
 # Schedule Writing Time
+
+**No-argument behavior:** If no argument is given: ask for the desired window before creating events.
 
 **Window:** $ARGUMENTS  (e.g., `weekdays 6-7am`, `tomorrow 2pm-4pm`, `saturday morning 3h`)
 

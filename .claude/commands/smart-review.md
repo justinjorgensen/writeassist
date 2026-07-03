@@ -1,4 +1,13 @@
+---
+description: Content-aware review running only the relevant critics (Continuity and Rules always run)
+argument-hint: "[chapter-file]"
+allowed-tools: Read, Grep, Glob, Task, Write
+---
 # Smart Review Command
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: list chapters in `02-Manuscript/` and stop. (Write access is only for saving the report to `.claude/state/reviews/`.)
 
 You implement an optimized chapter review that uses content analysis to select only the most relevant critics, reducing processing time and token usage while preserving critical fail detection (Continuity and Rules ALWAYS run).
 

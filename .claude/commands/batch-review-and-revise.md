@@ -1,4 +1,10 @@
+---
+description: Review and auto-revise multiple chapters by looping review-chapter and auto-revise-chapter
+argument-hint: "[chapter-files... | all]"
+---
 # Batch Review and Fix (Mass Quality Upgrade)
+
+**No-argument behavior:** If no argument is given: default to all chapters in `02-Manuscript/` after confirming with the user.
 
 **Target Chapters:** $ARGUMENTS
 

@@ -1,4 +1,12 @@
+---
+description: Maintain the story timeline
+argument-hint: "[event or chapter (optional)]"
+---
 # update-timeline
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: re-derive the timeline from the manuscript and report drift.
 
 Manage and maintain your story's chronological timeline with automatic consistency checking.
 

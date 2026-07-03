@@ -1,4 +1,10 @@
+---
+description: Write a chapter from its WRP with the automated review and revision pipeline
+argument-hint: "[wrp-file-or-name]"
+---
 # Execute WRP (Write Chapter from Plan)
+
+**No-argument behavior:** If no argument is given: list the WRPs in `05-wrp/` and stop.
 
 **WRP File:** $ARGUMENTS
 
@@ -6,7 +12,7 @@
 
 ## START: File Operations
 
-1. **Read WRP file**: `05-wrp/$ARGUMENTS`
+1. **Resolve and read the WRP file**: `$ARGUMENTS` may be a full path (use as-is if it exists) or a bare name (resolve against `05-wrp/`, adding `.md` if missing). If neither resolves, list the files in `05-wrp/` and stop.
 2. **Extract from WRP**:
    - Chapter number and title
    - Word count target

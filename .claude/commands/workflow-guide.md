@@ -1,4 +1,10 @@
+---
+description: Display the WriteAssist workflow documentation
+allowed-tools: Read
+---
 # Book Writing Command Workflow Guide
+
+**No-argument behavior:** Takes no arguments.
 
 ## 📚 Overview
 

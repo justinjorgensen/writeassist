@@ -1,4 +1,12 @@
+---
+description: Reference for chaining batch commands into full production pipelines
+argument-hint: "[pipeline-request]"
+---
 # Batch Operations (Master Orchestrator)
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: display the available batch pipelines and stop.
 
 Execute multiple commands across chapters, characters, or scenes efficiently. Now fully integrated with the automated review and fix pipeline.
 

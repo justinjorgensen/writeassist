@@ -1,4 +1,10 @@
+---
+description: Push manuscript files to Google Drive for beta readers via the Drive MCP
+argument-hint: "[chapter | all]"
+---
 # Sync to Drive
+
+**No-argument behavior:** If no argument is given: list what would be synced and ask before proceeding.
 
 **Target:** $ARGUMENTS
 

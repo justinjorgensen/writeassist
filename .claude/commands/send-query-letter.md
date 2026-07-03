@@ -1,4 +1,10 @@
+---
+description: Draft and send a query letter via the Gmail MCP, gated by plan mode
+argument-hint: "[agent-name]"
+---
 # Send Query Letter
+
+**No-argument behavior:** If no argument is given: list agents researched in 03-Resources/ and stop.
 
 **Recipient(s):** $ARGUMENTS
 

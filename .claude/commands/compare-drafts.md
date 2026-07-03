@@ -1,4 +1,13 @@
+---
+description: Compare two or more chapter drafts and report differences
+argument-hint: "[file-A] [file-B]"
+allowed-tools: Read, Grep, Glob
+---
 # compare-drafts
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If fewer than two files are given: list candidate versions (git history of the chapter) and stop.
 
 Compare different versions of chapters to track changes, improvements, and revision history.
 

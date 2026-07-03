@@ -1,4 +1,9 @@
+---
+description: Set up the story compendium from scratch
+---
 # initialize-story-compendium
+
+**No-argument behavior:** Takes no arguments; interviews the author for initial content.
 
 Set up your story compendium with all essential components for your book project.
 

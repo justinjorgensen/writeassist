@@ -1,4 +1,10 @@
+---
+description: Generate WRPs for multiple chapters by looping the generate-wrp command
+argument-hint: "[chapter-range | all]"
+---
 # Batch Generate WRP (Bulk Chapter Planning)
+
+**No-argument behavior:** If no argument is given: list outline chapters without WRPs and stop.
 
 **Target Chapters:** $ARGUMENTS
 

@@ -1,4 +1,12 @@
+---
+description: Generate a comprehensive book outline, gated by plan mode
+argument-hint: "[premise (optional)]"
+---
 # outline-book
+
+**Target:** $ARGUMENTS
+
+**No-argument behavior:** If no argument is given: build the outline from project-config.md and the author interview.
 
 Generate a comprehensive outline for your book project.
 
