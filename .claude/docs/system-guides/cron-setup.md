@@ -38,7 +38,7 @@ Run /curate-chapters all on ~/projects/WriteAssist-v2/02-Manuscript/. Save the r
 ## 2. Daily smart-review of recent work, `writeassist-daily-smart-review`
 
 **Schedule:** `0 7 * * *` (every day, 7am local)
-**Cost:** ~one cheap review per day (smart-review is 78% token-reduction vs full review).
+**Cost:** ~one cheap review per day (smart-review runs only the critics relevant to the chapter).
 **What it does:**
 1. Finds chapters modified in the **last 24 hours** in `02-Manuscript/`.
 2. Runs `/smart-review` on each.

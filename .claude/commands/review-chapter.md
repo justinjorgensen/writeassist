@@ -351,7 +351,7 @@ Run `/auto-revise-chapter` to apply fixes automatically.
 
 ## Benefits of Parallel Execution:
 
-1. **Fast Reviews** - All 7 critics run simultaneously (~30 seconds vs 5+ minutes sequential)
+1. **Fast Reviews** - All 7 critics run simultaneously
 2. **Clean Context Windows** - No contamination between analyses
 3. **Visible Progress** - See all critics working in UI
 4. **Independent Assessment** - No influence between critics

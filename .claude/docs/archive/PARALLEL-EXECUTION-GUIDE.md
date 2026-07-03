@@ -1,3 +1,5 @@
+> **DEPRECATED (2026-07-03).** This is an obsolete v1 document (10-agent numeric review, generic-agent spawns, unmeasured performance claims). It is kept for history only. The current system is defined by `.claude/docs/review-engine.md` and `.claude/commands/review-chapter.md` (named read-only critics, four-tier rubric). Do not follow the instructions below.
+
 # CRITICAL: Parallel Agent Execution Guide
 
 ## ⚠️ MANDATORY READING FOR ALL AI ASSISTANTS

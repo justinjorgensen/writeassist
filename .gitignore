@@ -3,3 +3,6 @@
 .worktrees/
 *-backup-*.md
 archive/
+# but keep deprecated docs under version control
+!.claude/docs/archive/
+!.claude/docs/archive/**

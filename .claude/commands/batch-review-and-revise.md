@@ -227,7 +227,7 @@ Time Elapsed: 47 minutes
 
 ## Patterns Detected
 1. Tendency to use em dashes in dialogue (FIXED)
-2. Overuse of "suddenly" (REDUCED by 78%)
+2. Overuse of "suddenly" (reduced)
 3. Repetitive sentence starts in action (VARIED)
 
 ## Recommendations
@@ -261,23 +261,6 @@ Watching: 02-Manuscript/
 
 ---
 
-## Performance Metrics
-
-### Processing Speed
-- **Review Speed**: ~30 seconds per chapter
-- **Fix Application**: ~45 seconds per chapter
-- **Total per Chapter**: ~1.5 minutes
-- **25 Chapter Book**: ~35-40 minutes
-
-### Resource Usage
-```markdown
-CPU: ████████░░ 80%
-Memory: ██████░░░░ 60%
-Parallel Threads: 4
-Chapters/Hour: ~40
-```
-
----
 
 ## Advanced Features
 

@@ -90,10 +90,10 @@ Customize these settings to match your genre, voice, tone, and style preferences
 ### CRITICAL: Parallel Agent Execution
 When using multi-agent reviews (review-chapter, batch-review-and-revise, etc.):
 1. **ALWAYS use separate Task agents** - Never simulate multiple agents in one Task
-2. **Launch agents in parallel** - All 10 review agents run simultaneously
+2. **Launch agents in parallel** - All selected critics run simultaneously
 3. **Each agent gets clean context** - No contamination between analyses
-4. **User sees all agents running** - Full transparency and 10x speed improvement
-5. **See `.claude/docs/system-guides/PARALLEL-EXECUTION-GUIDE.md`** for implementation details
+4. **User sees all agents running** - Full transparency
+5. **See the Parallel Execution Instructions in `.claude/commands/review-chapter.md`** for implementation details
 
 ### MANDATORY: Before ANY Task
 1. **READ `author-rules.md` FIRST** - This is your primary constraint document

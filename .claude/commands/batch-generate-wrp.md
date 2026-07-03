@@ -248,10 +248,9 @@ IF generating non-sequential:
 ## Performance Optimization
 
 ### Batch Size Recommendations
-- **Small Batch** (1-5 chapters): 2-5 minutes
-- **Medium Batch** (6-15 chapters): 5-15 minutes
-- **Large Batch** (16-30 chapters): 15-30 minutes
-- **Full Book** (30+ chapters): 30-45 minutes
+- **Small Batch** (1-5 chapters): single sitting
+- **Medium Batch** (6-15 chapters): plan a review pause midway
+- **Large Batch** (16+ chapters): split into acts and review between
 
 ### Memory Management
 - Loads only necessary context

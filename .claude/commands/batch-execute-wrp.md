@@ -220,11 +220,8 @@ Total Words: 42,847
 - **Large** (11-25 chapters): Progressive with breaks
 - **Massive** (26+ chapters): Split into acts
 
-### Resource Management
+### Progress Reporting
 ```markdown
-Memory Usage: [████████░░] 78%
-CPU Usage: [██████████] 95%
-Estimated Remaining: 45 minutes
 Chapters Complete: 6/15
 Current: Chapter 7 (Auto-fixing)
 ```

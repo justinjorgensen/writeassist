@@ -53,9 +53,9 @@ In v2 this is enforced mechanically by two hooks: a **PreToolUse guard** (`.clau
 ### Parallel Agent Execution
 When using multi-agent commands (review-chapter, batch-review-and-revise):
 - **ALWAYS use separate Task agents** - Never simulate multiple agents in one Task
-- **Launch agents in parallel** - All agents run simultaneously for 10x speed improvement
+- **Launch agents in parallel** - All agents run simultaneously
 - **Each agent gets clean context** - No contamination between analyses
-- See `.claude/docs/system-guides/PARALLEL-EXECUTION-GUIDE.md` for implementation details
+- See the Parallel Execution Instructions section of `.claude/commands/review-chapter.md` for implementation details
 
 ### Tool Isolation per Agent (v2)
 All 25 agents in `.claude/agents/` carry YAML frontmatter declaring which tools they can use (full list: `.claude/docs/agent-roster.md`). **Reviewer agents are locked to `Read, Grep, Glob`**, they physically cannot edit the manuscript. Only creator agents (story-architect, character-developer, world-builder, twist-engineer, research-assistant) hold `Write, Edit`. The orchestrator (series-coordinator) additionally holds `Task` but no Write/Edit.
@@ -167,9 +167,8 @@ Two skills ship under `.claude/skills/`:
 
 ## Performance Characteristics
 
-- Parallel review: ~30 seconds (vs ~5 minutes sequential)
-- Smart review: 78% token reduction, 29% faster than full review
-- Batch operations: 10x speed improvement with parallel execution
+- Reviews and batch operations run critics as parallel Task agents with separate contexts
+- Smart review prunes critics irrelevant to the chapter's content (Continuity and Rules always run)
 - Quality pipeline: automatic iteration until the review-engine gates pass (see `.claude/docs/review-engine.md`)
 
 ## Important Implementation Notes

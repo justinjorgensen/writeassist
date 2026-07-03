@@ -251,9 +251,8 @@ IF validation fails:
 
 ```markdown
 ## Auto-Revise Progress
-═══════════════════════════════ 78%
-Fixes Applied: 156/200
-Time Elapsed: 2:34
+═══════════════════════════════ 60%
+Fixes Applied: 120/200
 
 Fix Breakdown:
 - Auto-applied (0.95+): 89 fixes
