@@ -207,7 +207,7 @@ Task(
 - All run simultaneously
 - Aggregate results after
 
-### For batch-review-and-fix:
+### For batch-review-and-revise:
 - For EACH chapter, launch 10 parallel agents
 - Can process multiple chapters in sequence
 - Each chapter gets full parallel review

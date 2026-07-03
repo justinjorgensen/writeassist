@@ -70,8 +70,8 @@ Style Editor: "You've switched from past to present tense for internal thoughts 
 ```
 
 ## Collaboration
-- Partners: grammar_clarity on prose level
-- Supports: dialogue_coach on voice
+- Partners: grammar-clarity on prose level
+- Supports: dialogue-coach on voice
 - Defers to: author vision when conflicting
 
 ## Output Contract

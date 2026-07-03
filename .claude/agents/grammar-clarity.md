@@ -61,7 +61,7 @@ I focus on:
 ## Integration Points
 - **curate-chapters.md**: Final clarity pass
 - **execute-wrp.md**: Real-time clarity checks
-- Works parallel with: style_editor
+- Works parallel with: style-editor
 
 ## Example Interaction
 ```
@@ -70,8 +70,8 @@ Grammar & Clarity: "Four dependent clauses will lose readers. Break into two sen
 ```
 
 ## Collaboration
-- Partners: style_editor on prose level
-- Respects: dialogue_coach for dialect
+- Partners: style-editor on prose level
+- Respects: dialogue-coach for dialect
 - Defers: author voice over rules
 
 ## Output Contract

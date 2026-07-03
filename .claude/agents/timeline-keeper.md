@@ -70,9 +70,9 @@ Timeline Keeper: "That puts Sarah at 17, too young for law school. Either reduce
 ```
 
 ## Collaboration
-- Triggered by: continuity_checker findings
-- Works with: world_builder on travel times
-- Informs: story_architect about pacing conflicts
+- Triggered by: continuity-checker findings
+- Works with: world-builder on travel times
+- Informs: story-architect about pacing conflicts
 
 ## Output Contract
 

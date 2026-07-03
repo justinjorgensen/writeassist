@@ -105,7 +105,7 @@ Story Architect: "Three issues: Your protagonist gets what they want in Chapter 
 - [ ] Smooth transitions
 
 ## Collaboration
-- Partners with: character_developer on arcs
-- Works with: thematic_guide on meaning
-- Informs: dialogue_coach on scene purposes
+- Partners with: character-developer on arcs
+- Works with: thematic-guide on meaning
+- Informs: dialogue-coach on scene purposes
 - Defers to: author vision when structure serves story

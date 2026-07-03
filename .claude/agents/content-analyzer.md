@@ -59,48 +59,48 @@ Count scene transition markers:
 ## Agent Selection Rules
 
 ### ALWAYS INCLUDE (Core Set):
-- continuity_checker (weight: 1.0) - Always needed for consistency
-- rules_enforcer (weight: 1.0) - Author rules must be checked  
-- style_editor (weight: 1.0) - Basic quality always matters
+- continuity-checker (weight: 1.0) - Always needed for consistency
+- rule-enforcer (weight: 1.0) - Author rules must be checked  
+- style-editor (weight: 1.0) - Basic quality always matters
 
 ### CONDITIONAL SELECTION:
 
-**dialogue_coach:**
+**dialogue-coach:**
 - >70% dialogue → weight: 3.0
 - 50-70% dialogue → weight: 2.0
 - 30-50% dialogue → weight: 1.0
 - <30% dialogue → SKIP
 
-**pacing_master:**
+**pacing-master:**
 - Action score >5.0 → weight: 3.0
 - Action score 3.0-5.0 → weight: 2.0
 - Action score 1.0-3.0 → weight: 1.0
 - Action score <1.0 → SKIP
 
-**character_developer:**
+**character-developer:**
 - >3 new characters → weight: 3.0
 - 2-3 new characters → weight: 2.0
 - 1 new character → weight: 1.0
 - Character development detected → weight: 2.0
 - No triggers → SKIP
 
-**world_builder:**
+**world-builder:**
 - World score >50 → weight: 3.0
 - World score 30-50 → weight: 2.0
 - World score 15-30 → weight: 1.0
 - New location mentioned → weight: 2.0
 - World score <15 → SKIP
 
-**sensitivity_reviewer:**
+**sensitivity-reviewer:**
 - Romance keywords >5 → weight: 3.0
 - Emotional score >30 → weight: 2.0
 - Otherwise → SKIP
 
-**grammar_clarity:**
+**grammar-clarity:**
 - Include if chapter >3000 words → weight: 1.0
 - Otherwise → SKIP
 
-**timeline_keeper:**
+**timeline-keeper:**
 - Include if >3 time markers detected → weight: 1.5
 - Otherwise → SKIP
 
@@ -123,9 +123,9 @@ Metrics:
 
 Agent Selection:
   Core Agents (Always Run):
-    - continuity_checker (weight: 1.0)
-    - rules_enforcer (weight: 1.0)
-    - style_editor (weight: 1.0)
+    - continuity-checker (weight: 1.0)
+    - rule-enforcer (weight: 1.0)
+    - style-editor (weight: 1.0)
   
   Selected Specialists:
     - [agent_name] (weight: X.X) - Reason: [trigger]
@@ -145,13 +145,13 @@ Summary:
 
 For each selected agent, recommend context filtering:
 
-- **dialogue_coach**: Extract dialogue + 50-word context windows
-- **continuity_checker**: Extract facts, names, dates, locations only
-- **character_developer**: Extract character-specific scenes only
-- **pacing_master**: Extract structure, transitions, and action sequences
-- **world_builder**: Extract descriptions and setting details only
-- **style_editor**: Extract narrative prose (non-dialogue) sections
-- **sensitivity_reviewer**: Extract romantic/emotional/violent content only
-- **rules_enforcer**: Extract potential rule violations only
+- **dialogue-coach**: Extract dialogue + 50-word context windows
+- **continuity-checker**: Extract facts, names, dates, locations only
+- **character-developer**: Extract character-specific scenes only
+- **pacing-master**: Extract structure, transitions, and action sequences
+- **world-builder**: Extract descriptions and setting details only
+- **style-editor**: Extract narrative prose (non-dialogue) sections
+- **sensitivity-reviewer**: Extract romantic/emotional/violent content only
+- **rule-enforcer**: Extract potential rule violations only
 
 Be precise, analytical, and consistent in your measurements.

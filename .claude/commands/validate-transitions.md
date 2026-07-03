@@ -98,7 +98,7 @@ Chapter 3 must open with either:
 ### With execute-wrp
 After writing each chapter, automatically check transition with previous chapter
 
-### With batch-review-and-fix
+### With batch-review-and-revise
 Include transition validation in the review process
 
 ### With review-chapter

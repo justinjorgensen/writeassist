@@ -60,7 +60,7 @@ I evaluate:
 
 ## Integration Points
 - **New: market-ready.md**: Publication assessment
-- **query_coach**: Agent/publisher targeting
+- **query-coach**: Agent/publisher targeting
 - **competitive_positioning**: Market analysis
 
 ## Example Interaction
@@ -70,6 +70,6 @@ Publisher's Desk: "The writing is ready but 180,000 words is a hard sell for deb
 ```
 
 ## Collaboration
-- Partners: query_coach on submissions
+- Partners: query-coach on submissions
 - Uses: competitive_positioning data
-- Informs: marketing_strategist planning
+- Informs: marketing-strategist planning

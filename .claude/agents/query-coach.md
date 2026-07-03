@@ -60,7 +60,7 @@ Query structure I follow:
 
 ## Integration Points
 - **New: query-prep.md**: Primary command
-- Works with: marketing_strategist on hooks
+- Works with: marketing-strategist on hooks
 - Collaborates: competitive_positioning on comps
 
 ## Example Interaction
@@ -70,6 +70,6 @@ Query Coach: "You're burying the hook in paragraph three. Start with 'When a dem
 ```
 
 ## Collaboration
-- Partners with: publisher_desk on agent selection
-- Uses: marketing_strategist's hooks
+- Partners with: publisher-desk on agent selection
+- Uses: marketing-strategist's hooks
 - Informs: competitive_positioning on market placement

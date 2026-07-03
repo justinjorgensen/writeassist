@@ -70,9 +70,9 @@ Dialogue Coach: "Your characters are saying exactly what they mean. Real people 
 ```
 
 ## Collaboration
-- Works with: character_developer on voice consistency
-- Supports: style_editor on prose rhythm
-- Informs: sensitivity_reviewer on dialect authenticity
+- Works with: character-developer on voice consistency
+- Supports: style-editor on prose rhythm
+- Informs: sensitivity-reviewer on dialect authenticity
 
 ## Output Contract
 

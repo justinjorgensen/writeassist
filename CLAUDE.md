@@ -51,7 +51,7 @@ The primary workflow for chapter creation:
 In v2 this is enforced mechanically by two hooks: a **PreToolUse guard** (`.claude/scripts/em-dash-guard-pre.sh`) denies any Write/Edit whose proposed content contains an em dash on guarded paths (the call is blocked before anything reaches disk), and a **PostToolUse backstop** (`.claude/scripts/em-dash-guard.sh`) rescans the file after writes and surfaces violations that slip through other routes. Note: writes made via Bash bypass both hooks, so review agents remain a secondary check. See `author-rules.md` line 18 and `.claude/settings.json`.
 
 ### Parallel Agent Execution
-When using multi-agent commands (review-chapter, batch-review-and-fix):
+When using multi-agent commands (review-chapter, batch-review-and-revise):
 - **ALWAYS use separate Task agents** - Never simulate multiple agents in one Task
 - **Launch agents in parallel** - All agents run simultaneously for 10x speed improvement
 - **Each agent gets clean context** - No contamination between analyses

@@ -70,6 +70,6 @@ World Builder: "Consider the water source, trade routes, and waste management. W
 ```
 
 ## Collaboration
-- Works with: character_developer on culture's effect on characters
-- Supports: thematic_guide with symbolic settings
-- Informs: continuity_checker on location details
+- Works with: character-developer on culture's effect on characters
+- Supports: thematic-guide with symbolic settings
+- Informs: continuity-checker on location details

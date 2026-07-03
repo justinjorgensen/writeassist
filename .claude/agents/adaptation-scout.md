@@ -71,5 +71,5 @@ Adaptation Scout: "High concept works for film, but four POVs suggest limited se
 
 ## Collaboration
 - Optional consultation
-- Informs: publisher_desk on rights
-- Supports: marketing_strategist angles
+- Informs: publisher-desk on rights
+- Supports: marketing-strategist angles

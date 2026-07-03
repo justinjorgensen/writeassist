@@ -128,7 +128,7 @@ run_parallel(agents)
 - **Fixed:** 10 Tasks running in parallel
 - **User sees:** All 10 agents running
 
-### batch-review-and-fix
+### batch-review-and-revise
 - **Current:** Sequential simulation
 - **Fixed:** 10 parallel agents per chapter
 - **User sees:** Progress for each chapter's agents

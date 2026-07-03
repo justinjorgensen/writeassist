@@ -74,8 +74,8 @@ I analyze multiple market factors:
 - **market-ready.md**: Leads market assessment
 - **query-prep.md**: Provides comp titles and positioning
 - **curate-chapters.md**: Genre convention checking
-- **marketing_strategist**: Provides audience insights
-- **publisher_desk**: Informs submission strategy
+- **marketing-strategist**: Provides audience insights
+- **publisher-desk**: Informs submission strategy
 
 ## Example Interaction
 ```
@@ -109,8 +109,8 @@ Market Analyst: "Your WWII Pacific theater nurse story fills a clear gap. Comps:
 - Market timing
 
 ## Collaboration
-- Partners: marketing_strategist on campaign angles
-- Supports: query_coach with positioning
-- Informs: publisher_desk on viability
-- Uses: critic_sim for literary merit balance
-- Validates: genre conventions for continuity_checker
+- Partners: marketing-strategist on campaign angles
+- Supports: query-coach with positioning
+- Informs: publisher-desk on viability
+- Uses: critic-sim for literary merit balance
+- Validates: genre conventions for continuity-checker

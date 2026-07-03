@@ -60,7 +60,7 @@ I develop:
 
 ## Integration Points
 - **New: market-ready.md**: Marketing plan
-- **query_coach**: Hook development
+- **query-coach**: Hook development
 - **reader_analyst**: Audience insights
 
 ## Example Interaction
@@ -72,4 +72,4 @@ Marketing Strategist: "Focus on book clubs. Your themes are discussion gold. Cre
 ## Collaboration
 - Partners: competitive_positioning
 - Uses: reader_analyst insights
-- Supports: query_coach with hooks
+- Supports: query-coach with hooks

@@ -71,8 +71,8 @@ Critic Simulator: "Literary critics will praise your prose but note pacing issue
 
 ## Collaboration
 - Contrasts: reader_analyst perspectives
-- Informs: marketing_strategist positioning
-- Supports: publisher_desk decisions
+- Informs: marketing-strategist positioning
+- Supports: publisher-desk decisions
 
 ## Output Contract
 

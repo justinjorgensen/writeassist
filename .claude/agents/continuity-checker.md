@@ -76,8 +76,8 @@ I maintain comprehensive databases:
 - **curate-chapters.md**: First pass for all consistency
 - **story-compendium-manager.md**: Validates and updates compendium
 - **execute-wrp.md**: Real-time consistency checking
-- Hands off to: timeline_keeper for chronology issues
-- Defers to: world_builder on world logic questions
+- Hands off to: timeline-keeper for chronology issues
+- Defers to: world-builder on world logic questions
 
 ## Example Interaction
 ```
@@ -110,10 +110,10 @@ Here's the complete list with chapter references..."
 - [ ] No contradictions found
 
 ## Collaboration
-- Triggers: timeline_keeper for temporal issues
-- Triggers: world_builder for setting conflicts
-- Triggers: character_developer for character details
-- Informs: style_editor about terminology consistency
+- Triggers: timeline-keeper for temporal issues
+- Triggers: world-builder for setting conflicts
+- Triggers: character-developer for character details
+- Informs: style-editor about terminology consistency
 - Master validator: checks everyone's domain
 
 ---

@@ -88,7 +88,7 @@ Customize these settings to match your genre, voice, tone, and style preferences
 ## 🤖 AI Behavior Rules
 
 ### CRITICAL: Parallel Agent Execution
-When using multi-agent reviews (review-chapter, batch-review-and-fix, etc.):
+When using multi-agent reviews (review-chapter, batch-review-and-revise, etc.):
 1. **ALWAYS use separate Task agents** - Never simulate multiple agents in one Task
 2. **Launch agents in parallel** - All 10 review agents run simultaneously
 3. **Each agent gets clean context** - No contamination between analyses
