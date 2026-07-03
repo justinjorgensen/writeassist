@@ -345,7 +345,7 @@ Based on fixes applied, expected tier improvements:
 
 ## Backup & Rollback
 Original saved: `Chapter-XX-backup-[timestamp].md`
-Rollback: `/restore-chapter Chapter-XX-backup-[timestamp]`
+Rollback: use git (`git checkout <commit> -- 02-Manuscript/Chapter-XX-*.md` or `git revert`); every pass is committed in its worktree
 ```
 
 ---

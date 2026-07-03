@@ -157,7 +157,6 @@ Designs, plants, and executes plot twists that surprise readers while maintainin
 - **story-architect** - Structure planning
 - **continuity-checker** - Logic verification
 - **beta-reader-sim** - Surprise testing
-- **foreshadowing** - Clue planting
 
 ### Provides To:
 - **revision agents** - Clue strengthening

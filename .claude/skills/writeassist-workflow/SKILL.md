@@ -38,7 +38,7 @@ Then check `04-Project-Management/writing-tracker.md` to see what's in progress.
 | Sanity-check the whole MS | `/curate-chapters all` |
 | Send to beta readers | `/sync-to-drive` |
 | Pitch agents | `/send-query-letter` |
-| Final gate before publish | (author runs) `/ultrareview` |
+| Final gate before publish | (author runs) `/code-review ultra` |
 
 ## The quality gate (v2)
 
@@ -48,7 +48,7 @@ A chapter is "done" when:
 3. Continuity-checker reports no contradictions vs `story-compendium.md`.
 4. Author has accepted any pending `[AR-XXX]` markers from auto-revise.
 
-Only then is the chapter ready for `/sync-to-drive` → beta readers, or `/ultrareview` → publish.
+Only then is the chapter ready for `/sync-to-drive` → beta readers, or `/code-review ultra` → publish.
 
 ## Key mechanics to know
 
@@ -57,7 +57,7 @@ Only then is the chapter ready for `/sync-to-drive` → beta readers, or `/ultra
 - `/auto-revise-chapter` iterates in **git worktrees**, so each pass is diffable.
 - `/outline-book` and `/generate-wrp` enter plan mode before writing artifacts.
 - External commands route through MCPs: `/sync-to-drive`, `/send-query-letter`, `/schedule-writing-time`.
-- Final cloud gate: `/ultrareview` (author-triggered). See `.claude/docs/system-guides/ultrareview-gate.md`.
+- Final cloud gate: `/code-review ultra` (author-triggered). See `.claude/docs/system-guides/ultrareview-gate.md`.
 
 ## Mode-specific notes
 

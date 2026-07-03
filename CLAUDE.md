@@ -130,7 +130,7 @@ Two skills ship under `.claude/skills/`:
 ### Reference
 - `/workflow-guide` - Display workflow documentation
 - `/batch-operations` - Batch command documentation
-- `.claude/docs/system-guides/ultrareview-gate.md` - When and how to invoke `/ultrareview` as final publish gate
+- `.claude/docs/system-guides/ultrareview-gate.md` - When and how to invoke `/code-review ultra` as final publish gate
 - `.claude/docs/system-guides/cron-setup.md` - Recommended scheduled jobs (weekly continuity, daily smart-review, query follow-ups)
 
 ## Key Files to Check Before Creative Work

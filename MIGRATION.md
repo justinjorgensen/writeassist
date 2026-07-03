@@ -20,7 +20,7 @@ v2 takes the existing WriteAssist framework and layers on Claude Code features t
 | Status visibility | Check `writing-tracker.md` manually | **Custom statusline**, live word count, em-dash count, last review score |
 | External tools | None | **Drive / Gmail / Calendar MCPs** wired via 3 new commands |
 | Recurring jobs | Manual | **Cron / routines** (opt-in, documented in `cron-setup.md`) |
-| Final publish gate | Just `review-chapter` | **`/ultrareview`** documented as cloud final gate |
+| Final publish gate | Just `review-chapter` | **`/code-review ultra`** documented as cloud final gate |
 | Cross-project reach | Framework-bound | **Skills** (`writeassist-workflow`, `improv-story-form`) work in any project |
 
 ## File-level changes
@@ -99,5 +99,5 @@ If anything in v2 misbehaves:
 
 - **No fork of `review-chapter` or `execute-wrp`.** They work as-is, they just now run against agents with tighter tool restrictions.
 - **No replacement of the 24 slash commands with skills.** Slash commands stay as the in-framework primitives. Skills are for cross-project reach.
-- **No automatic /ultrareview triggering.** It's an author-driven final gate per Claude Code's design (user-triggered + billed).
+- **No automatic /code-review ultra triggering.** It's an author-driven final gate per Claude Code's design (user-triggered + billed).
 - **No backwards-compat shims.** If you fork v1 and v2 diverges further, you'll merge by hand.

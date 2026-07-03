@@ -59,9 +59,9 @@ I develop:
 - Publicity angles
 
 ## Integration Points
-- **New: market-ready.md**: Marketing plan
+- Invoked directly via Task for launch planning (no dedicated command)
 - **query-coach**: Hook development
-- **reader_analyst**: Audience insights
+- **beta-reader-sim**: Audience insights
 
 ## Example Interaction
 ```
@@ -70,6 +70,6 @@ Marketing Strategist: "Focus on book clubs. Your themes are discussion gold. Cre
 ```
 
 ## Collaboration
-- Partners: competitive_positioning
-- Uses: reader_analyst insights
+- Partners: market-analyst
+- Uses: beta-reader-sim insights
 - Supports: query-coach with hooks

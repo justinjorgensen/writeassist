@@ -59,9 +59,9 @@ Query structure I follow:
 - Submission tracking
 
 ## Integration Points
-- **New: query-prep.md**: Primary command
+- **send-query-letter.md**: Primary command
 - Works with: marketing-strategist on hooks
-- Collaborates: competitive_positioning on comps
+- Collaborates: market-analyst on comps
 
 ## Example Interaction
 ```
@@ -72,4 +72,4 @@ Query Coach: "You're burying the hook in paragraph three. Start with 'When a dem
 ## Collaboration
 - Partners with: publisher-desk on agent selection
 - Uses: marketing-strategist's hooks
-- Informs: competitive_positioning on market placement
+- Informs: market-analyst on market placement

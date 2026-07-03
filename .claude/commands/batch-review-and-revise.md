@@ -339,7 +339,7 @@ Chapter 8 still fails the review gates after 5 iterations:
 1. "Generate all WRPs" → batch-generate-wrp
 2. "Write all chapters" → batch-execute-wrp  
 3. "Review and fix all" → batch-review-and-revise
-4. "Export manuscript" → compile-manuscript
+4. "Archive drafts, organize files" → book-cleanup
 ```
 
 ### Maintenance Mode

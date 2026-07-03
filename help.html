@@ -905,7 +905,7 @@ For a book, run <code>/batch-generate-wrp</code> across the outline once you tru
     <ul>
       <li>When you suspect the review panel is being too kind.</li>
       <li>Before sending to beta readers.</li>
-      <li>Before <code>/ultrareview</code>.</li>
+      <li>Before <code>/code-review ultra</code>.</li>
     </ul>
     <h5>Produces</h5>
     <ul><li>A short, sharp critic's note with specific objections.</li></ul>
@@ -1446,12 +1446,12 @@ You can see exactly what each revision pass did to your prose. A score jump from
 <section id="ultrareview">
 <h2><span class="num">XI</span>The Final Gate</h2>
 
-<p>Local <code>review-chapter</code> is fast and roughly free. It is the iterative tool. <code>/ultrareview</code> is the gate.</p>
+<p>Local <code>review-chapter</code> is fast and roughly free. It is the iterative tool. <code>/code-review ultra</code> is the gate.</p>
 
-<p><code>/ultrareview</code> is a Claude Code feature: a multi-agent cloud review of the current branch (or a specific PR) that runs in fresh contexts free of session contamination. It is <strong>author-triggered and billed</strong>. WriteAssist's contract:</p>
+<p><code>/code-review ultra</code> is a Claude Code feature: a multi-agent cloud review of the current branch (or a specific PR) that runs in fresh contexts free of session contamination. It is <strong>author-triggered and billed</strong>. WriteAssist's contract:</p>
 
 <blockquote>
-Run <code>/ultrareview</code> only on chapters that have already passed the local 8.0 gate. Never as a substitute for iteration, only as the gate before publication, beta-reader release, or agent submission.
+Run <code>/code-review ultra</code> only on chapters that have already passed the local review-engine gates. Never as a substitute for iteration, only as the gate before publication, beta-reader release, or agent submission.
 </blockquote>
 
 <p>See <code>.claude/docs/system-guides/ultrareview-gate.md</code> for the full pre-flight checklist and the triage protocol after results come back.</p>
@@ -1535,7 +1535,7 @@ Run <code>/ultrareview</code> only on chapters that have already passed the loca
 
 <h3>Phase 6: Submit</h3>
 <ol>
-  <li><code>/ultrareview</code> as final cloud gate. Triage MUST FIX items.</li>
+  <li><code>/code-review ultra</code> as final cloud gate. Triage MUST FIX items.</li>
   <li><code>/send-query-letter</code> for each agent on your list. Tracker auto-records.</li>
   <li>Weekly cron surfaces follow-up dates.</li>
 </ol>

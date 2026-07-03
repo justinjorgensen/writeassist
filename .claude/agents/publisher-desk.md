@@ -59,9 +59,9 @@ I evaluate:
 - Timing decisions
 
 ## Integration Points
-- **New: market-ready.md**: Publication assessment
+- **send-query-letter.md**: Publication readiness input for queries
 - **query-coach**: Agent/publisher targeting
-- **competitive_positioning**: Market analysis
+- **market-analyst**: Market analysis
 
 ## Example Interaction
 ```
@@ -71,5 +71,5 @@ Publisher's Desk: "The writing is ready but 180,000 words is a hard sell for deb
 
 ## Collaboration
 - Partners: query-coach on submissions
-- Uses: competitive_positioning data
+- Uses: market-analyst data
 - Informs: marketing-strategist planning

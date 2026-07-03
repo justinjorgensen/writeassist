@@ -139,7 +139,6 @@ Impact: Reduces scene energy
 - **continuity-checker** - Validates consistency  
 - **character-developer** - Maintains character rules
 - **world-builder** - Checks world consistency
-- **genre-specialist** - Ensures genre compliance
 
 ### Provides To
 - **All writing agents** - Rule constraints

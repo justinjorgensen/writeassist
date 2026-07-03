@@ -8,7 +8,7 @@ Write a complete chapter based on the outline and parameters provided.
 - Reference the outline: `01-Planning/outline.md`
 - Follow style guide: `04-Project-Management/style-guide.md`
 - Check story compendium: `story-compendium.md` - PRIMARY CANON SOURCE
-- Verify with Story Compendium Manager agent before finalizing any dates, ages, or timeline references
+- Verify against story-compendium.md (use the /story-compendium-manager command) before finalizing any dates, ages, or timeline references
 
 ## Writing Parameters
 
@@ -127,7 +127,7 @@ Resolution/Hook (10-15%)
    - Include all required elements
 
 3. **Verification Phase**
-   - **CRITICAL**: Invoke Story Compendium Manager agent to:
+   - **CRITICAL**: Run the /story-compendium-manager command to:
      - Verify all facts against canon
      - Check timeline consistency
      - Maintain story compendium with any new information

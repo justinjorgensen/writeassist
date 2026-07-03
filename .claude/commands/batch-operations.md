@@ -164,17 +164,14 @@ Returns:
 ```bash
 "Review all chapters with all agents"
 ```
-Now runs 10 specialized agents simultaneously:
-- Style editor (em dash eliminator)
-- Pacing master
-- Character developer
-- Dialogue specialist
-- Continuity checker
-- Emotion engineer
-- Theme explorer
-- Twist engineer
-- Sensory specialist
-- Rule enforcer
+Now runs the named critic panel simultaneously (see review-chapter):
+- style-editor (Prose; also flags em dashes)
+- pacing-master (Pacing)
+- beta-reader-sim (Character)
+- dialogue-coach (Dialogue)
+- continuity-checker (Continuity)
+- critic-sim (Engagement)
+- rule-enforcer (Rules)
 
 Auto-fix triggers for any chapter failing the review gates. Gating is defined in `.claude/docs/review-engine.md` (panel 5/7 Pass+, weighted >= 7.0, critical-fail overrides, max 5 revision iterations).
 

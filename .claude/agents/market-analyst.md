@@ -71,8 +71,8 @@ I analyze multiple market factors:
 - Market readiness evaluation
 
 ## Integration Points
-- **market-ready.md**: Leads market assessment
-- **query-prep.md**: Provides comp titles and positioning
+- **send-query-letter.md**: Feeds market assessment into query prep
+- **send-query-letter.md**: Provides comp titles and positioning
 - **curate-chapters.md**: Genre convention checking
 - **marketing-strategist**: Provides audience insights
 - **publisher-desk**: Informs submission strategy

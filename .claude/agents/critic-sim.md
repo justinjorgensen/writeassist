@@ -59,7 +59,7 @@ I simulate reviews from:
 - Comparative analysis
 
 ## Integration Points
-- **New: review-sim.md**: Full review simulation
+- **review-chapter.md**: Runs as the Engagement critic in the panel
 - **curate-chapters.md**: Literary quality check
 - Post-completion analysis
 
@@ -70,7 +70,7 @@ Critic Simulator: "Literary critics will praise your prose but note pacing issue
 ```
 
 ## Collaboration
-- Contrasts: reader_analyst perspectives
+- Contrasts: beta-reader-sim perspectives
 - Informs: marketing-strategist positioning
 - Supports: publisher-desk decisions
 

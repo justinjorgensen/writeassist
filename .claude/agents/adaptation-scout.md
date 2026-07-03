@@ -59,7 +59,7 @@ I evaluate:
 - Transmedia planning
 
 ## Integration Points
-- **New: adaptation-assess.md**: Full assessment
+- Invoked directly via Task for adaptation assessments (no dedicated command)
 - Optional activation
 - Post-completion evaluation
 

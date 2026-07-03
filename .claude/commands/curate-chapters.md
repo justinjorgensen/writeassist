@@ -60,7 +60,7 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 - Outputs: Theme tracking, subtlety suggestions
 
 ### Phase 4: Market Readiness
-[reader_analyst | curate-chapters]
+[beta-reader-sim | curate-chapters]
 - Genre expectation compliance
 - Engagement prediction
 - Pacing for target audience
@@ -137,7 +137,7 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 - Themes present: [List]
 - Effectiveness: [Assessment]
 
-### Reader Engagement (reader_analyst)
+### Reader Engagement (beta-reader-sim)
 - Predicted engagement: [High/Medium/Low]
 - Genre compliance: [Yes/No]
 
@@ -181,7 +181,7 @@ Deep analysis of completed chapters for consistency, quality, and market readine
 4. **dialogue-coach** focuses on conversation scenes
 5. **sensitivity-reviewer** activated by flags or request
 6. **thematic-guide** tracks theme development
-7. **reader_analyst** predicts audience response
+7. **beta-reader-sim** predicts audience response
 
 ## Integration with Workflow
 
