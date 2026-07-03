@@ -48,7 +48,7 @@ The primary workflow for chapter creation:
 ### Zero Em Dash Policy
 **ABSOLUTE ZERO TOLERANCE** for em dashes: the em dash character (U+2014) or the double-hyphen `--`. Use commas, colons, semicolons, or parentheses instead.
 
-In v2 this is enforced **mechanically by a PostToolUse hook** (`.claude/scripts/em-dash-guard.sh`), em dashes literally cannot be written to manuscript files. Review agents remain a secondary check. See `author-rules.md` line 18 and `.claude/settings.json`.
+In v2 this is enforced mechanically by two hooks: a **PreToolUse guard** (`.claude/scripts/em-dash-guard-pre.sh`) denies any Write/Edit whose proposed content contains an em dash on guarded paths (the call is blocked before anything reaches disk), and a **PostToolUse backstop** (`.claude/scripts/em-dash-guard.sh`) rescans the file after writes and surfaces violations that slip through other routes. Note: writes made via Bash bypass both hooks, so review agents remain a secondary check. See `author-rules.md` line 18 and `.claude/settings.json`.
 
 ### Parallel Agent Execution
 When using multi-agent commands (review-chapter, batch-review-and-fix):
@@ -69,8 +69,9 @@ If an agent reports "cannot write file" during a review, that's correct behavior
 `/auto-revise-chapter` runs each revision pass in its own git worktree (`.worktrees/chapter-XX-pass-N`). This lets the author `git diff` between passes and prevents a bad revision from corrupting the working copy. See the command file for the loop protocol.
 
 ### Hooks (v2)
-`.claude/settings.json` registers three hooks:
-- **PostToolUse / em-dash-guard**, blocks any Write/Edit that would introduce em dashes to manuscript files (exit 2).
+`.claude/settings.json` registers four hooks:
+- **PreToolUse / em-dash-guard-pre**, denies any Write/Edit whose proposed content contains em dashes on manuscript paths (exit 2 blocks the call before it touches disk).
+- **PostToolUse / em-dash-guard**, backstop rescan of the file after Write/Edit; surfaces any em dash that reached disk (exit 2).
 - **PostToolUse / post-chapter-review**, opt-in via `WRITEASSIST_AUTO_REVIEW=1`; drops a breadcrumb when a chapter is saved.
 - **Stop / update-tracker**, appends a session-end word-count line to `04-Project-Management/writing-tracker.md`.
 

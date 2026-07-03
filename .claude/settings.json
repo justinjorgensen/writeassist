@@ -6,6 +6,17 @@
     "command": "${CLAUDE_PROJECT_DIR}/.claude/scripts/statusline.sh"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/scripts/em-dash-guard-pre.sh"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
