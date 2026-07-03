@@ -165,7 +165,7 @@ Minimum introduction includes:
 IF character introduced via photo/memory/reference:
   - Name + context REQUIRED in that moment
   - Don't wait for live appearance
-EXAMPLE: "Emma (seven, gap-toothed, fearless) grinned from the beach photo"
+EXAMPLE: "[Child, age 7] (gap-toothed, fearless) grinned from the beach photo"
 ```
 
 **Rule 4: Dialogue Priority**
@@ -209,28 +209,30 @@ TIER: Fail (Critical continuity violation)
 
 ### Example Detections
 
-**DETECTED - Divine Replica Ch1:65**
+These are GENERIC illustrations; [Protagonist], [Child A], [Child B] are placeholders, not story facts.
+
+**DETECTED - [Example Book] Ch1:65**
 ```
-TEXT: "Elena and the kids at the beach, smiling"
-FLAG: Generic reference "the kids" - compendium has Emma (7) and Marcus (10)
+TEXT: "[Protagonist] and the kids at the beach, smiling"
+FLAG: Generic reference "the kids" - compendium has [Child A] (7) and [Child B] (10)
 TIER: Fail
 CONFIDENCE: 0.98
-FIX: "Elena and the kids, seven-year-old Emma and ten-year-old Marcus, smiled from the beach photo"
+FIX: "[Protagonist] and the kids, seven-year-old [Child A] and ten-year-old [Child B], smiled from the beach photo"
 ```
 
-**DETECTED - Divine Replica Ch2:5**
+**DETECTED - [Example Book] Ch2:5**
 ```
 TEXT: "his youngest daughter argued about cereal"
 FLAG: Anonymous family introduction - no name provided
 TIER: Fail (Critical - family member in scene)
 CONFIDENCE: 1.0
-FIX: "His youngest, seven-year-old Emma, argued about cereal choices"
+FIX: "His youngest, seven-year-old [Child A], argued about cereal choices"
 ```
 
-**DETECTED - Divine Replica Ch2:109**
+**DETECTED - [Example Book] Ch2:109**
 ```
-TEXT: "His daughter Emma on the playground" (FIRST name mention)
-FLAG: Belated introduction - Emma appeared earlier (line 5) without name
+TEXT: "His daughter [Child A] on the playground" (FIRST name mention)
+FLAG: Belated introduction - [Child A] appeared earlier (line 5) without name
 TIER: Fail (Critical - delayed family introduction)
 CONFIDENCE: 0.96
 FIX: Move introduction to line 5 where character first appears

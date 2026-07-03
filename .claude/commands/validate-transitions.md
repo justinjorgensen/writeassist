@@ -38,7 +38,7 @@ This command reads the endings and beginnings of consecutive chapters to verify:
 - **Timeline Breaks**: Day to night with no transition
 - **Location Jumps**: In Paris end of Ch 3, Tokyo start of Ch 4 with no travel
 
-### Example: Divine Replica EMP Issue
+### Example: the EMP continuity break (generic illustration)
 
 ```markdown
 ## Transition Validation: Chapter 2 → Chapter 3
@@ -150,4 +150,4 @@ Validation succeeds when:
 
 ---
 
-This command prevents exactly the kind of continuity break that happened with the Divine Replica EMP scene.
+This command prevents exactly the kind of continuity break shown in the EMP example above.

@@ -103,26 +103,26 @@ Report format:
 
 ## Example Transitions
 
-**Problem Case (Divine Replica Ch 2→3):**
+**Problem Case (generic example, Ch 2→3):**
 - Ch 2 ends: "EMP incoming. Duck." Lights die, engines cut out, plane diving
 - Ch 3 starts: Plane flying normally, electronics working
 - **CRITICAL ERROR**: Impossible state - electronics can't work immediately after EMP
 
 **Good Direct Continuation:**
 - Ch 2 ends: "EMP incoming. Duck." Lights die, engines cut out
-- Ch 3 starts: "Sarah's ears still rang from the EMP blast. The plane's emergency mechanical systems..."
+- Ch 3 starts: "[Protagonist]'s ears still rang from the EMP blast. The plane's emergency mechanical systems..."
 - **VALID**: Natural continuation with consequences
 
 **Good POV Switch:**
-- Ch 2 ends: "EMP incoming. Duck." [Sarah's POV on plane]
-- Ch 3 starts: "In Beijing, General Chen studied the satellite feeds..." [Different location]
+- Ch 2 ends: "EMP incoming. Duck." [[Protagonist]'s POV on plane]
+- Ch 3 starts: "In the capital, [Antagonist] studied the satellite feeds..." [Different location]
 - **VALID**: POV switch doesn't need to address EMP immediately
-- Ch 4 returns: "Sarah gripped the armrest, her knuckles white. They'd been gliding for ten minutes since the EMP..."
+- Ch 4 returns: "[Protagonist] gripped the armrest, knuckles white. They'd been gliding for ten minutes since the EMP..."
 - **VALID**: Returns to cliffhanger with appropriate time passed
 
 **Good Time Jump:**
 - Ch 2 ends: Building explodes with heroes inside
-- Ch 3 starts: "Three days later, Marcus still couldn't shake the ringing in his ears."
+- Ch 3 starts: "Three days later, [Ally] still couldn't shake the ringing in his ears."
 - **VALID**: Time jump with consequences acknowledged
 
 **Bad Disconnection:**
