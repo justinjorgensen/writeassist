@@ -479,3 +479,15 @@ Final Confidence = clamp(Base + Modifiers, 0.0, 1.0)
 ---
 
 *Auto-revise applies intelligent, confidence-based improvements using the four-tier rubric system. See `.claude/docs/review-engine.md` for complete specifications.*
+
+---
+
+## Final Step: Strip All Markers (MANDATORY before a chapter is declared done)
+
+Before a chapter is marked complete (and before any sync or export), remove ALL revision scaffolding from the chapter file:
+
+1. Resolve or reject every `[AR-NNN: ...]` inline marker (accept the change and delete the marker, or revert the change).
+2. Delete every `<!-- AR-SUGGEST-NNN: ... -->` comment (apply the suggestion first if the author wants it).
+3. Verify: `grep -nE "\[AR-|AR-SUGGEST-" <chapter-file>` returns nothing.
+
+`sync-to-drive` refuses to upload files containing these markers; this step is what makes a chapter shippable.

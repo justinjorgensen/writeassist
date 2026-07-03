@@ -89,6 +89,7 @@ Flexible scene writing for when inspiration strikes, quick revisions, or experim
 ### Inline Addition
 - Adds directly to chapter file
 - Marks with [SCENE ADDED]
+- **Final step (MANDATORY)**: once the author accepts the scene, strip the markers; verify `grep -n "\[SCENE ADDED" <chapter-file>` returns nothing. Strip the markers before the chapter is declared done; `sync-to-drive` refuses files that still contain them.
 - Updates word count
 
 ### Standalone File
