@@ -1,491 +1,133 @@
 # Review Engine Smoke Tests
 
-**Version:** 2.0
-**System:** Four-Tier Rubric with Panel Gate
-**Purpose:** Validate review engine behavior with known test cases
+**Version:** 3.0 (remediated 2026-07-03)
+**System:** Four-Tier Rubric, dual gates per `.claude/docs/review-engine.md`
+**Fixtures:** `03-Resources/smoke-fixtures/` (all eight exist; see each file's header for its planted defect)
 
 ---
 
-## Test Suite Overview
+## Assertion policy
 
-These smoke tests validate the four-tier rubric system, panel gate logic, and critical fail overrides.
+Critic output comes from nondeterministic LLM judgments, so tests assert only DECIDABLE properties:
+
+- ASSERT: the critic's final output validates against the shared JSON schema (fields: critic, tier, confidence, one_line_reason, fixes; tier is one of the four values)
+- ASSERT: the planted defect's dimension lands at **Needs Work or Fail**
+- ASSERT: gate decisions (PASS/REVISE) follow `(panel AND weighted) AND no_critical_fails`
+- NEVER assert: exact confidence values, exact fix counts, token usage, or timing
 
 ---
 
 ## Test 1: Continuity Contradiction (Critical Fail)
 
-### Setup
-Create test chapter with direct continuity violation:
+Fixture: `test-continuity-fail.md` (working phone one day after a city-wide EMP)
 
-```markdown
-# Chapter 3 - Test Case
+Run: `/review-chapter 03-Resources/smoke-fixtures/test-continuity-fail.md`
 
-"Marcus checked his phone. The screen lit up instantly."
-
-Sarah remembered the EMP blast from yesterday. Every electronic device in the city had been fried. The power grid was down. Nothing worked.
-
-"Text me when you get there," Marcus said, tapping his phone again.
-```
-
-### Expected Critic Results
-
-**Continuity & Logic:**
-```json
-{
-  "critic": "Continuity",
-  "tier": "Fail",
-  "confidence": 0.98,
-  "one_line_reason": "EMP blast yesterday contradicts working phone",
-  "fixes": [
-    {
-      "id": "fix-001",
-      "summary": "Remove phone usage OR explain EMP shielding/recovery"
-    }
-  ]
-}
-```
-
-**Other Critics:** Likely Pass (prose is fine, just logic error)
-
-### Expected Final Decision
-
-```
-DECISION: REVISE
-REASON: Critical: Continuity contradiction
-OVERRIDE: Yes (Continuity = Fail triggers regardless of panel)
-```
-
-**Validation:**
-- ✓ Continuity critic returns Fail
-- ✓ Critical fail override activates
-- ✓ Chapter forced to Revise even if 6 other critics Pass
-- ✓ Auto-revise suggests fix
-
----
+Assert:
+- Continuity critic output validates against the schema
+- Continuity tier is Fail (Needs Work is a test failure here; the contradiction is direct)
+- Decision is REVISE via the critical-fail override, regardless of the other six verdicts
+- At least one fix targets the phone/EMP contradiction
 
 ## Test 2: Clean Chapter (Should Pass)
 
-### Setup
-Create well-written test chapter with no issues:
+Fixture: `test-clean-chapter.md` (no planted defects)
 
-```markdown
-# Chapter 5 - Clean Test
+Run: `/review-chapter 03-Resources/smoke-fixtures/test-clean-chapter.md`
 
-Sarah walked into the coffee shop. Morning light filtered through dusty windows, catching steam rising from the espresso machine.
+Assert:
+- All critic outputs validate against the schema
+- The panel gate passes (at least 5 of 7 Pass or Strong Pass)
+- No critical fails; decision is PASS
+- A report file appears at `.claude/state/reviews/` containing a `**Weighted Score:** X.X/10` line
 
-"The usual?" Marco asked.
+## Test 3: Em Dash Violation (guard + Rules critic)
 
-She nodded, sliding onto her favorite stool. The worn leather creaked familiarly beneath her.
+Fixture: `test-em-dash-template.md` (contains `<EM-DASH>` tokens; the repo stays glyph-free)
 
-Outside, traffic hummed. Inside, the grinder whirred to life. Marco worked with practiced efficiency, tamping grounds with three sharp taps.
+Generate the live fixture OUTSIDE the repo, then test the guard directly:
 
-"Here you go." He set the cup before her.
+```bash
+# 1. Materialize a live fixture in /tmp with real em dashes
+sed 's/<EM-DASH>/\xe2\x80\x94/g' 03-Resources/smoke-fixtures/test-em-dash-template.md > /tmp/em-dash-live.md
 
-The first sip burned her tongue, but she didn't mind. Some things were worth the wait.
+# 2. Simulate a PreToolUse Write of that content to a guarded path; expect exit 2
+jq -n --rawfile c /tmp/em-dash-live.md \
+  '{tool_name:"Write", tool_input:{file_path:"'$PWD'/02-Manuscript/Chapter-99-Test.md", content:$c}}' \
+  | .claude/scripts/em-dash-guard-pre.sh
+echo "exit=$?"   # ASSERT: 2, and no file created
 ```
 
-### Expected Critic Results
-
-All critics should return Pass or Strong Pass:
-
-**Prose & Voice:** Pass (clean prose, no em dashes, good voice)
-**Pacing & Flow:** Pass (good momentum, transitions work)
-**Character & Arc:** Pass (consistent character, actions fit)
-**Dialogue & Subtext:** Pass (natural dialogue, distinct voices)
-**Continuity & Logic:** Pass (no contradictions)
-**Engagement & Impact:** Pass (engaging scene, progresses story)
-**Rules Compliance:** Pass (all rules followed)
-
-### Expected Final Decision
-
-```
-DECISION: PASS
-REASON: Panel approved (7/7)
-PANEL GATE: 7 Pass or Better (need 5) → ✓
-CRITICAL FAILS: None → ✓
-```
-
-**Validation:**
-- ✓ All 7 critics return Pass or Strong Pass
-- ✓ Panel gate passes (7/7 ≥ 5)
-- ✓ No critical fail overrides
-- ✓ Chapter marked complete
-
----
-
-## Test 3: Em Dash Violation (Rules Fail)
-
-### Setup
-Create chapter with em dashes (zero tolerance):
-
-```markdown
-# Chapter 7 - Em Dash Test
-
-Sarah waited—hoped—for a reply. The silence stretched longer than she could bear. Marcus had always been reliable—until now.
-
-"Where are you?" she whispered to the empty room.
-
-The clock ticked. Five minutes became ten—then twenty. Her coffee grew cold—forgotten.
-```
-
-### Expected Critic Results
-
-**Rules Compliance:**
-```json
-{
-  "critic": "Rules",
-  "tier": "Fail",
-  "confidence": 0.96,
-  "one_line_reason": "7 em dashes found (zero tolerance policy)",
-  "fixes": [
-    {"id":"fix-001","summary":"Replace em dash with comma at 'waited—hoped'"},
-    {"id":"fix-002","summary":"Replace em dash with colon at 'reliable—until'"},
-    {"id":"fix-003","summary":"Replace em dash with comma at 'ten—then'"},
-    {"id":"fix-004","summary":"Replace em dash with period at 'cold—forgotten'"}
-  ]
-}
-```
-
-### Expected Final Decision
-
-```
-DECISION: REVISE
-REASON: Critical: Hard rule violation (em dashes)
-OVERRIDE: Yes (Rules = Fail with confidence ≥ 0.90)
-```
-
-### Expected Auto-Revise Behavior
-
-All em dashes forced to confidence = 1.0 and auto-applied:
-
-```markdown
-# After Auto-Revise
-
-Sarah waited, hoped, for a reply. The silence stretched longer than she could bear. Marcus had always been reliable: until now.
-
-"Where are you?" she whispered to the empty room.
-
-The clock ticked. Five minutes became ten, then twenty. Her coffee grew cold. Forgotten.
-```
-
-**Validation:**
-- ✓ Rules critic returns Fail
-- ✓ Confidence ≥ 0.90 triggers critical fail override
-- ✓ Auto-revise forces all em dash fixes to confidence 1.0
-- ✓ All em dashes removed without markers
-- ✓ Re-review shows Rules = Pass
-
----
+Assert:
+- The PreToolUse guard exits 2 and nothing is written to `02-Manuscript/`
+- If the live content is reviewed (from /tmp), the Rules critic lands at Fail and the decision is REVISE via the critical-fail override
+- Auto-revise treats every em-dash fix as confidence 1.0 (the ladder's one forced value; this is a documented rule, not a probabilistic judgment)
 
 ## Test 4: Marginal Chapter (Panel Rejection)
 
-### Setup
-Create chapter with multiple issues but no critical fails:
+Fixture: `test-marginal.md` (filter words, no momentum, generic dialogue, no progress)
 
-```markdown
-# Chapter 9 - Marginal Test
+Run: `/review-chapter 03-Resources/smoke-fixtures/test-marginal.md`
 
-She felt the wind. It was cold. She saw Marcus. He was far away.
-
-"Hi," she said.
-
-"Hi," he said.
-
-They stood there. Time passed. Nothing happened. The scene continued without purpose.
-```
-
-### Expected Critic Results
-
-**Prose & Voice:** Needs Work (filter words, repetitive structure)
-**Pacing & Flow:** Needs Work (no momentum, drag points)
-**Character & Arc:** Pass (characters consistent, if flat)
-**Dialogue & Subtext:** Needs Work (generic, no subtext)
-**Continuity & Logic:** Pass (no contradictions)
-**Engagement & Impact:** Fail (no emotional impact, no story progress)
-**Rules Compliance:** Pass (no rule violations)
-
-### Expected Final Decision
-
-```
-DECISION: REVISE
-REASON: Panel rejected (3/7 Pass, need 5+)
-PANEL GATE: 3 Pass or Better (need 5) → ✗
-CRITICAL FAILS: None (Engagement Fail not critical)
-```
-
-**Validation:**
-- ✓ Only 3 critics return Pass
-- ✓ Panel gate rejects (3 < 5)
-- ✓ No critical fail override (Engagement Fail doesn't override)
-- ✓ Auto-revise applies fixes for Needs Work critics
-- ✓ Loop continues until panel passes
-
----
+Assert:
+- All critic outputs validate against the schema
+- Fewer than 5 of 7 critics return Pass or Strong Pass, so the panel gate rejects
+- No critical-fail override fires (an Engagement Fail alone is not critical)
+- Decision is REVISE with the panel gate as the reason
 
 ## Test 5: Smart-Review with Pruning
 
-### Setup
-Create dialogue-heavy chapter, trigger smart-review:
+Fixture: `test-dialogue-heavy.md` (dialogue-dominant, no planted defects)
 
-```markdown
-# Chapter 11 - Dialogue Test
+Run: `/smart-review 03-Resources/smoke-fixtures/test-dialogue-heavy.md`
 
-"Listen," Marcus said.
-
-"I'm listening," Sarah replied.
-
-"This isn't working."
-
-"What isn't?"
-
-"Us. This. Everything."
-
-Sarah's hands trembled. "You don't mean that."
-
-"I do." His voice cracked. "I'm sorry."
-
-"Sorry doesn't fix this."
-
-"I know."
-```
-
-### Expected Content Analysis
-
-- **Type:** Dialogue-heavy
-- **Suggested Critics:** Dialogue, Character, Continuity (always), Rules (always), Prose
-- **Pruned:** Pacing (single scene), Engagement (short chapter)
-
-### Expected Critic Results
-
-5 critics run:
-- **Prose:** Pass
-- **Character:** Pass
-- **Dialogue:** Strong Pass
-- **Continuity:** Pass
-- **Rules:** Pass
-
-### Expected Final Decision
-
-```
-DECISION: PASS
-REASON: Panel approved (5/5)
-ADJUSTED GATE: 5 critics run, need 4 Pass (80%) → Have 5 (100%) ✓
-CRITICAL FAILS: None → ✓
-```
-
-**Validation:**
-- ✓ Continuity and Rules always run (never pruned)
-- ✓ Content analysis prunes only non-critical critics
-- ✓ Adjusted panel gate (5 critics = need 4 Pass)
-- ✓ Token usage reduced ~50%
-- ✓ Critical fail detection preserved
-
----
+Assert:
+- Continuity and Rules critics ran (they are never pruned)
+- At least 5 critics ran in total (the minimum panel)
+- Every critic that ran was one of the named agents in smart-review's roster table
+- The pruned panel gate is applied exactly as defined in review-engine.md ("Panel gate with pruning")
 
 ## Test 6: Character Voice Integrity (Critical Fail)
 
-### Setup
-Create chapter where established character completely breaks voice:
+Fixture: `test-voice-fail.md` (established gruff voice shattered in paragraph two)
 
-```markdown
-# Chapter 13 - Voice Test
+Run: `/review-chapter 03-Resources/smoke-fixtures/test-voice-fail.md`
 
-Marcus had always been a man of few words. Gruff. Direct. No nonsense.
-
-"Well, gosh darn it, Sally-mae!" Marcus exclaimed cheerfully, twirling around the kitchen. "Isn't this just the most marvelous morning? The birds are singing their little hearts out, and I simply must share my feelings with you, my dearest companion! Oh, how my heart overflows with joy and merriment!"
-```
-
-### Expected Critic Results
-
-**Character & Arc:**
-```json
-{
-  "critic": "Character",
-  "tier": "Fail",
-  "confidence": 0.95,
-  "one_line_reason": "Marcus's voice completely unrecognizable, breaks established traits",
-  "fixes": [
-    {
-      "id": "fix-001",
-      "summary": "Rewrite dialogue to match Marcus's established gruff, direct voice"
-    }
-  ]
-}
-```
-
-### Expected Final Decision
-
-```
-DECISION: REVISE
-REASON: Critical: Voice integrity (Character Fail, confidence ≥ 0.90, voice issue)
-OVERRIDE: Yes
-```
-
-**Validation:**
-- ✓ Character critic returns Fail
-- ✓ Confidence ≥ 0.90
-- ✓ "voice" detected in one_line_reason
-- ✓ Critical fail override activates
-- ✓ Chapter forced to Revise even if panel would pass
-
----
+Assert:
+- Character critic output validates against the schema
+- Character tier is Needs Work or Fail; for the override to fire it must be Fail with a voice-related one_line_reason
+- If the override fires, decision is REVISE regardless of the panel count
 
 ## Test 7: Iteration Loop (Max Iterations)
 
-### Setup
-Create chapter that can't be auto-fixed easily:
+Fixture: `test-complex-issue.md` (structural problems line fixes cannot solve)
 
-```markdown
-# Chapter 15 - Complex Issue Test
+Run: `/review-chapter` then let the auto-revise pipeline loop.
 
-[Chapter with deep structural problems that require manual rewriting, not simple fixes]
-```
+Assert:
+- The loop never exceeds 5 iterations
+- In an interactive session, the user is prompted at iteration 3; in execute-wrp/batch context that prompt is suppressed (see auto-revise-chapter.md)
+- If still failing after iteration 5, the decision is MANUAL_REVIEW_NEEDED (escalation), not a silent PASS
+- Each pass exists as a git worktree branch commit (no backup sidecar files)
 
-### Expected Behavior
+## Test 8: Gating Arithmetic (dual gates)
 
-**Iteration 1:**
-- Review → REVISE (multiple Needs Work, one Fail)
-- Auto-revise applies high-confidence fixes
-- Re-review → Still REVISE (core issues remain)
+Fixture: `test-numeric-mapping.md` (deliberately mixed quality)
 
-**Iteration 2:**
-- Auto-revise applies medium-confidence fixes
-- Re-review → Still REVISE
+Run: `/review-chapter 03-Resources/smoke-fixtures/test-numeric-mapping.md --verbose`
 
-**Iteration 3:**
-- Auto-revise applies low-confidence fixes
-- Re-review → Still REVISE
-- **User prompt:** "Continue revising? (3/5 iterations)"
-
-**Iteration 4-5:**
-- If user continues, attempt remaining fixes
-- If still failing after iteration 5 → Escalate
-
-### Expected Final Decision
-
-```
-DECISION: MANUAL_REVIEW_NEEDED
-REASON: Max iterations reached (5/5), chapter still fails panel
-ESCALATION: Yes
-```
-
-**Validation:**
-- ✓ Maximum 5 iterations enforced
-- ✓ User prompted after iteration 3
-- ✓ Escalation to manual review after max iterations
-- ✓ All iteration attempts logged
-- ✓ Backups preserved for each iteration
+Assert:
+- Tiers are displayed as the primary verdicts
+- The weighted score is computed per review-engine.md and **controls gating together with the panel gate**: the final rule is `(panel_gate AND weighted_gate) AND no_critical_fails` (D2). The weighted score is NOT display-only.
+- Tier-to-number mapping and weights are quoted from review-engine.md, not restated with different values
+- The report's `**Weighted Score:** X.X/10` line matches the statusline regex (one decimal, slash, 10)
 
 ---
 
-## Test 8: Dashboard Numeric Mapping
+## Success Criteria
 
-### Setup
-Run review on any chapter, verify numeric display:
-
-### Expected Output
-
-```markdown
-## Critic Results (Four-Tier Rubric):
-- Prose: Pass
-- Pacing: Strong Pass
-- Character: Needs Work
-- Dialogue: Pass
-- Continuity: Pass
-- Engagement: Fail
-- Rules: Pass
-
-## Dashboard Display (Numeric Mapping):
-- Prose: 8.0 (Pass)
-- Pacing: 10.0 (Strong Pass)
-- Character: 6.0 (Needs Work)
-- Dialogue: 8.0 (Pass)
-- Continuity: 8.0 (Pass)
-- Engagement: 4.0 (Fail)
-- Rules: 8.0 (Pass)
-
-Weighted Average: 7.6/10 (for tracking only, NOT used for gating)
-
-## Panel Gate Decision:
-Pass Count: 5/7 (need 5) → ✓ PASS
-Critical Fails: None → ✓
-FINAL: PASS
-```
-
-**Validation:**
-- ✓ Tiers displayed first (primary)
-- ✓ Numbers shown as "dashboard display"
-- ✓ Explicit note that numbers don't control gating
-- ✓ Panel gate uses tier counts, not numeric average
-- ✓ Weighted average shown for tracking only
-
----
-
-## Running the Tests
-
-### Manual Execution
-
-```bash
-# Test 1: Continuity violation
-/review-chapter test-continuity-fail.md
-# Expected: REVISE (Critical: Continuity contradiction)
-
-# Test 2: Clean chapter
-/review-chapter test-clean-chapter.md
-# Expected: PASS (Panel approved 7/7)
-
-# Test 3: Em dash violation
-/review-chapter test-em-dash-fail.md
-# Expected: REVISE (Critical: Hard rule violation)
-/auto-revise-chapter test-em-dash-fail.md
-# Expected: All em dashes removed, confidence = 1.0
-
-# Test 4: Marginal chapter
-/review-chapter test-marginal.md
-# Expected: REVISE (Panel rejected 3/7)
-
-# Test 5: Smart-review with pruning
-/smart-review test-dialogue-heavy.md
-# Expected: PASS (5/5 critics, Continuity+Rules preserved)
-
-# Test 6: Voice integrity
-/review-chapter test-voice-fail.md
-# Expected: REVISE (Critical: Voice integrity)
-
-# Test 7: Iteration loop
-/review-chapter test-complex-issue.md
-# Then trigger auto-revise pipeline
-# Expected: Escalation after 5 iterations
-
-# Test 8: Numeric mapping
-/review-chapter any-chapter.md --verbose
-# Expected: Tiers shown, then numbers, explicit "display only" note
-```
-
-### Success Criteria
-
-All tests pass when:
-- ✓ Panel gate correctly counts Pass/Strong Pass tiers
-- ✓ Critical fail overrides work for Continuity, Rules (high confidence), Character Voice (high confidence)
-- ✓ Numeric scores displayed but don't control gating
-- ✓ Smart-review always includes Continuity and Rules
-- ✓ Auto-revise uses confidence ladder (0.95+, 0.90-0.95, 0.85-0.90)
-- ✓ Em dash fixes forced to confidence 1.0
-- ✓ Iteration loop enforces max 5, prompts at 3
-- ✓ Adjusted panel gate works for smart-review (5 critics = need 4)
-
----
+The suite passes when every assert above holds. Nondeterministic wobble (a Pass where Strong Pass was expected on a clean fixture) is acceptable anywhere no assert names a specific tier.
 
 ## Regression Testing
 
-After any changes to review-engine, re-run all 8 smoke tests to ensure:
-1. Panel gate logic unchanged
-2. Critical fail overrides still work
-3. Confidence ladder preserved
-4. Numeric mapping doesn't leak into gating
-5. Smart-review preserves critical critics
-6. Iteration limits enforced
-
----
-
-*These smoke tests validate the four-tier rubric system. Run after any review engine changes.*
+After any change to review-engine.md, review-chapter.md, smart-review.md, auto-revise-chapter.md, or the guard scripts, re-run all 8 tests plus `.claude/scripts/lint-framework.sh`.
