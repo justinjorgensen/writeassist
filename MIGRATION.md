@@ -74,7 +74,7 @@ If you have a real book underway in `~/projects/WriteAssist` (or a `WriteAssist-
 5. **Clean any em-dashes first**, or the hook will reject the first edit. Sweep:
    ```bash
    cd ~/projects/<your-book-name>
-   grep -rlP ',|(?<!-)--(?!-)' 02-Manuscript/ 01-Planning/ 05-wrp/
+   grep -rlP '\x{2014}|(?<!-)--(?!-)' 02-Manuscript/ 01-Planning/ 05-wrp/
    # Hand-edit the matches with appropriate replacements (comma / colon / parens)
    ```
 6. **Initialize git** if you want worktree-based revisions:

@@ -43,7 +43,7 @@
   Do: change line 557 (locate by content, line may drift) to the AND form per D2. Add a header note to review-engine.md declaring it the single source of truth for all gate numbers (D3). Also fix its internal arithmetic slip: line ~708 says pass if `pass_count/critics_run >= 0.70` but line ~721 claims 5 critics "need 4 passes (80%)"; make the label match the rule.
   Verify: grep review-engine.md for `OR no_critical_fails` returns nothing; the doc states it is canonical.
 
-- [ ] **R-02: Repair the em-dash sweep corruption.**
+- [x] **R-02: Repair the em-dash sweep corruption.**
   Evidence (a global character sweep replaced em dashes with commas, destroying meaning):
   - `CLAUDE.md:49`: defines the banned character as a comma: "em dashes (`,` or `--`)". Should read: em dash (U+2014) or `--`.
   - `MIGRATION.md:77`: migration grep `grep -rlP ',|(?<!-)--(?!-)'` matches every comma in every file. First alternative should be `\x{2014}`.
@@ -160,3 +160,4 @@
 - 2026-07-03: Plan created from the full harness audit. No tasks executed yet.
 - 2026-07-03: R-00 done. git init, .gitignore (.claude/state/, .worktrees/, *-backup-*.md, archive/), initial commit. No deviations.
 - 2026-07-03: R-01 done. review-engine.md line 557 OR changed to AND (D2); canonical source-of-truth header added (D3); pruned-panel example at old line 721 relabeled so 4/5 passes is explained against the 70% rule. No deviations.
+- 2026-07-03: R-02 done. Fixed CLAUDE.md:49 (banned char now "U+2014 or --"), MIGRATION.md:77 grep first alternative to \x{2014}, auto-revise-chapter.md:123 comma check to a — escape, auto-revise BEFORE/AFTER examples rewritten with an <EM DASH> placeholder, improv SKILL.md:50, cron-setup.md:33 restored to [CRITICAL]. Deviations: (a) the broken few-shot was in story-architect.md:63 not :165 (fixed with colon/semicolon); (b) character-developer.md:63 example already reads grammatically, left unchanged; (c) additionally converted the functional regex glyphs in em-dash-guard.sh and statusline.sh to \x{2014} escapes (verified they still match) and de-glyphed help.html. Remaining literal glyphs are only in files owned by later tasks: continuity-checker.md (R-03), parallel-review-implementation.md (R-24 archive), smoke-tests.md (R-40).

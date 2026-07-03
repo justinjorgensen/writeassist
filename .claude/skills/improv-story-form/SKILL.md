@@ -47,7 +47,7 @@ Format:
 **Wildcards in play:** <how the extras shape it>
 ```
 
-If they asked for an opening scene, write the scene in their requested tone (~400-600 words). **Apply the same em-dash rule WriteAssist uses if you're inside a WriteAssist project**: replace `,` with commas/colons/parentheses.
+If they asked for an opening scene, write the scene in their requested tone (~400-600 words). **Apply the same em-dash rule WriteAssist uses if you're inside a WriteAssist project**: never write an em dash (U+2014); use commas, colons, or parentheses instead.
 
 ## Variant: dice mode
 

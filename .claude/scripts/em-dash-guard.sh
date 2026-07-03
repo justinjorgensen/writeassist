@@ -29,10 +29,10 @@ if [[ ! -f "$file_path" ]]; then
   exit 0
 fi
 
-# Grep for em dash (—) or double-hyphen (--) used as em-dash substitute.
+# Grep for em dash (U+2014) or double-hyphen (--) used as em-dash substitute.
 # Excludes markdown horizontal rules / frontmatter delimiters (---), so we
 # only flag `--` that isn't part of a run of 3+ dashes.
-PATTERN='—|(?<!-)--(?!-)'
+PATTERN='\x{2014}|(?<!-)--(?!-)'
 if grep -nP "$PATTERN" "$file_path" >/dev/null; then
   matches="$(grep -nP "$PATTERN" "$file_path" | head -5)"
   cat >&2 <<EOF

@@ -1335,11 +1335,11 @@ For a book, run <code>/batch-generate-wrp</code> across the outline once you tru
 <p>Three hooks in <code>.claude/settings.json</code> give the framework a concrete floor of enforcement, not just policy.</p>
 
 <h3>1. Em-dash guard (PostToolUse)</h3>
-<p>Every <code>Write</code> or <code>Edit</code> targeting <code>02-Manuscript/</code>, <code>01-Planning/</code>, <code>05-wrp/</code>, <code>story-compendium.md</code>, or <code>author-rules.md</code> is scanned for em dashes (<code>—</code>) and double-hyphens (<code>--</code> not part of <code>---</code>). If found, exit 2 surfaces the violation to Claude and the write is rejected.</p>
+<p>Every <code>Write</code> or <code>Edit</code> targeting <code>02-Manuscript/</code>, <code>01-Planning/</code>, <code>05-wrp/</code>, <code>story-compendium.md</code>, or <code>author-rules.md</code> is scanned for em dashes (<code>U+2014</code>) and double-hyphens (<code>--</code> not part of <code>---</code>). If found, exit 2 surfaces the violation to Claude and the write is rejected.</p>
 
 <pre><code>[EM-DASH GUARD] Blocked: em-dash detected in /path/Chapter-07.md
 
-37:She paused—then ran.
+37:She paused[U+2014]then ran.
 
 Replace with: comma, colon, semicolon, parentheses, or full stop.</code></pre>
 

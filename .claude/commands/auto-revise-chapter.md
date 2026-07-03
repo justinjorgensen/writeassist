@@ -120,7 +120,7 @@ The door was opened by Marcus → Marcus opened the door [AR-001]
 ### 3. **Special Rule: Em Dash Override**
 
 ```python
-if "em dash" in fix.summary.lower() or "," in fix.location:
+if "em dash" in fix.summary.lower() or "\u2014" in fix.location:  # em dash checked via escape, never the literal glyph
     fix.confidence = 1.0  # Force maximum confidence
     apply_immediately()
     log_change("CRITICAL: Em dash removal (zero tolerance)")
@@ -160,18 +160,19 @@ FOR each fix in critic_results.all_fixes():
 ### 5. **Fix Execution Patterns**
 
 #### Pattern: EM DASH ELIMINATION (HIGHEST PRIORITY - Always 1.0 confidence)
+In the BEFORE lines below, `<EM DASH>` stands for the literal em dash character (U+2014); the glyph itself is never written in this repo.
 ```markdown
-BEFORE: "She waited for the news,the terrible news"
+BEFORE: "She waited for the news<EM DASH>the terrible news"
 AFTER:  "She waited for the news, the terrible news"
 ACTION: Replace em dash with comma
 CONFIDENCE: 1.00 (FORCED)
 
-BEFORE: "The answer was simple,too simple"
+BEFORE: "The answer was simple<EM DASH>too simple"
 AFTER:  "The answer was simple: too simple"
 ACTION: Replace em dash with colon
 CONFIDENCE: 1.00 (FORCED)
 
-BEFORE: "He ran,sprinted,toward the door"
+BEFORE: "He ran<EM DASH>sprinted<EM DASH>toward the door"
 AFTER:  "He ran (sprinted) toward the door"
 ACTION: Replace em dashes with parentheses
 CONFIDENCE: 1.00 (FORCED)

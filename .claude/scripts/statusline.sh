@@ -42,7 +42,7 @@ latest_ch="$(find "$MANUSCRIPT" -name '*.md' -printf '%T@ %f\n' 2>/dev/null | so
 latest_ch="${latest_ch:-...}"
 
 # Em-dash count across manuscript (should be 0)
-emdash_count=$(grep -rhoP '—|(?<!-)--(?!-)' "$MANUSCRIPT" 2>/dev/null | wc -l | tr -d ' ')
+emdash_count=$(grep -rhoP '\x{2014}|(?<!-)--(?!-)' "$MANUSCRIPT" 2>/dev/null | wc -l | tr -d ' ')
 
 # Last review score (look for `Predicted Panel Result` or any "X/10" in latest review report)
 review_dir="$PROJECT_ROOT/.claude/state/reviews"

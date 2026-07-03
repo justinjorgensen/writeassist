@@ -46,7 +46,7 @@ The primary workflow for chapter creation:
 ## Critical Rules
 
 ### Zero Em Dash Policy
-**ABSOLUTE ZERO TOLERANCE** for em dashes (`,` or `--`). Use commas, colons, semicolons, or parentheses instead.
+**ABSOLUTE ZERO TOLERANCE** for em dashes: the em dash character (U+2014) or the double-hyphen `--`. Use commas, colons, semicolons, or parentheses instead.
 
 In v2 this is enforced **mechanically by a PostToolUse hook** (`.claude/scripts/em-dash-guard.sh`), em dashes literally cannot be written to manuscript files. Review agents remain a secondary check. See `author-rules.md` line 18 and `.claude/settings.json`.
 

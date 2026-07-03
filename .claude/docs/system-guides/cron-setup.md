@@ -30,7 +30,7 @@ You can list/disable any routine later with `CronList` / `CronDelete`.
 
 **Prompt to schedule:**
 ```
-Run /curate-chapters all on ~/projects/WriteAssist-v2/02-Manuscript/. Save the report to 04-Project-Management/weekly-continuity-$(date +%F).md. If the report contains any line starting with [CRITICAL, send a PushNotification summarizing it. Otherwise stay silent.
+Run /curate-chapters all on ~/projects/WriteAssist-v2/02-Manuscript/. Save the report to 04-Project-Management/weekly-continuity-$(date +%F).md. If the report contains any line starting with [CRITICAL], send a PushNotification summarizing it. Otherwise stay silent.
 ```
 
 ---
